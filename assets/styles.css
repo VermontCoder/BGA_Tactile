@@ -1,0 +1,98 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+:root {
+
+    --tile-dim: 75px;
+    --board-dim: calc(var(--tile-dim)*6 + (2px*6) + 20px);
+    --card-width: 80px;
+    --card-height: 120px;
+    --store-width: calc((var(--card-width) + 5px ) * 3 + 20px);
+  }
+
+
+.ttContainer {
+    background-color: #f0f0f0;
+}
+
+/* Top container styles */
+#ttTopContainer {
+    display: flex;
+    height: var(--board-dim);
+    margin-bottom: 20px;
+}
+
+/* Store styles */
+.store {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    left: 20px;
+    width: var(--store-width)
+    height: var(--board-dim);
+    background-color: #d3d3d3;  
+    border-radius: 4px;
+}
+
+.storeRow {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    padding-top: 10px;
+}
+
+/* Board styles */
+.board {
+    position: absolute;
+    left: calc(var(--store-width) + 30px);
+    width: var(--board-dim);
+    height: var(--board-dim);
+    background-color: #e0e0e0;
+    padding: 10px;
+    font-size: 0; /* remove space between inline-block elements */
+}
+
+.tile.red
+{
+    background-color: red;
+}
+
+.tile {
+    width: var(--tile-dim);
+    height: var(--tile-dim);
+    border: 1px solid #d3d3d3;
+    display: inline-block;
+    margin: 1px;
+}
+
+.addSpace { margin: 5px; }
+/* Tableau styles */
+.tableauContainer {
+    display: block;
+}
+
+.tableau {
+    margin: 10px;
+    display: inline-block;
+    background-color: #c0c0c0;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.tableauLabel {
+    font-family: "DM Sans", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.red {color: red;}
+.cardTarget {
+    height:var(--card-height);
+    width: var(--card-width);
+    border: 1px solid;
+}
