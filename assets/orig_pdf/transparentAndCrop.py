@@ -57,6 +57,6 @@ def process_images(input_folder, output_folder):
     print("All images processed!")
 
 # Example usage
-input_dir = "png_images"  # Replace with your folder containing the input images
+input_dir = "output_images"  # Replace with your folder containing the input images
 output_dir = "processed_images"  # Replace with your desired output folder
 process_images(input_dir, output_dir)

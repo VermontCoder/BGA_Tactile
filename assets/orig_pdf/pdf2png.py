@@ -34,6 +34,6 @@ def pdf_to_png(pdf_path, output_folder):
     print("Conversion completed!")
 
 # Example usage
-pdf_file = "orig_pdf//Card Deck_top.pdf"  # Replace with the path to your PDF file
+pdf_file = "Card Deck_top.pdf"  # Replace with the path to your PDF file
 output_dir = "output_images"  # Replace with your desired output folder
 pdf_to_png(pdf_file, output_dir)
