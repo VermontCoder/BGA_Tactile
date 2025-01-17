@@ -46,6 +46,6 @@ def create_sprite_sheet(input_folder, output_file):
     print(f"Sprite sheet saved as {output_file}")
 
 # Example usage
-input_dir = "output_images"  # Replace with your folder containing the images
-output_sprite = "tiles.png"  # Replace with your desired output file
+input_dir = "processed_images"  # Replace with your folder containing the images
+output_sprite = "resource_tokens.png"  # Replace with your desired output file
 create_sprite_sheet(input_dir, output_sprite)

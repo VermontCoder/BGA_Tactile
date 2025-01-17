@@ -113,21 +113,25 @@
 .tile.redHome
 {
     background: url(tiles_small.png) 0 0 no-repeat;
+    border: 1px solid black;
 }
 
 .tile.yellowHome
 {
     background: url(tiles_small.png) calc(var(--tile-dim) * -1) 0 no-repeat;
+    border: 1px solid black;
 }
 
 .tile.greenHome
 {
     background: url(tiles_small.png) calc(var(--tile-dim) * -2) 0 no-repeat;
+    border: 1px solid black;
 }
 
 .tile.blueHome
 {
     background: url(tiles_small.png) calc(var(--tile-dim) * -3) 0 no-repeat;
+    border: 1px solid black;
 }
 
 .tile.red
@@ -170,11 +174,21 @@
 .tableauLabel {
     font-family: "DM Sans", serif;
     font-optical-sizing: auto;
-    font-weight: 500;
+    font-weight: 700;
     font-style: normal;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Add a subtle shadow */
+    color:white;
+    padding: 2px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 2px;
+    border: 1px solid black;
 }
 
-.red {color: red;}
+.tableauLabel.red {background-color: red;}
+.tableauLabel.yellow {background-color: yellow;}
+.tableauLabel.green {background-color: green;}
+.tableauLabel.blue {background-color: blue;}
 
 .cardTarget {
     height:var(--card-height);

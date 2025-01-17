@@ -36,22 +36,23 @@ def process_images(input_folder, output_folder):
             new_data = []
             for item in data:
                 # If pixel is black, make it transparent
-                if item[:3] == (0, 0, 0):
+                if item[:3] == (255, 255, 255):
                     new_data.append((0, 0, 0, 0))  # Transparent pixel
                 else:
                     new_data.append(item)
             img.putdata(new_data)
 
             # Crop the image
-            width, height = img.size
-            left = 15
-            top = 16
-            right = width - 16
-            bottom = height - 16
-            cropped_img = img.crop((left, top, right, bottom))
+            # width, height = img.size
+            # left = 15
+            # top = 16
+            # right = width - 16
+            # bottom = height - 16
+            # cropped_img = img.crop((left, top, right, bottom))
 
             # Save the processed image
-            cropped_img.save(output_path)
+            #cropped_img.save(output_path)
+            img.save(output_path)
             print(f"Processed and saved: {output_path}")
 
     print("All images processed!")
