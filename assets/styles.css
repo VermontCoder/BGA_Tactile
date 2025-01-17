@@ -7,15 +7,22 @@
 :root {
 
     --tile-dim: 75px;
+    --num-tiles-to-offset: 4; /* change to 8 for colorblind tiles */
+    --solid-tile-offset: calc(var(--tile-dim)*var(--num-tiles-to-offset) * -1); 
     --board-dim: calc(var(--tile-dim)*6 + (2px*6) + 20px);
     --card-width: 80px;
     --card-height: 120px;
     --store-width: calc((var(--card-width) + 5px ) * 3 + 20px);
+    --action-board-width: 128px;
+    --action-board-height: 183px;
+
+    /* z-index values */
+    --z-index-deck: 3 ;
   }
 
 
 .ttContainer {
-    background-color: #f0f0f0;
+    background-color: #0f0f0f;
 }
 
 /* Top container styles */
@@ -23,6 +30,7 @@
     display: flex;
     height: var(--board-dim);
     margin-bottom: 20px;
+   
 }
 
 /* Store styles */
@@ -32,17 +40,53 @@
     align-items: center;
     flex-direction: column;
     left: 20px;
-    width: var(--store-width)
+    width: var(--store-width);
     height: var(--board-dim);
     background-color: #d3d3d3;  
     border-radius: 4px;
+    margin-top: 10px;
 }
 
-.storeRow {
+/* Deck styles */
+.deck {
+    z-index: var(--z-index-deck);
+    height: var(--card-height);
+    width: var(--card-width);
+    background: url(card_back_small.png) 0 0;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    margin-top: 10px !important;
+}
+
+.deck::before,
+.deck::after {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: url(card_back_small.png) 0 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.deck::before {
+    top: -3px;
+    left: -3px;
+    z-index: calc(var(--z-index-deck) - 1);
+}
+
+.deck::after {
+    top: -6px;
+    left: -6px;
+    z-index: calc(var(--z-index-deck) - 2);
+}
+
+.cardRow {
     display: flex;
     justify-content: center;
+    align-items: center;
     flex-direction: row;
-    padding-top: 10px;
 }
 
 /* Board styles */
@@ -52,13 +96,10 @@
     width: var(--board-dim);
     height: var(--board-dim);
     background-color: #e0e0e0;
+    margin-top: 10px;
     padding: 10px;
     font-size: 0; /* remove space between inline-block elements */
-}
-
-.tile.red
-{
-    background-color: red;
+    border-radius:4px;
 }
 
 .tile {
@@ -69,7 +110,50 @@
     margin: 1px;
 }
 
+.tile.redHome
+{
+    background: url(tiles_small.png) 0 0 no-repeat;
+}
+
+.tile.yellowHome
+{
+    background: url(tiles_small.png) calc(var(--tile-dim) * -1) 0 no-repeat;
+}
+
+.tile.greenHome
+{
+    background: url(tiles_small.png) calc(var(--tile-dim) * -2) 0 no-repeat;
+}
+
+.tile.blueHome
+{
+    background: url(tiles_small.png) calc(var(--tile-dim) * -3) 0 no-repeat;
+}
+
+.tile.red
+{
+    background: url(tiles_small.png) var(--solid-tile-offset) 0 no-repeat;
+}
+
+.tile.yellow
+{
+    background: url(tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim))  no-repeat;
+}
+
+.tile.green
+{
+    background: url(tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim) * 2)  no-repeat;
+}
+
+.tile.blue
+{
+    background: url(tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim) * 3)  no-repeat;
+}
+
+
+
 .addSpace { margin: 5px; }
+
 /* Tableau styles */
 .tableauContainer {
     display: block;
@@ -78,7 +162,7 @@
 .tableau {
     margin: 10px;
     display: inline-block;
-    background-color: #c0c0c0;
+    background-color: #797878;
     padding: 10px;
     border-radius: 4px;
 }
@@ -91,9 +175,23 @@
 }
 
 .red {color: red;}
+
 .cardTarget {
     height:var(--card-height);
     width: var(--card-width);
+    border: 1px solid black;
+}
+
+.card {
+    height:var(--card-height);
+    width: var(--card-width);
     background: url(cards_small.png) 0 0;
-    
+    border-radius: 4px;
+}
+.actionBoard {
+    height:var(--action-board-height);
+    width: var(--action-board-width);
+    background: url(action_board.png) 0 0;
+    border-radius: 4px;
+    margin-bottom:5px;
 }

@@ -25,7 +25,7 @@ def pdf_to_png(pdf_path, output_folder):
     for page_num in range(total_pages):
         page = pdf_document[page_num]
         pix = page.get_pixmap()
-        output_file = os.path.join(output_folder, f"{page_num}.png")
+        output_file = os.path.join(output_folder, f"{page_num+8}.png")
         pix.save(output_file)
         print(f"Saved page {page_num + 1} as {output_file}")
 
@@ -34,6 +34,6 @@ def pdf_to_png(pdf_path, output_folder):
     print("Conversion completed!")
 
 # Example usage
-pdf_file = "Card Deck_top.pdf"  # Replace with the path to your PDF file
+pdf_file = "Board tiles_bottom.pdf"  # Replace with the path to your PDF file
 output_dir = "output_images"  # Replace with your desired output folder
 pdf_to_png(pdf_file, output_dir)
