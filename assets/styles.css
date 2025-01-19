@@ -15,6 +15,8 @@
     --store-width: calc((var(--card-width) + 5px ) * 3 + 20px);
     --action-board-width: 128px;
     --action-board-height: 183px;
+    --resource-dim: 25px;
+    --resource-dim-highlighted: 28px;
 
     /* z-index values */
     --z-index-deck: 3 ;
@@ -83,8 +85,9 @@
 }
 
 .cardRow {
+    width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     flex-direction: row;
 }
@@ -154,9 +157,75 @@
     background: url(tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim) * 3)  no-repeat;
 }
 
+/*resource styles*/
+
+.bank {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.resource {
+    width: var(--resource-dim);
+    height: var(--resource-dim);
+}
+
+.resource-highlighted {
+    width: var(--resource-dim-highlighted);
+    height: var(--resource-dim-highlighted);
+}
+
+.resource.red
+{
+    background: url(resource_tokens_small.png) 0 0 no-repeat;
+}
+
+.resource.yellow
+{
+    background: url(resource_tokens_small.png) calc(var(--resource-dim) * -1) 0 no-repeat;
+}
+
+.resource.green
+{
+    background: url(resource_tokens_small.png) calc(var(--resource-dim) * -2) 0 no-repeat;
+}
+
+.resource.blue
+{
+    background: url(resource_tokens_small.png) calc(var(--resource-dim) * -3) 0 no-repeat;
+}
+
+.resource-highlighted {
+    width: var(--resource-dim-highlighted);
+    height: var(--resource-dim-highlighted);
+}
+
+.resource-highlighted.red
+{
+    background: url(resource_tokens_highlighted_small.png) 0 0 no-repeat;
+}
+
+.resource-highlighted.yellow
+{
+    background: url(resource_tokens_highlighted_small.png) calc(var(--resource-dim-highlighted) * -1) 0 no-repeat;
+}
+
+.resource-highlighted.green
+{
+    background: url(resource_tokens_highlighted_small.png) calc(var(--resource-dim-highlighted) * -2) 0 no-repeat;
+}
+
+.resource-highlighted.blue
+{
+    background: url(resource_tokens_highlighted_small.png) calc(var(--resource-dim-highlighted) * -3) 0 no-repeat;
+}
+
 
 
 .addSpace { margin: 5px; }
+.addSpaceSmall { margin: 2px; }
 
 /* Tableau styles */
 .tableauContainer {
@@ -166,7 +235,7 @@
 .tableau {
     margin: 10px;
     display: inline-block;
-    background-color: #797878;
+    background-color: #d3d3d3;
     padding: 10px;
     border-radius: 4px;
 }
@@ -193,7 +262,6 @@
 .cardTarget {
     height:var(--card-height);
     width: var(--card-width);
-    border: 1px solid black;
 }
 
 .card {
