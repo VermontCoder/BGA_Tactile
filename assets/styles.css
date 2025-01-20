@@ -20,9 +20,11 @@
 
     /* z-index values */
     --z-index-deck: 3 ;
-  }
+}
 
-
+.addSpace { margin: 5px; }
+.addSpaceSmall { margin: 2px; }
+  
 .ttContainer {
     background-color: #0f0f0f;
 }
@@ -105,10 +107,35 @@
     border-radius:4px;
 }
 
+.playingPiece {
+    width: var(--tile-dim);
+    height: var(--tile-dim);
+    filter: drop-shadow(1px 4px 2px rgba(0,0,0,.6));
+}
+
+.playingPiece.red
+{
+    background: url(player_pieces.png) 0 0 no-repeat;
+}
+
+.playingPiece.yellow
+{
+    background: url(player_pieces.png) calc(var(--tile-dim) * -1) 0 no-repeat;
+}
+
+.playingPiece.green
+{
+    background: url(player_pieces.png) calc(var(--tile-dim) * -2) 0 no-repeat;
+}
+
+.playingPiece.blue
+{
+    background: url(player_pieces.png) calc(var(--tile-dim) * -3) 0 no-repeat;
+}
+
 .tile {
     width: var(--tile-dim);
     height: var(--tile-dim);
-    border: 1px solid #d3d3d3;
     display: inline-block;
     margin: 1px;
 }
@@ -157,7 +184,7 @@
     background: url(tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim) * 3)  no-repeat;
 }
 
-/*resource styles*/
+/* resource styles */
 
 .bank {
     display: flex;
@@ -170,6 +197,7 @@
 .resource {
     width: var(--resource-dim);
     height: var(--resource-dim);
+    filter: drop-shadow(1px 4px 2px rgba(0,0,0,.6));
 }
 
 .resource-highlighted {
@@ -222,14 +250,11 @@
     background: url(resource_tokens_highlighted_small.png) calc(var(--resource-dim-highlighted) * -3) 0 no-repeat;
 }
 
-
-
-.addSpace { margin: 5px; }
-.addSpaceSmall { margin: 2px; }
-
 /* Tableau styles */
+
 .tableauContainer {
     display: block;
+    margin-right:10px;
 }
 
 .tableau {
@@ -238,6 +263,12 @@
     background-color: #d3d3d3;
     padding: 10px;
     border-radius: 4px;
+    width: calc(var(--store-width) + var(--board-dim) + 12px);
+}
+
+.cardRow.tableauCardContainer {
+    align-items: left;
+    justify-content: left;
 }
 
 .tableauLabel {
@@ -269,11 +300,14 @@
     width: var(--card-width);
     background: url(cards_small.png) 0 0;
     border-radius: 4px;
+    filter: drop-shadow(1px 4px 2px rgba(0,0,0,.6))
 }
+
 .actionBoard {
     height:var(--action-board-height);
     width: var(--action-board-width);
     background: url(action_board.png) 0 0;
     border-radius: 4px;
     margin-bottom:5px;
+    filter: drop-shadow(1px 4px 2px rgba(0,0,0,.6));
 }
