@@ -43,15 +43,144 @@ function (dojo, declare) {
             
             "gamedatas" argument contains all datas retrieved by your "getAllDatas" PHP method.
         */
+
+        createBoard: function( gamedatas) {
+            console.log( "Creating Board" );
+
+            document.getElementsByTagName('head')[0].insertAdjacentHTML('beforeend', `<link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">`);
+            
+            document.getElementById('game_play_area').insertAdjacentHTML('beforeend', `
+        <DIV id="ttTopContainer" style="display: flex">
+            <DIV id="store" class="store">
+                <DIV id="deck" class="deck addSpace"></DIV>
+                <DIV id="storeRow1" class="cardRow">
+                    <DIV id="store_0" class="cardTarget addSpace">
+                        <DIV id="card_11" class="card"></DIV>
+                    </DIV>
+                    <DIV id="store_1" class="cardTarget addSpace">
+                        <DIV id="card_12" class="card"></DIV>
+                    </DIV>
+                    <DIV id="store_2" class="cardTarget addSpace">
+                        <DIV id="card_12" class="card"></DIV>
+                    </DIV>
+                </DIV>
+                <DIV id="storeRow2" class="cardRow">
+                    <DIV id="store_4" class="cardTarget addSpace">
+                        <DIV id="card_13" class="card"></DIV>
+                    </DIV>
+                    <DIV id="store_5" class="cardTarget addSpace">
+                        <DIV id="card_14" class="card"></DIV>
+                    </DIV>
+                    <DIV id="store_6" class="cardTarget addSpace">
+                        <DIV id="card_15" class="card"></DIV>
+                    </DIV>
+                </DIV>
+                <DIV id="resourceRow" class="cardRow" style="padding-left:5px; padding-right:5px;">
+                    <DIV id="redBank" class="bank">
+                        <DIV id="redResourceBank1" class="resource red"></DIV>
+                        <DIV id="redBankBottomRow" class="cardRow">
+                            <DIV id="redResourceBank2" class="resource red addSpaceSmall"></DIV>
+                            <DIV id="redResourceBank3" class="resource red addSpaceSmall"></DIV>
+                        </DIV>
+                    </DIV>
+                    <DIV id="blueBank" class="bank">
+                        <DIV id="blueResourceBank1" class="resource blue"></DIV>
+                        <DIV id="blueBankBottomRow" class="cardRow">
+                            <DIV id="blueResourceBank2" class="resource blue addSpaceSmall"></DIV>
+                            <DIV id="blueResourceBank3" class="resource blue addSpaceSmall"></DIV>
+                        </DIV>
+                    </DIV>
+                    <DIV id="greenBank" class="bank">
+                        <DIV id="greenResourceBank1" class="resource green"></DIV>
+                        <DIV id="greenBankBottomRow" class="cardRow">
+                            <DIV id="greenResourceBank2" class="resource green addSpaceSmall"></DIV>
+                            <DIV id="greenResourceBank3" class="resource green addSpaceSmall"></DIV>
+                        </DIV>
+                    </DIV>
+                    <DIV id="yellowBank" class="bank">
+                        <DIV id="yellowResourceBank1" class="resource yellow"></DIV>
+                        <DIV id="yellowBankBottomRow" class="cardRow">
+                            <DIV id="yellowResourceBank2" class="resource yellow addSpaceSmall"></DIV>
+                            <DIV id="yellowResourceBank3" class="resource yellow addSpaceSmall"></DIV>
+                        </DIV>
+                    </DIV>
+                </DIV>
+            </DIV>
+            <DIV id="board" class="board">
+                <DIV id="tile_0_0" class="tile greenHome">
+                    
+                </DIV>
+                <DIV id="tile_0_1" class="tile red">
+                    <DIV id="piece_264_0" class="playingPiece blue"></DIV>
+                </DIV>
+                <DIV id="tile_0_2" class="tile blue"></DIV>
+                <DIV id="tile_0_3" class="tile red"></DIV>
+                <DIV id="tile_0_4" class="tile red"></DIV>
+                <DIV id="tile_0_5" class="tile blueHome"></DIV>
+                <DIV id="tile_1_0" class="tile red"></DIV>
+                <DIV id="tile_1_1" class="tile red"></DIV>
+                <DIV id="tile_1_2" class="tile red"></DIV>
+                <DIV id="tile_1_3" class="tile red"></DIV>
+                <DIV id="tile_1_4" class="tile red"></DIV>
+                <DIV id="tile_1_5" class="tile red"></DIV>
+                <DIV id="tile_2_0" class="tile red"></DIV>
+                <DIV id="tile_2_1" class="tile red"></DIV>
+                <DIV id="tile_2_2" class="tile red"></DIV>
+                <DIV id="tile_2_3" class="tile red"></DIV>
+                <DIV id="tile_2_4" class="tile red"></DIV>
+                <DIV id="tile_2_5" class="tile red"></DIV>
+                <DIV id="tile_3_0" class="tile red"></DIV>
+                <DIV id="tile_3_1" class="tile red"></DIV>
+                <DIV id="tile_3_2" class="tile red"></DIV>
+                <DIV id="tile_3_3" class="tile red"></DIV>
+                <DIV id="tile_3_4" class="tile red"></DIV>
+                <DIV id="tile_3_5" class="tile red"></DIV>
+                <DIV id="tile_4_0" class="tile red"></DIV>
+                <DIV id="tile_4_1" class="tile red"></DIV>
+                <DIV id="tile_4_2" class="tile red"></DIV>
+                <DIV id="tile_4_3" class="tile red"></DIV>
+                <DIV id="tile_4_4" class="tile red"></DIV>
+                <DIV id="tile_4_5" class="tile red"></DIV>
+                <DIV id="tile_5_0" class="tile redHome"></DIV>
+                <DIV id="tile_5_1" class="tile red"></DIV>
+                <DIV id="tile_5_2" class="tile red"></DIV>
+                <DIV id="tile_5_3" class="tile red"></DIV>
+                <DIV id="tile_5_4" class="tile red"></DIV>
+                <DIV id="tile_5_5" class="tile yellowHome"></DIV>
+            </DIV>
+        </DIV>
+        <DIV id="tableauContainer" class="tableauContainer">
+            <DIV id="tableau_264" class = "tableau">
+                <SPAN id="tableauLabel_264" class="tableauLabel red">Player 1</SPAN>
+                <DIV id="tableauCardContainer_264" class="cardRow tableauCardContainer">   
+                    <DIV id="actionBoard_264" class="actionBoard">
+                        <DIV id="action_264_MOVE" class="actionBoardSelectionTarget" style="top:39px; left:16px;"></DIV>
+                        <DIV id="action_264_GAIN" class="actionBoardSelectionTarget" style="top:67px; left:16px;"></DIV>
+                    </DIV>
+                    <DIV id="cardTarget_264_0" class="cardTarget addSpace">
+                        <DIV id="card_10" class="card"></DIV>
+                    </DIV>
+                </DIV>
+            </DIV><BR>
+            <DIV id="tableau_265" class = "tableau">
+                <SPAN id="tableauLabel_265" class="tableauLabel">Player 2</SPAN>
+                <DIV id="tableauCardContainer_265" class="cardRow tableauCardContainer">
+                    <DIV id="actionBoard_265" class="actionBoard"></DIV>
+                    <DIV id="cardTarget_265_0" class="cardTarget addSpace">
+                        <DIV id="card_9" class="card"></DIV>
+                    </DIV>
+                </DIV>
+            </DIV>
+        </DIV>`);
+        },
         
         setup: function( gamedatas )
         {
             console.log( "Starting game setup" );
 
-            // Example to add a div on the game area
-            document.getElementById('game_play_area').insertAdjacentHTML('beforeend', `
-                <div id="player-tables"></div>
-            `);
+            this.createBoard(gamedatas);
             
             // Setting up player boards
             Object.values(gamedatas.players).forEach(player => {
@@ -61,12 +190,12 @@ function (dojo, declare) {
                 `);
 
                 // example of adding a div for each player
-                document.getElementById('player-tables').insertAdjacentHTML('beforeend', `
-                    <div id="player-table-${player.id}">
-                        <strong>${player.name}</strong>
-                        <div>Player zone content goes here</div>
-                    </div>
-                `);
+                // document.getElementById('player-tables').insertAdjacentHTML('beforeend', `
+                //     <div id="player-table-${player.id}">
+                //         <strong>${player.name}</strong>
+                //         <div>Player zone content goes here</div>
+                //     </div>
+                // `);
             });
             
             // TODO: Set up your game interface here, according to "gamedatas"

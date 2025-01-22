@@ -13,59 +13,332 @@
  *
  */
 
-/*
-    This is the CSS stylesheet of your game User Interface.
+ *,
+ *::before,
+ *::after {
+     box-sizing: border-box;
+ }
+ 
+ :root {
+ 
+     --tile-dim: 75px;
+     --num-tiles-to-offset: 4; /* change to 8 for colorblind tiles */
+     --solid-tile-offset: calc(var(--tile-dim)*var(--num-tiles-to-offset) * -1); 
+     --board-dim: calc(var(--tile-dim)*6 + (2px*6) + 20px);
+     --card-width: 80px;
+     --card-height: 120px;
+     --store-width: calc((var(--card-width) + 5px ) * 3 + 20px);
+     --action-board-width: 128px;
+     --action-board-height: 183px;
+     --action-board-selection-dim: 17px;
+     --resource-dim: 25px;
+     --resource-dim-highlighted: 28px;
+ 
+     /* z-index values */
+     --z-index-deck: 3 ;
+ }
+ 
+ .addSpace { margin: 5px; }
+ .addSpaceSmall { margin: 2px; }
+   
+ #play_area_container {
+     background-color: #0f0f0f;
+ }
+ 
+ /* Top container styles */
+ #ttTopContainer {
+     display: flex;
+     height: var(--board-dim);
+     margin-bottom: 20px;
     
-    Styles defined on this file will be applied to the HTML elements you define in your
-    HTML template (tactiledf_tactiledf.tpl), and to HTML elements you create dynamically
-    (in tactiledf.js).
-    
-    Usually, you are using CSS to:
-    
-    1°) define the overall layout of your game
-        (ex: place the board on the top left, place player's hand beside, place the deck on the right, ...).
-
-    2°) create your CSS-sprites:
-        All images of your games should be gathered into a small number of image files. Then, using
-        background-image and background-position CSS properties, you create HTML blocks that can 
-        display these images correctly (see example below).
-    
-    3°) ... anything else:
-        It is really easy to add and remove CSS classes dynamically from your Javascript with
-        dojo.addClass and dojo.removeClass. It is also easy to check if an element has a class
-        (dojo.hasClass) or to get all elements with a specific class (dojo.query). This is why,
-        very often, using CSS classes for the logic of your user interface allow you to do complex
-        thing easily.
-        
-        
-     Note: on the production platform, this file will be compressed and comments will be removed.
-           Consequently, don't hesitate to put as many comments as necessary.
-*/
-
-
-/* Note: you must not use any @import directive */
-
-
-/********* You can start writing your CSS below this line: **********/
-
-
-/*
-    Example of CSS sprites (a black token and a white token, 20x20px each, embedded in the same "tokens.png" 40x20px image):
-
-    .white_token {
-        background-image: url('img/tokens.png');
-        background-position: 0px 0px;
-    }
-    .black_token {
-        background-image: url('img/tokens.png');
-        background-position: -20px 0px;
-    }
-    .token {
-        width: 20px;
-        height: 20px;
-        background-repeat: none;
-    }
-*/
+ }
+ 
+ /* Store styles */
+ .store {
+     position: absolute;
+     display: flex;
+     align-items: center;
+     flex-direction: column;
+     left: 20px;
+     width: var(--store-width);
+     height: var(--board-dim);
+     background-color: #d3d3d3;  
+     border-radius: 4px;
+     margin-top: 10px;
+ }
+ 
+ /* Deck styles */
+ .deck {
+     z-index: var(--z-index-deck);
+     height: var(--card-height);
+     width: var(--card-width);
+     background: url(img/card_back_small.png) 0 0;
+     position: relative;
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+     border-radius: 4px;
+     margin-top: 10px !important;
+ }
+ 
+ .deck::before,
+ .deck::after {
+     content: '';
+     position: absolute;
+     height: 100%;
+     width: 100%;
+     background: url(img/card_back_small.png) 0 0;
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+     border-radius: 4px;
+ }
+ 
+ .deck::before {
+     top: -3px;
+     left: -3px;
+     z-index: calc(var(--z-index-deck) - 1);
+ }
+ 
+ .deck::after {
+     top: -6px;
+     left: -6px;
+     z-index: calc(var(--z-index-deck) - 2);
+ }
+ 
+ .cardRow {
+     width: 100%;
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     flex-direction: row;
+ }
+ 
+ /* Board styles */
+ .board {
+     position: absolute;
+     left: calc(var(--store-width) + 30px);
+     width: var(--board-dim);
+     height: var(--board-dim);
+     background-color: #e0e0e0;
+     margin-top: 10px;
+     padding: 10px;
+     font-size: 0; /* remove space between inline-block elements */
+     border-radius:4px;
+ }
+ 
+ .playingPiece {
+     width: var(--tile-dim);
+     height: var(--tile-dim);
+     filter: drop-shadow(1px 4px 2px rgba(0,0,0,.6));
+ }
+ 
+ .playingPiece.red
+ {
+     background: url(img/player_pieces.png) 0 0 no-repeat;
+ }
+ 
+ .playingPiece.yellow
+ {
+     background: url(img/player_pieces.png) calc(var(--tile-dim) * -1) 0 no-repeat;
+ }
+ 
+ .playingPiece.green
+ {
+     background: url(img/player_pieces.png) calc(var(--tile-dim) * -2) 0 no-repeat;
+ }
+ 
+ .playingPiece.blue
+ {
+     background: url(img/player_pieces.png) calc(var(--tile-dim) * -3) 0 no-repeat;
+ }
+ 
+ .tile {
+     width: var(--tile-dim);
+     height: var(--tile-dim);
+     display: inline-block;
+     margin: 1px;
+ }
+ 
+ .tile.redHome
+ {
+     background: url(img/tiles_small.png) 0 0 no-repeat;
+     border: 1px solid black;
+ }
+ 
+ .tile.yellowHome
+ {
+     background: url(img/tiles_small.png) calc(var(--tile-dim) * -1) 0 no-repeat;
+     border: 1px solid black;
+ }
+ 
+ .tile.greenHome
+ {
+     background: url(img/tiles_small.png) calc(var(--tile-dim) * -2) 0 no-repeat;
+     border: 1px solid black;
+ }
+ 
+ .tile.blueHome
+ {
+     background: url(img/tiles_small.png) calc(var(--tile-dim) * -3) 0 no-repeat;
+     border: 1px solid black;
+ }
+ 
+ .tile.red
+ {
+     background: url(img/tiles_small.png) var(--solid-tile-offset) 0 no-repeat;
+ }
+ 
+ .tile.yellow
+ {
+     background: url(img/tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim))  no-repeat;
+ }
+ 
+ .tile.green
+ {
+     background: url(img/tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim) * 2)  no-repeat;
+ }
+ 
+ .tile.blue
+ {
+     background: url(img/tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim) * 3)  no-repeat;
+ }
+ 
+ /* resource styles */
+ 
+ .bank {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     flex-direction: column;
+     margin-top: 10px;
+ }
+ 
+ .resource {
+     width: var(--resource-dim);
+     height: var(--resource-dim);
+     filter: drop-shadow(1px 4px 2px rgba(0,0,0,.6));
+ }
+ 
+ .resource-highlighted {
+     width: var(--resource-dim-highlighted);
+     height: var(--resource-dim-highlighted);
+ }
+ 
+ .resource.red
+ {
+     background: url(img/resource_tokens_small.png) 0 0 no-repeat;
+ }
+ 
+ .resource.yellow
+ {
+     background: url(img/resource_tokens_small.png) calc(var(--resource-dim) * -1) 0 no-repeat;
+ }
+ 
+ .resource.green
+ {
+     background: url(img/resource_tokens_small.png) calc(var(--resource-dim) * -2) 0 no-repeat;
+ }
+ 
+ .resource.blue
+ {
+     background: url(img/resource_tokens_small.png) calc(var(--resource-dim) * -3) 0 no-repeat;
+ }
+ 
+ .resource-highlighted {
+     width: var(--resource-dim-highlighted);
+     height: var(--resource-dim-highlighted);
+ }
+ 
+ .resource-highlighted.red
+ {
+     background: url(img/resource_tokens_highlighted_small.png) 0 0 no-repeat;
+ }
+ 
+ .resource-highlighted.yellow
+ {
+     background: url(img/resource_tokens_highlighted_small.png) calc(var(--resource-dim-highlighted) * -1) 0 no-repeat;
+ }
+ 
+ .resource-highlighted.green
+ {
+     background: url(img/resource_tokens_highlighted_small.png) calc(var(--resource-dim-highlighted) * -2) 0 no-repeat;
+ }
+ 
+ .resource-highlighted.blue
+ {
+     background: url(img/resource_tokens_highlighted_small.png) calc(var(--resource-dim-highlighted) * -3) 0 no-repeat;
+ }
+ 
+ /* Tableau styles */
+ 
+ .tableauContainer {
+     display: block;
+     margin-right:10px;
+ }
+ 
+ .tableau {
+     margin: 10px;
+     display: inline-block;
+     background-color: #d3d3d3;
+     padding: 10px;
+     border-radius: 4px;
+     width: calc(var(--store-width) + var(--board-dim) + 12px);
+ }
+ 
+ .cardRow.tableauCardContainer {
+     align-items: left;
+     justify-content: left;
+ }
+ 
+ .tableauLabel {
+     font-family: "DM Sans", serif;
+     font-optical-sizing: auto;
+     font-weight: 700;
+     font-style: normal;
+     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Add a subtle shadow */
+     color:white;
+     padding-left: 10px;
+     padding-right: 10px;
+     padding-top: 2px;
+     padding-bottom: 2px;
+     border-radius: 4px;
+     display: inline-block;
+     margin-bottom: 2px;
+     border: 1px solid black;
+ }
+ 
+ .tableauLabel.red {background-color: red;}
+ .tableauLabel.yellow {background-color: yellow;}
+ .tableauLabel.green {background-color: green;}
+ .tableauLabel.blue {background-color: blue;}
+ 
+ .cardTarget {
+     height:var(--card-height);
+     width: var(--card-width);
+ }
+ 
+ .card {
+     height:var(--card-height);
+     width: var(--card-width);
+     background: url(img/cards_small.png) 0 0;
+     border-radius: 4px;
+     filter: drop-shadow(1px 4px 2px rgba(0,0,0,.6))
+ }
+ 
+ .actionBoard {
+     position: relative;
+     height:var(--action-board-height);
+     width: var(--action-board-width);
+     background: url(img/action_board.png) 0 0;
+     border-radius: 4px;
+     margin-bottom:5px;
+     filter: drop-shadow(1px 4px 2px rgba(0,0,0,.6));
+ }
+ 
+ .actionBoardSelectionTarget {
+     position: absolute;
+     height:var(--action-board-selection-dim);
+     width: var(--action-board-selection-dim);
+     background-color: red;
+ }
+ 
 
 
 
