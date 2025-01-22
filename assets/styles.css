@@ -15,6 +15,7 @@
     --store-width: calc((var(--card-width) + 5px ) * 3 + 20px);
     --action-board-width: 128px;
     --action-board-height: 183px;
+    --action-board-selection-dim: 17px;
     --resource-dim: 25px;
     --resource-dim-highlighted: 28px;
 
@@ -278,7 +279,10 @@
     font-style: normal;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Add a subtle shadow */
     color:white;
-    padding: 2px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
     border-radius: 4px;
     display: inline-block;
     margin-bottom: 2px;
@@ -304,10 +308,18 @@
 }
 
 .actionBoard {
+    position: relative;
     height:var(--action-board-height);
     width: var(--action-board-width);
     background: url(action_board.png) 0 0;
     border-radius: 4px;
     margin-bottom:5px;
     filter: drop-shadow(1px 4px 2px rgba(0,0,0,.6));
+}
+
+.actionBoardSelectionTarget {
+    position: absolute;
+    height:var(--action-board-selection-dim);
+    width: var(--action-board-selection-dim);
+    background-color: red;
 }
