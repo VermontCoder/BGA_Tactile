@@ -186,7 +186,17 @@ function (dojo, declare) {
             Object.values(gamedatas.players).forEach(player => {
                 // example of setting up players boards
                 this.getPlayerPanelElement(player.id).insertAdjacentHTML('beforeend', `
-                    <div id="player-counter-${player.id}">A player counter</div>
+                    <DIV id="resourceContainer_${player.id}" class="resourceContainer">
+                       
+                        <DIV id="redResourceLabel_${player.id}" class="red resource addSpaceSmall"></DIV>
+                        <DIV id="redResource_${player.id}" class="resourceAmount"> : 0 </DIV>
+                        <DIV id="blueResourceLabel_${player.id}" class="blue resource addSpaceSmall"></DIV>
+                        <DIV id="blueResource_${player.id}" class="resourceAmount"> : 0 </DIV>
+                        <DIV id="greenResourceLabel_${player.id}" class="green resource addSpaceSmall"></DIV>
+                        <DIV id="greenResource_${player.id}" class="resourceAmount"> : 0 </DIV>
+                        <DIV id="yellowResourceLabel_${player.id}" class="yellow resource addSpaceSmall"></DIV>
+                        <DIV id="yellowResource_${player.id}" class="resourceAmount"> : 0 </DIV>
+                    </DIV>
                 `);
 
                 // example of adding a div for each player

@@ -33,3 +33,24 @@
 -- Example 2: add a custom field to the standard "player" table
 -- ALTER TABLE `player` ADD `player_my_custom_field` INT UNSIGNED NOT NULL DEFAULT '0';
 
+ALTER TABLE `player` ADD `red_resource_qty` INT UNSIGNED NOT NULL DEFAULT 0;
+ALTER TABLE `player` ADD `blue_resource_qty` INT UNSIGNED NOT NULL DEFAULT 0;
+ALTER TABLE `player` ADD `green_resource_qty` INT UNSIGNED NOT NULL DEFAULT 0;
+ALTER TABLE `player` ADD `yellow_resource_qty` INT UNSIGNED NOT NULL DEFAULT 0;
+
+
+-- card_type: color followed by type (e.g. "blue_push", "red_gain", etc.)
+-- card_type_arg: Describes number of resources required to buy the card:
+-- red: 1000's, blue: 100's, green: 10's, yellow: 1's. (e.g. 1001 = 1 red, 1 yellow)
+
+-- card_location: "deck", "hand", "discard", "store"
+
+CREATE TABLE IF NOT EXISTS `card` (
+  `card_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `card_type` varchar(16) NOT NULL, 
+  `card_type_arg` int(11) NOT NULL,
+  `card_location` varchar(16) NOT NULL,
+  `card_location_arg` int(11) NOT NULL,
+  PRIMARY KEY (`card_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+

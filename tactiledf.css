@@ -266,6 +266,24 @@
      background: url(img/resource_tokens_highlighted_small.png) calc(var(--resource-dim-highlighted) * -3) 0 no-repeat;
  }
  
+ .resourceContainer {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     flex-direction: row;
+     padding: 3px;
+ }
+
+ .resourceAmount {
+    font-family: "DM Sans", serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Add a subtle shadow */
+    margin-right: 5px;
+    margin-top: 5px;
+ }
+
  /* Tableau styles */
  
  .tableauContainer {

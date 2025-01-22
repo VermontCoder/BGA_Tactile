@@ -265,7 +265,7 @@ class Game extends \Table
         // Init global values with their initial values.
 
         // Dummy content.
-        $this->setGameStateInitialValue("my_first_global_variable", 0);
+        //$this->setGameStateInitialValue("my_first_global_variable", 0);
 
         // Init game statistics.
         //
