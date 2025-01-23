@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace Bga\Games\tactiledf;
 
 require_once(APP_GAMEMODULE_PATH . "module/table/table.game.php");
+require_once("ttBoard.php");
 
 class Game extends \Table
 {
@@ -236,6 +237,9 @@ class Game extends \Table
         // number of colors defined here must correspond to the maximum number of players allowed for the gams.
         $gameinfos = $this->getGameinfos();
         $default_colors = $gameinfos['player_colors'];
+
+        $board = new ttBoard($this);
+        $board->buildBoard();
 
         foreach ($players as $player_id => $player) {
             // Now you can access both $player_id and $player array

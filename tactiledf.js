@@ -110,7 +110,6 @@ function (dojo, declare) {
             </DIV>
             <DIV id="board" class="board">
                 <DIV id="tile_0_0" class="tile greenHome">
-                    
                 </DIV>
                 <DIV id="tile_0_1" class="tile red">
                     <DIV id="piece_264_0" class="playingPiece blue"></DIV>
@@ -151,29 +150,36 @@ function (dojo, declare) {
                 <DIV id="tile_5_5" class="tile yellowHome"></DIV>
             </DIV>
         </DIV>
-        <DIV id="tableauContainer" class="tableauContainer">
-            <DIV id="tableau_264" class = "tableau">
-                <SPAN id="tableauLabel_264" class="tableauLabel red">Player 1</SPAN>
-                <DIV id="tableauCardContainer_264" class="cardRow tableauCardContainer">   
-                    <DIV id="actionBoard_264" class="actionBoard">
-                        <DIV id="action_264_MOVE" class="actionBoardSelectionTarget" style="top:39px; left:16px;"></DIV>
-                        <DIV id="action_264_GAIN" class="actionBoardSelectionTarget" style="top:67px; left:16px;"></DIV>
-                    </DIV>
-                    <DIV id="cardTarget_264_0" class="cardTarget addSpace">
-                        <DIV id="card_10" class="card"></DIV>
-                    </DIV>
-                </DIV>
-            </DIV><BR>
-            <DIV id="tableau_265" class = "tableau">
-                <SPAN id="tableauLabel_265" class="tableauLabel">Player 2</SPAN>
-                <DIV id="tableauCardContainer_265" class="cardRow tableauCardContainer">
-                    <DIV id="actionBoard_265" class="actionBoard"></DIV>
-                    <DIV id="cardTarget_265_0" class="cardTarget addSpace">
+        <DIV id="tableauContainer" class="tableauContainer"></DIV>`);
+        },
+
+        createPlayerTableau: function(player_id) {
+            document.getElementById('tableauContainer').insertAdjacentHTML('beforeend', `
+            <DIV id="tableau_${player_id}" class = "tableau">
+                <SPAN id="tableauLabel_${player_id}" class="tableauLabel">Player ${player_id}</SPAN>
+                <DIV id="tableauCardContainer_${player_id}" class="cardRow tableauCardContainer">
+                    <DIV id="actionBoard_${player_id}" class="actionBoard"></DIV>
+                    <DIV id="cardTarget_${player_id}_0" class="cardTarget addSpace">
                         <DIV id="card_9" class="card"></DIV>
                     </DIV>
                 </DIV>
-            </DIV>
-        </DIV>`);
+            </DIV>`);
+        },
+
+        createPlayerPanel: function(player_id) 
+        {
+            this.getPlayerPanelElement(player_id).insertAdjacentHTML('beforeend', `
+                <DIV id="resourceContainer_${player_id}" class="resourceContainer">   
+                    <DIV id="redResourceLabel_${player_id}" class="red resource addSpaceSmall"></DIV>
+                    <DIV id="redResource_${player_id}" class="resourceAmount"> : 0 </DIV>
+                    <DIV id="blueResourceLabel_${player_id}" class="blue resource addSpaceSmall"></DIV>
+                    <DIV id="blueResource_${player_id}" class="resourceAmount"> : 0 </DIV>
+                    <DIV id="greenResourceLabel_${player_id}" class="green resource addSpaceSmall"></DIV>
+                    <DIV id="greenResource_${player_id}" class="resourceAmount"> : 0 </DIV>
+                    <DIV id="yellowResourceLabel_${player_id}" class="yellow resource addSpaceSmall"></DIV>
+                    <DIV id="yellowResource_${player_id}" class="resourceAmount"> : 0 </DIV>
+                </DIV>
+            `);
         },
         
         setup: function( gamedatas )
@@ -184,28 +190,8 @@ function (dojo, declare) {
             
             // Setting up player boards
             Object.values(gamedatas.players).forEach(player => {
-                // example of setting up players boards
-                this.getPlayerPanelElement(player.id).insertAdjacentHTML('beforeend', `
-                    <DIV id="resourceContainer_${player.id}" class="resourceContainer">
-                       
-                        <DIV id="redResourceLabel_${player.id}" class="red resource addSpaceSmall"></DIV>
-                        <DIV id="redResource_${player.id}" class="resourceAmount"> : 0 </DIV>
-                        <DIV id="blueResourceLabel_${player.id}" class="blue resource addSpaceSmall"></DIV>
-                        <DIV id="blueResource_${player.id}" class="resourceAmount"> : 0 </DIV>
-                        <DIV id="greenResourceLabel_${player.id}" class="green resource addSpaceSmall"></DIV>
-                        <DIV id="greenResource_${player.id}" class="resourceAmount"> : 0 </DIV>
-                        <DIV id="yellowResourceLabel_${player.id}" class="yellow resource addSpaceSmall"></DIV>
-                        <DIV id="yellowResource_${player.id}" class="resourceAmount"> : 0 </DIV>
-                    </DIV>
-                `);
-
-                // example of adding a div for each player
-                // document.getElementById('player-tables').insertAdjacentHTML('beforeend', `
-                //     <div id="player-table-${player.id}">
-                //         <strong>${player.name}</strong>
-                //         <div>Player zone content goes here</div>
-                //     </div>
-                // `);
+               this.createPlayerPanel(player.id);
+               this.createPlayerTableau(player.id);
             });
             
             // TODO: Set up your game interface here, according to "gamedatas"
