@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bga\Games\tactiledf;
 
 require_once("ttDebug.php");
+require_once("ttUtility.php");
 
 class ttBoard
 {
@@ -12,7 +13,8 @@ class ttBoard
     public int $BOARD_HEIGHT = 6;
     public array $tiles = array();
 
-    public array $colors = ['red','yellow','green','blue'];
+    const COLORS = ['red','yellow','green','blue'];
+    const PLAYERHOMES = ['0_0' => 'green', '5_0' => 'blue', '0_5' => 'red', '5_5' => 'yellow'];
 
     public function __construct(Game $game)
     {
@@ -21,13 +23,26 @@ class ttBoard
 
     public function createBoard()
     {
-        for ($i = 0; $i < $this->BOARD_WIDTH; $i++)
+        for ($i = 0; $i < $this->BOARD_HEIGHT; $i++)
         {
-            for ($j = 0; $j < $this->BOARD_HEIGHT; $j++)
+            for ($j = 0; $j < $this->BOARD_WIDTH; $j++)
             {
-                $this->tiles[strval($i).'_'.strval($j)] = array(
-                    'color' => $this->colors[random_int(0,3)],
+                $tile_id = ttUtility::xy2id($j,$i);
+                if(isset(self::PLAYERHOMES[$tile_id]))
+                {
+                    $this->tiles[$tile_id] = array(
+                        'tile_id' => $tile_id,
+                        'color' => self::PLAYERHOMES[$tile_id],
                     );
+                }
+                else
+                {
+                    $this->tiles[$tile_id] = array(
+                        'tile_id' => $tile_id,
+                        'color' => self::COLORS[random_int(0,3)],
+                    );
+                }
+
             }
         }
 

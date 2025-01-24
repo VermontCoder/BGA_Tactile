@@ -168,7 +168,7 @@ function (dojo, declare) {
         createPlayerTableau: function(player) {
             document.getElementById('tableauContainer').insertAdjacentHTML('beforeend', `
             <DIV id="tableau_${player.player_id}" class = "tableau">
-                <SPAN id="tableauLabel_${player.player_id}" class="tableauLabel $">Player ${player.player_id}</SPAN>
+                <SPAN id="tableauLabel_${player.player_id}" class="tableauLabel ${player.color_name}">${player.player_name}</SPAN>
                 <DIV id="tableauCardContainer_${player.player_id}" class="cardRow tableauCardContainer">
                     <DIV id="actionBoard_${player.player_id}" class="actionBoard"></DIV>
                     <DIV id="cardTarget_${player.player_id}_0" class="cardTarget addSpace">
@@ -183,13 +183,13 @@ function (dojo, declare) {
             this.getPlayerPanelElement(player.player_id).insertAdjacentHTML('beforeend', `
                 <DIV id="resourceContainer_${player.player_id}" class="resourceContainer">   
                     <DIV id="redResourceLabel_${player.player_id}" class="red resource addSpaceSmall"></DIV>
-                    <DIV id="redResource_${player.player_id}" class="resourceAmount"> : 0 </DIV>
+                    <DIV id="redResource_${player.player_id}" class="resourceAmount"> : ${player.red_resource_qty} </DIV>
                     <DIV id="blueResourceLabel_${player.player_id}" class="blue resource addSpaceSmall"></DIV>
-                    <DIV id="blueResource_${player.player_id}" class="resourceAmount"> : 0 </DIV>
+                    <DIV id="blueResource_${player.player_id}" class="resourceAmount"> : ${player.blue_resource_qty} </DIV>
                     <DIV id="greenResourceLabel_${player.player_id}" class="green resource addSpaceSmall"></DIV>
-                    <DIV id="greenResource_${player.player_id}" class="resourceAmount"> : 0 </DIV>
+                    <DIV id="greenResource_${player.player_id}" class="resourceAmount"> : ${player.green_resource_qty} </DIV>
                     <DIV id="yellowResourceLabel_${player.player_id}" class="yellow resource addSpaceSmall"></DIV>
-                    <DIV id="yellowResource_${player.player_id}" class="resourceAmount"> : 0 </DIV>
+                    <DIV id="yellowResource_${player.player_id}" class="resourceAmount"> : ${player.yellow_resource_qty} </DIV>
                 </DIV>
             `);
         },
