@@ -19,7 +19,7 @@ class ttBoard
         $this->game = $game;
     }
 
-    public function buildBoard()
+    public function createBoard()
     {
         for ($i = 0; $i < $this->BOARD_WIDTH; $i++)
         {

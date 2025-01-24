@@ -241,32 +241,35 @@ class Game extends \Table
         $default_colors = $gameinfos['player_colors'];
 
         $board = new ttBoard($this);
-        $board->buildBoard();
+        $board->createBoard();
 
-        foreach ($players as $player_id => $player) {
-            // Now you can access both $player_id and $player array
-            $query_values[] = vsprintf("('%s', '%s', '%s', '%s', '%s')", [
-                $player_id,
-                array_shift($default_colors),
-                $player["player_canal"],
-                addslashes($player["player_name"]),
-                addslashes($player["player_avatar"]),
-            ]);
-        }
+        $ttPlayers = new ttPlayers($this);
+        $ttPlayers->createPlayers($players);
+
+        // foreach ($players as $player_id => $player) {
+        //     // Now you can access both $player_id and $player array
+        //     $query_values[] = vsprintf("('%s', '%s', '%s', '%s', '%s')", [
+        //         $player_id,
+        //         array_shift($default_colors),
+        //         $player["player_canal"],
+        //         addslashes($player["player_name"]),
+        //         addslashes($player["player_avatar"]),
+        //     ]);
+        // }
 
         // Create players based on generic information.
         //
         // NOTE: You can add extra field on player table in the database (see dbmodel.sql) and initialize
         // additional fields directly here.
-        static::DbQuery(
-            sprintf(
-                "INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES %s",
-                implode(",", $query_values)
-            )
-        );
+        // static::DbQuery(
+        //     sprintf(
+        //         "INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES %s",
+        //         implode(",", $query_values)
+        //     )
+        // );
 
-        $this->reattributeColorsBasedOnPreferences($players, $gameinfos["player_colors"]);
-        $this->reloadPlayersBasicInfos();
+        // $this->reattributeColorsBasedOnPreferences($players, $gameinfos["player_colors"]);
+        // $this->reloadPlayersBasicInfos();
 
         // Init global values with their initial values.
 

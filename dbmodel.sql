@@ -54,13 +54,21 @@ CREATE TABLE IF NOT EXISTS `card` (
   PRIMARY KEY (`card_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
--- of the form 'x_y' , like 2_3 or 0_0
--- one of 'red', 'blue', 'green', 'yellow'
--- of the form "player_id_piece_id" of the player who has a piece on this tile
+-- tile_id: of the form 'x_y' , like 2_3 or 0_0
+-- color: one of 'red', 'blue', 'green', 'yellow'
 
 CREATE TABLE IF NOT EXISTS `board` (
   `tile_id` varchar(3) NOT NULL, 
   `color` varchar(10) DEFAULT NULL, 
   PRIMARY KEY (`tile_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
+
+-- piece_id:  "player_id_piece_id"
+CREATE TABLE IF NOT EXISTS `pieces` (
+  `piece_id` varchar(16) NOT NULL,
+  `piece_owner` int(11) unsigned NOT NULL, 
+  `finished` tinyint(1) NOT NULL,
+  `location` varchar(3) NOT NULL,
+  PRIMARY KEY (`piece_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
