@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Bga\Games\tactiledf;
 
+require_once("ttDebug.php");
+
 class ttBoard
 {
     public int $BOARD_WIDTH = 6;
@@ -47,6 +49,20 @@ class ttBoard
                 implode(",", $query_values)
             )
         );
+    }
+
+    public function deserializeBoardFromDb()
+    {
+        $sql = "SELECT tile_id, color FROM board";
+        $board = $this->game->getCollectionFromDb($sql);
+        (new ttDebug($this->game))->showVariable('board', $board);
+        foreach ($board as $tile_id => $tile) {
+            // $tile_id = $board['tile_id'];
+            $this->tiles[$tile_id] = array(
+                'tile_id' => $tile_id,
+                'color' => $tile['color'],
+            );
+        }
     }
 
 }

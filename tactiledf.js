@@ -107,50 +107,62 @@ function (dojo, declare) {
                         </DIV>
                     </DIV>
                 </DIV>
-            </DIV>
-            <DIV id="board" class="board">
-                <DIV id="tile_0_0" class="tile greenHome">
-                </DIV>
-                <DIV id="tile_0_1" class="tile red">
-                    <DIV id="piece_264_0" class="playingPiece blue"></DIV>
-                </DIV>
-                <DIV id="tile_0_2" class="tile blue"></DIV>
-                <DIV id="tile_0_3" class="tile red"></DIV>
-                <DIV id="tile_0_4" class="tile red"></DIV>
-                <DIV id="tile_0_5" class="tile blueHome"></DIV>
-                <DIV id="tile_1_0" class="tile red"></DIV>
-                <DIV id="tile_1_1" class="tile red"></DIV>
-                <DIV id="tile_1_2" class="tile red"></DIV>
-                <DIV id="tile_1_3" class="tile red"></DIV>
-                <DIV id="tile_1_4" class="tile red"></DIV>
-                <DIV id="tile_1_5" class="tile red"></DIV>
-                <DIV id="tile_2_0" class="tile red"></DIV>
-                <DIV id="tile_2_1" class="tile red"></DIV>
-                <DIV id="tile_2_2" class="tile red"></DIV>
-                <DIV id="tile_2_3" class="tile red"></DIV>
-                <DIV id="tile_2_4" class="tile red"></DIV>
-                <DIV id="tile_2_5" class="tile red"></DIV>
-                <DIV id="tile_3_0" class="tile red"></DIV>
-                <DIV id="tile_3_1" class="tile red"></DIV>
-                <DIV id="tile_3_2" class="tile red"></DIV>
-                <DIV id="tile_3_3" class="tile red"></DIV>
-                <DIV id="tile_3_4" class="tile red"></DIV>
-                <DIV id="tile_3_5" class="tile red"></DIV>
-                <DIV id="tile_4_0" class="tile red"></DIV>
-                <DIV id="tile_4_1" class="tile red"></DIV>
-                <DIV id="tile_4_2" class="tile red"></DIV>
-                <DIV id="tile_4_3" class="tile red"></DIV>
-                <DIV id="tile_4_4" class="tile red"></DIV>
-                <DIV id="tile_4_5" class="tile red"></DIV>
-                <DIV id="tile_5_0" class="tile redHome"></DIV>
-                <DIV id="tile_5_1" class="tile red"></DIV>
-                <DIV id="tile_5_2" class="tile red"></DIV>
-                <DIV id="tile_5_3" class="tile red"></DIV>
-                <DIV id="tile_5_4" class="tile red"></DIV>
-                <DIV id="tile_5_5" class="tile yellowHome"></DIV>
-            </DIV>
-        </DIV>
-        <DIV id="tableauContainer" class="tableauContainer"></DIV>`);
+            </DIV> 
+            <DIV id="board" class="board"></DIV>
+        </DIV>`);
+                //debugger;
+            Object.values(gamedatas.board).forEach(tile => {
+                const tileId = 'tile_' + tile.tile_id;
+                const tileClass = 'tile ' +tile.color;
+
+                document.getElementById('board').insertAdjacentHTML('beforeend', '<DIV id="'+tileId+'" class="'+tileClass+'"></DIV>');
+            });
+
+                
+        
+            //     <DIV id="tile_0_0" class="tile greenHome">
+            //     </DIV>
+            //     <DIV id="tile_0_1" class="tile red">
+            //         <DIV id="piece_264_0" class="playingPiece blue"></DIV>
+            //     </DIV>
+            //     <DIV id="tile_0_2" class="tile blue"></DIV>
+            //     <DIV id="tile_0_3" class="tile red"></DIV>
+            //     <DIV id="tile_0_4" class="tile red"></DIV>
+            //     <DIV id="tile_0_5" class="tile blueHome"></DIV>
+            //     <DIV id="tile_1_0" class="tile red"></DIV>
+            //     <DIV id="tile_1_1" class="tile red"></DIV>
+            //     <DIV id="tile_1_2" class="tile red"></DIV>
+            //     <DIV id="tile_1_3" class="tile red"></DIV>
+            //     <DIV id="tile_1_4" class="tile red"></DIV>
+            //     <DIV id="tile_1_5" class="tile red"></DIV>
+            //     <DIV id="tile_2_0" class="tile red"></DIV>
+            //     <DIV id="tile_2_1" class="tile red"></DIV>
+            //     <DIV id="tile_2_2" class="tile red"></DIV>
+            //     <DIV id="tile_2_3" class="tile red"></DIV>
+            //     <DIV id="tile_2_4" class="tile red"></DIV>
+            //     <DIV id="tile_2_5" class="tile red"></DIV>
+            //     <DIV id="tile_3_0" class="tile red"></DIV>
+            //     <DIV id="tile_3_1" class="tile red"></DIV>
+            //     <DIV id="tile_3_2" class="tile red"></DIV>
+            //     <DIV id="tile_3_3" class="tile red"></DIV>
+            //     <DIV id="tile_3_4" class="tile red"></DIV>
+            //     <DIV id="tile_3_5" class="tile red"></DIV>
+            //     <DIV id="tile_4_0" class="tile red"></DIV>
+            //     <DIV id="tile_4_1" class="tile red"></DIV>
+            //     <DIV id="tile_4_2" class="tile red"></DIV>
+            //     <DIV id="tile_4_3" class="tile red"></DIV>
+            //     <DIV id="tile_4_4" class="tile red"></DIV>
+            //     <DIV id="tile_4_5" class="tile red"></DIV>
+            //     <DIV id="tile_5_0" class="tile redHome"></DIV>
+            //     <DIV id="tile_5_1" class="tile red"></DIV>
+            //     <DIV id="tile_5_2" class="tile red"></DIV>
+            //     <DIV id="tile_5_3" class="tile red"></DIV>
+            //     <DIV id="tile_5_4" class="tile red"></DIV>
+            //     <DIV id="tile_5_5" class="tile yellowHome"></DIV>
+            // </DIV>
+        
+        document.getElementById('game_play_area').insertAdjacentHTML('beforeend',
+             `<DIV id="tableauContainer" class="tableauContainer"></DIV>`);
         },
 
         createPlayerTableau: function(player_id) {
@@ -185,6 +197,8 @@ function (dojo, declare) {
         setup: function( gamedatas )
         {
             console.log( "Starting game setup" );
+            // Setup game notifications to handle (see "setupNotifications" method below)
+            this.setupNotifications();
 
             this.createBoard(gamedatas);
             
@@ -197,8 +211,7 @@ function (dojo, declare) {
             // TODO: Set up your game interface here, according to "gamedatas"
             
  
-            // Setup game notifications to handle (see "setupNotifications" method below)
-            this.setupNotifications();
+            
 
             console.log( "Ending game setup" );
         },
@@ -339,6 +352,7 @@ function (dojo, declare) {
         setupNotifications: function()
         {
             console.log( 'notifications subscriptions setup' );
+            dojo.subscribe( 'showVariable', this, "notif_showVariable" );
             
             // TODO: here, associate your game notifications with local methods
             
@@ -352,10 +366,17 @@ function (dojo, declare) {
             // this.notifqueue.setSynchronous( 'cardPlayed', 3000 );
             // 
         },  
+
+        notif_showVariable: function( notif )
+        {
+            console.log( notif );
+        }
         
         // TODO: from this point and below, you can write your game notifications handling methods
         
         /*
+
+       
         Example:
         
         notif_cardPlayed: function( notif )
