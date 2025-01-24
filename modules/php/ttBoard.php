@@ -63,6 +63,8 @@ class ttBoard
                 'color' => $tile['color'],
             );
         }
+
+        return $this->tiles;
     }
 
 }

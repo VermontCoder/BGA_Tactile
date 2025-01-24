@@ -165,31 +165,31 @@ function (dojo, declare) {
              `<DIV id="tableauContainer" class="tableauContainer"></DIV>`);
         },
 
-        createPlayerTableau: function(player_id) {
+        createPlayerTableau: function(player) {
             document.getElementById('tableauContainer').insertAdjacentHTML('beforeend', `
-            <DIV id="tableau_${player_id}" class = "tableau">
-                <SPAN id="tableauLabel_${player_id}" class="tableauLabel">Player ${player_id}</SPAN>
-                <DIV id="tableauCardContainer_${player_id}" class="cardRow tableauCardContainer">
-                    <DIV id="actionBoard_${player_id}" class="actionBoard"></DIV>
-                    <DIV id="cardTarget_${player_id}_0" class="cardTarget addSpace">
+            <DIV id="tableau_${player.player_id}" class = "tableau">
+                <SPAN id="tableauLabel_${player.player_id}" class="tableauLabel $">Player ${player.player_id}</SPAN>
+                <DIV id="tableauCardContainer_${player.player_id}" class="cardRow tableauCardContainer">
+                    <DIV id="actionBoard_${player.player_id}" class="actionBoard"></DIV>
+                    <DIV id="cardTarget_${player.player_id}_0" class="cardTarget addSpace">
                         <DIV id="card_9" class="card"></DIV>
                     </DIV>
                 </DIV>
             </DIV>`);
         },
 
-        createPlayerPanel: function(player_id) 
+        createPlayerPanel: function(player) 
         {
-            this.getPlayerPanelElement(player_id).insertAdjacentHTML('beforeend', `
-                <DIV id="resourceContainer_${player_id}" class="resourceContainer">   
-                    <DIV id="redResourceLabel_${player_id}" class="red resource addSpaceSmall"></DIV>
-                    <DIV id="redResource_${player_id}" class="resourceAmount"> : 0 </DIV>
-                    <DIV id="blueResourceLabel_${player_id}" class="blue resource addSpaceSmall"></DIV>
-                    <DIV id="blueResource_${player_id}" class="resourceAmount"> : 0 </DIV>
-                    <DIV id="greenResourceLabel_${player_id}" class="green resource addSpaceSmall"></DIV>
-                    <DIV id="greenResource_${player_id}" class="resourceAmount"> : 0 </DIV>
-                    <DIV id="yellowResourceLabel_${player_id}" class="yellow resource addSpaceSmall"></DIV>
-                    <DIV id="yellowResource_${player_id}" class="resourceAmount"> : 0 </DIV>
+            this.getPlayerPanelElement(player.player_id).insertAdjacentHTML('beforeend', `
+                <DIV id="resourceContainer_${player.player_id}" class="resourceContainer">   
+                    <DIV id="redResourceLabel_${player.player_id}" class="red resource addSpaceSmall"></DIV>
+                    <DIV id="redResource_${player.player_id}" class="resourceAmount"> : 0 </DIV>
+                    <DIV id="blueResourceLabel_${player.player_id}" class="blue resource addSpaceSmall"></DIV>
+                    <DIV id="blueResource_${player.player_id}" class="resourceAmount"> : 0 </DIV>
+                    <DIV id="greenResourceLabel_${player.player_id}" class="green resource addSpaceSmall"></DIV>
+                    <DIV id="greenResource_${player.player_id}" class="resourceAmount"> : 0 </DIV>
+                    <DIV id="yellowResourceLabel_${player.player_id}" class="yellow resource addSpaceSmall"></DIV>
+                    <DIV id="yellowResource_${player.player_id}" class="resourceAmount"> : 0 </DIV>
                 </DIV>
             `);
         },
@@ -204,8 +204,8 @@ function (dojo, declare) {
             
             // Setting up player boards
             Object.values(gamedatas.players).forEach(player => {
-               this.createPlayerPanel(player.id);
-               this.createPlayerTableau(player.id);
+               this.createPlayerPanel(player);
+               this.createPlayerTableau(player);
             });
             
             // TODO: Set up your game interface here, according to "gamedatas"

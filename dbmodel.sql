@@ -33,6 +33,7 @@
 -- Example 2: add a custom field to the standard "player" table
 -- ALTER TABLE `player` ADD `player_my_custom_field` INT UNSIGNED NOT NULL DEFAULT '0';
 
+ALTER TABLE `player` ADD `color_name` VARCHAR(15) NOT NULL;
 ALTER TABLE `player` ADD `red_resource_qty` INT UNSIGNED NOT NULL DEFAULT 0;
 ALTER TABLE `player` ADD `blue_resource_qty` INT UNSIGNED NOT NULL DEFAULT 0;
 ALTER TABLE `player` ADD `green_resource_qty` INT UNSIGNED NOT NULL DEFAULT 0;

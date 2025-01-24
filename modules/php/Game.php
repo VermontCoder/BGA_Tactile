@@ -203,20 +203,21 @@ class Game extends \Table
     {
         $result = [];
 
-        // WARNING: We must only return information visible by the current player.
-        $current_player_id = (int) $this->getCurrentPlayerId();
-
-        // Get information about players.
-        // NOTE: you can retrieve some extra field you added for "player" table in `dbmodel.sql` if you need it.
-        $result["players"] = $this->getCollectionFromDb(
-            "SELECT `player_id` `id`, `player_score` `score` FROM `player`"
-        );
-
+        //$current_player_id = (int) $this->getCurrentPlayerId();
         // TODO: Gather all information about current game situation (visible by player $current_player_id).
+
+        $players = new ttPlayers($this);
+        $result["players"] = $players->deserializePlayersFromDb();
+
         $board = new ttBoard($this);
-        $board->deserializeBoardFromDb();
-        $result['board'] = $board->tiles;
+        $result['board'] = $board->deserializeBoardFromDb();
+        
         return $result;
+    }
+
+    protected function getGameState(): array
+    {
+        $state = parent::getGameState();
     }
 
     /**
@@ -245,31 +246,6 @@ class Game extends \Table
 
         $ttPlayers = new ttPlayers($this);
         $ttPlayers->createPlayers($players);
-
-        // foreach ($players as $player_id => $player) {
-        //     // Now you can access both $player_id and $player array
-        //     $query_values[] = vsprintf("('%s', '%s', '%s', '%s', '%s')", [
-        //         $player_id,
-        //         array_shift($default_colors),
-        //         $player["player_canal"],
-        //         addslashes($player["player_name"]),
-        //         addslashes($player["player_avatar"]),
-        //     ]);
-        // }
-
-        // Create players based on generic information.
-        //
-        // NOTE: You can add extra field on player table in the database (see dbmodel.sql) and initialize
-        // additional fields directly here.
-        // static::DbQuery(
-        //     sprintf(
-        //         "INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES %s",
-        //         implode(",", $query_values)
-        //     )
-        // );
-
-        // $this->reattributeColorsBasedOnPreferences($players, $gameinfos["player_colors"]);
-        // $this->reloadPlayersBasicInfos();
 
         // Init global values with their initial values.
 
