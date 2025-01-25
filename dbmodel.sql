@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `card` (
   `card_location` varchar(16) DEFAULT NULL,
   `card_location_arg` int(11) DEFAULT NULL,
   PRIMARY KEY (`card_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
 
 -- tile_id: of the form 'x_y' , like 2_3 or 0_0
 -- color: one of 'red', 'blue', 'green', 'yellow'

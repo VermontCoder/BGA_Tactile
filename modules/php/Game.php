@@ -46,6 +46,9 @@ class Game extends \Table
             "my_second_game_variant" => 101,
         ]);        
 
+        $this->cards = $this->getNew( "module.common.deck" );
+        $this->cards->init( "card" );
+
         self::$CARD_TYPES = [
             1 => [
                 "card_name" => clienttranslate('Troll'), // ...
@@ -242,8 +245,7 @@ class Game extends \Table
      */
     protected function setupNewGame($players, $options = [])
     {
-        // Set the colors of the players with HTML color code. The default below is red/green/blue/orange/brown. The
-        // number of colors defined here must correspond to the maximum number of players allowed for the gams.
+        // Set the colors of the players with HTML color code. 
         $gameinfos = $this->getGameinfos();
         $default_colors = $gameinfos['player_colors'];
 
@@ -255,6 +257,11 @@ class Game extends \Table
 
         $ttPieces = new ttPieces($this);
         $ttPieces->createPieces($ttPlayers->players);
+
+        $cards = array();
+        $cards[] = array( 'type' => null, 'type_arg'=> null, 'card_location' => 'deck', 'nbr' => 120);
+
+        $this->cards->createCards( $cards, 'deck' );
 
         // Init global values with their initial values.
 
