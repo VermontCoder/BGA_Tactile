@@ -70,6 +70,9 @@ class ttPlayers
             );
         }
 
+        //reload the players table
+        $this->players = $this->deserializePlayersFromDb();
+
     }
 
     public function deserializePlayersFromDb()

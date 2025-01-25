@@ -211,6 +211,9 @@ class Game extends \Table
 
         $board = new ttBoard($this);
         $result['board'] = $board->deserializeBoardFromDb();
+
+        $pieces = new ttPieces($this);
+        $result['pieces'] = $pieces->deserializePiecesFromDb();
         
         $result['playerHomes'] = $board::PLAYERHOMES;
         return $result;
@@ -249,6 +252,9 @@ class Game extends \Table
 
         $ttPlayers = new ttPlayers($this);
         $ttPlayers->createPlayers($players);
+
+        $ttPieces = new ttPieces($this);
+        $ttPieces->createPieces($ttPlayers->players);
 
         // Init global values with their initial values.
 
