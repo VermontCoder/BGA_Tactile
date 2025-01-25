@@ -27,7 +27,7 @@ class ttBoard
         {
             for ($j = 0; $j < $this->BOARD_WIDTH; $j++)
             {
-                $tile_id = ttUtility::xy2id($j,$i);
+                $tile_id = ttUtility::xy2id($i,$j);
                 if(isset(self::PLAYERHOMES[$tile_id]))
                 {
                     $this->tiles[$tile_id] = array(
@@ -71,6 +71,7 @@ class ttBoard
         $sql = "SELECT tile_id, color FROM board";
         $board = $this->game->getCollectionFromDb($sql);
         (new ttDebug($this->game))->showVariable('board', $board);
+
         foreach ($board as $tile_id => $tile) {
             // $tile_id = $board['tile_id'];
             $this->tiles[$tile_id] = array(

@@ -212,7 +212,10 @@ class Game extends \Table
         $board = new ttBoard($this);
         $result['board'] = $board->deserializeBoardFromDb();
         
+        $result['playerHomes'] = $board::PLAYERHOMES;
         return $result;
+
+
     }
 
     protected function getGameState(): array

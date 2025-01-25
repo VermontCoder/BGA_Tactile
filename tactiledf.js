@@ -111,9 +111,14 @@ function (dojo, declare) {
             <DIV id="board" class="board"></DIV>
         </DIV>`);
                 //debugger;
-            Object.values(gamedatas.board).forEach(tile => {
+            tiles = Object.values(gamedatas.board);
+            
+            // Sort tiles by tile_id, y coord followed by x coord
+            tiles.sort((a, b) => (a.tile_id.substring(2,3) + '_' + a.tile_id.substring(0,1)) > (b.tile_id.substring(2,3) + '_' + b.tile_id.substring(0,1)) ? 1 : -1);
+            
+            Object.values(tiles).forEach(tile => {
                 const tileId = 'tile_' + tile.tile_id;
-                const tileClass = 'tile ' +tile.color;
+                const tileClass = 'tile ' +tile.color + (gamedatas.playerHomes[tile.tile_id] ? 'Home' : '');
 
                 document.getElementById('board').insertAdjacentHTML('beforeend', '<DIV id="'+tileId+'" class="'+tileClass+'"></DIV>');
             });
