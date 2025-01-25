@@ -20,6 +20,9 @@ namespace Bga\Games\tactiledf;
 
 require_once(APP_GAMEMODULE_PATH . "module/table/table.game.php");
 require_once("ttBoard.php");
+require_once("ttPlayers.php");
+require_once("ttPieces.php");
+require_once("ttCards.php");
 
 class Game extends \Table
 {
@@ -45,9 +48,6 @@ class Game extends \Table
             "my_first_game_variant" => 100,
             "my_second_game_variant" => 101,
         ]);        
-
-        $this->cards = $this->getNew( "module.common.deck" );
-        $this->cards->init( "card" );
 
         self::$CARD_TYPES = [
             1 => [
@@ -258,10 +258,8 @@ class Game extends \Table
         $ttPieces = new ttPieces($this);
         $ttPieces->createPieces($ttPlayers->players);
 
-        $cards = array();
-        $cards[] = array( 'type' => null, 'type_arg'=> null, 'card_location' => 'deck', 'nbr' => 120);
-
-        $this->cards->createCards( $cards, 'deck' );
+        $ttCards = new ttCards($this);
+        $ttCards->createCards();
 
         // Init global values with their initial values.
 
