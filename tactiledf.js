@@ -58,7 +58,14 @@ function (dojo, declare) {
             <DIV id="ttTopContainer" style="display: flex">
                 <DIV id="store" class="store">
                     <DIV id="deck" class="deck addSpace"></DIV>
-                    <DIV id="storeRow1" class="cardRow">
+                </DIV>
+            </DIV>`);
+
+            count =0;
+            
+            // Object.values(gamedatas.store).forEach(card => {
+            document.getElementById('store').insertAdjacentHTML('beforeend', 
+                    `<DIV id="storeRow1" class="cardRow">
                         <DIV id="store_0" class="cardTarget addSpace">
                             <DIV id="card_11" class="card"></DIV>
                         </DIV>
@@ -109,10 +116,13 @@ function (dojo, declare) {
                                 <DIV id="yellowResourceBank3" class="resource yellow addSpaceSmall"></DIV>
                             </DIV>
                         </DIV>
-                    </DIV>
-                </DIV> 
-                <DIV id="board" class="board"></DIV>
-            </DIV>`);
+                    </DIV>`);
+                
+                
+                document.getElementById('ttTopContainer').insertAdjacentHTML('beforeend', 
+                    `<DIV id="board" class="board"></DIV>`);
+
+                    debugger;
         },
             
         createBoard: function( gamedatas) {

@@ -210,7 +210,12 @@ class Game extends \Table
         $result['pieces'] = $pieces->deserializePiecesFromDb();
         
         $result['playerHomes'] = $board::PLAYERHOMES;
+        $result['store'] = $this->cards->getCardsInLocation('store');
+        
+        
         return $result;
+
+
 
 
     }

@@ -40,11 +40,12 @@ ALTER TABLE `player` ADD `green_resource_qty` INT UNSIGNED NOT NULL DEFAULT 0;
 ALTER TABLE `player` ADD `yellow_resource_qty` INT UNSIGNED NOT NULL DEFAULT 0;
 
 
--- card_type: one of "innactive", "active", "exhausted" or NULL if in deck.
--- card_type_arg: Not used.
+-- card_type: color_type_resourceColor1_resourceColor2
+-- card_type_arg: 0 - innactive, 1 - active, 2 - exhausted
 
 -- card_location: "deck", "hand", "discard", "store"
 -- card_location_arg: player_id if in hand, null otherwise.
+-- card_id corresponds to offset into card sprite sheet.
 
 CREATE TABLE IF NOT EXISTS `card` (
   `card_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
