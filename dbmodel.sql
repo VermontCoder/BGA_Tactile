@@ -48,7 +48,7 @@ ALTER TABLE `player` ADD `yellow_resource_qty` INT UNSIGNED NOT NULL DEFAULT 0;
 
 CREATE TABLE IF NOT EXISTS `card` (
   `card_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `card_type` varchar(16) DEFAULT NULL, 
+  `card_type` varchar(30) DEFAULT NULL, 
   `card_type_arg` int(11) DEFAULT NULL,
   `card_location` varchar(16) DEFAULT NULL,
   `card_location_arg` int(11) DEFAULT NULL,

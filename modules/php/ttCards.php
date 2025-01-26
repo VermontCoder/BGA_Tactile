@@ -3,46 +3,45 @@ declare(strict_types=1);
 
 namespace Bga\Games\tactiledf;
 
-require_once("ttDebug.php");
-require_once("ttUtility.php");
-
 class ttCards
 {
     public array $cards = array();
-
-    const CARDDATA = [0 => ['color' => 'red', 'type' => 'move', 'cost' => ['R','R']],
-                        1=> ['color' => 'red', 'type' => 'move', 'cost' => ['R','Y']],
-                        2=> ['color' => 'red', 'type' => 'move', 'cost' => ['R','G']],
-                        3=> ['color' => 'red', 'type' => 'move', 'cost' => ['R','B']]]; 
+    
+    const CARDTYPES = ['move', 'push', 'gain'];
+    const COLORS = ['red','yellow','green','blue'];
+    public static array $CARDDATA = array(); 
 
     public function __construct(Game $game)
     {
         $this->game = $game;
-
-        $this->cards = $this->game->getNew( "module.common.deck" );
-        $this->cards->init( "card" );
-        $this->cards->autoreshuffle = true;
     }
 
     public function createCards()
     {
         $cards = array();
-        $cards[] = array( 'type' => null, 'type_arg'=> null, 'card_location' => 'deck', 'nbr' => 120);
 
-        $this->cards->createCards( $cards, 'deck' );
+        foreach(ttCards::CARDTYPES as $cardType)
+        {
+            foreach(ttCards::COLORS as $color)
+            {
+                for($i=0; $i <= 3; $i++)
+                {
+                    for($j=$i; $j <= 3; $j++)
+                    {
+                        $type = $color.'_'.$cardType.'_'.ttCards::COLORS[$i].'_'.ttCards::COLORS[$j];
+                        $cards[] = array( 'type' => $type, 'type_arg'=> 0, 'card_location' => 'deck', 'nbr' => 1);
+                    }
+                }
+            }
+        }
 
-        //card object doesn't take nulls for type and type_arg, so do that here. Also start ids at zero.
+        $this->game->cards->createCards( $cards, 'deck' );
 
-        $this->game::DbQuery("UPDATE card SET card_type = null, card_type_arg = null, card_id = card_id - 1");
-    }
+        //card_id needs to correspond to the image offset to display the card.
+        //The order of the cards is stored in card_location_arg.
+        //We need to overwrite card_id to match the image offset.
 
-    private function combineData (array $card) : array
-    {
-
-    }
-
-    private function combineDatas (array $cards) : array
-    {
-       
+        $this->game::DbQuery("UPDATE card SET card_id=card_location_arg+500");
+        $this->game::DbQuery("UPDATE card SET card_id=card_id-501");
     }
 }

@@ -19,10 +19,6 @@ declare(strict_types=1);
 namespace Bga\Games\tactiledf;
 
 require_once(APP_GAMEMODULE_PATH . "module/table/table.game.php");
-require_once("ttBoard.php");
-require_once("ttPlayers.php");
-require_once("ttPieces.php");
-require_once("ttCards.php");
 
 class Game extends \Table
 {
@@ -49,15 +45,10 @@ class Game extends \Table
             "my_second_game_variant" => 101,
         ]);        
 
-        self::$CARD_TYPES = [
-            1 => [
-                "card_name" => clienttranslate('Troll'), // ...
-            ],
-            2 => [
-                "card_name" => clienttranslate('Goblin'), // ...
-            ],
-            // ...
-        ];
+        //deck object is initialized here, but all operations on it are handled in ttCards.php
+        $this->cards = $this->getNew( "module.common.deck" );
+        $this->cards->init( "card" );
+        $this->cards->autoreshuffle = true;
     }
 
     /**
@@ -260,6 +251,10 @@ class Game extends \Table
 
         $ttCards = new ttCards($this);
         $ttCards->createCards();
+
+        $this->cards->shuffle('deck');
+
+        $this->cards->pickCardsForLocation( 6, 'deck', 'store');
 
         // Init global values with their initial values.
 

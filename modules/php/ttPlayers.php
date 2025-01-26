@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Bga\Games\tactiledf;
 
-require_once("ttDebug.php");
-
 class ttPlayers
 {
     public array $players = array();
