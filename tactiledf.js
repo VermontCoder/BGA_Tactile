@@ -189,8 +189,14 @@ function (dojo, declare) {
             Object.values(gamedatas.players).forEach(player => {
                 this.createPlayerPanel(player);
                 this.createPlayerTableau(player);
-               
             });
+
+            //move the current player's tableau to the top
+            let currentPlayerTableau = document.querySelector('#tableau_'+this.player_id);
+            let tableauContainer = document.querySelector('#tableauContainer');
+
+            // Move stuff
+            tableauContainer.prepend(currentPlayerTableau);
             
             console.log( "Ending game setup" );
         },
