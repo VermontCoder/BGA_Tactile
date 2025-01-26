@@ -62,32 +62,25 @@ function (dojo, declare) {
             </DIV>`);
 
             count =0;
+            rowCount = 0;
+            Object.values(gamedatas.store).forEach(card => 
+                {
+                    if (count % 3 == 0) 
+                    {
+                        document.getElementById('store').insertAdjacentHTML('beforeend', 
+                        `<DIV id="storeRow${rowCount}" class="cardRow"></DIV>`);
+                        rowCount++;
+                    }
+                
+                    document.getElementById(`storeRow${rowCount-1}`).insertAdjacentHTML('beforeend',
+                                `<DIV id="store_${count}" class="cardTarget addSpace">
+                                    <DIV id="card_${card.id}" class="card" style="background-position-x: ${-1 * 80 * card.id}px;"></DIV>
+                                </DIV>`);
+                    count++;
+                });
             
-            // Object.values(gamedatas.store).forEach(card => {
             document.getElementById('store').insertAdjacentHTML('beforeend', 
-                    `<DIV id="storeRow1" class="cardRow">
-                        <DIV id="store_0" class="cardTarget addSpace">
-                            <DIV id="card_11" class="card"></DIV>
-                        </DIV>
-                        <DIV id="store_1" class="cardTarget addSpace">
-                            <DIV id="card_12" class="card"></DIV>
-                        </DIV>
-                        <DIV id="store_2" class="cardTarget addSpace">
-                            <DIV id="card_12" class="card"></DIV>
-                        </DIV>
-                    </DIV>
-                    <DIV id="storeRow2" class="cardRow">
-                        <DIV id="store_4" class="cardTarget addSpace">
-                            <DIV id="card_13" class="card"></DIV>
-                        </DIV>
-                        <DIV id="store_5" class="cardTarget addSpace">
-                            <DIV id="card_14" class="card"></DIV>
-                        </DIV>
-                        <DIV id="store_6" class="cardTarget addSpace">
-                            <DIV id="card_15" class="card"></DIV>
-                        </DIV>
-                    </DIV>
-                    <DIV id="resourceRow" class="cardRow" style="padding-left:5px; padding-right:5px;">
+                    `<DIV id="resourceRow" class="cardRow" style="padding-left:5px; padding-right:5px;">
                         <DIV id="redBank" class="bank">
                             <DIV id="redResourceBank1" class="resource red"></DIV>
                             <DIV id="redBankBottomRow" class="cardRow">
@@ -121,8 +114,6 @@ function (dojo, declare) {
                 
                 document.getElementById('ttTopContainer').insertAdjacentHTML('beforeend', 
                     `<DIV id="board" class="board"></DIV>`);
-
-                    debugger;
         },
             
         createBoard: function( gamedatas) {
