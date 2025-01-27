@@ -211,6 +211,8 @@ class Game extends \Table
         
         $result['playerHomes'] = $board::PLAYERHOMES;
         $result['store'] = $this->cards->getCardsInLocation('store');
+
+        $result['hands'] = $this->cards->getCardsInLocation('hand');
         
         
         return $result;
@@ -260,6 +262,9 @@ class Game extends \Table
         $this->cards->shuffle('deck');
 
         $this->cards->pickCardsForLocation( 6, 'deck', 'store');
+
+        //test data
+        $this->cards->pickCardsForLocation( 2, 'deck', 'hand', 2383264);
 
         // Init global values with their initial values.
 

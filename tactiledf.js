@@ -18,12 +18,15 @@
 define([
     "dojo","dojo/_base/declare",
     "ebg/core/gamegui",
-    "ebg/counter"
+    "ebg/counter",
+    g_gamethemeurl + "modules/js/ttUtility.js",
 ],
 function (dojo, declare) {
     return declare("bgagame.tactiledf", ebg.core.gamegui, {
         constructor: function(){
             console.log('tactiledf constructor');
+
+            this.ttUtility = new bgagame.ttUtility();
               
             // Here, you can init the global variables of your user interface
             // Example:
@@ -74,7 +77,7 @@ function (dojo, declare) {
                 
                     document.getElementById(`storeRow${rowCount-1}`).insertAdjacentHTML('beforeend',
                                 `<DIV id="store_${count}" class="cardTarget addSpace">
-                                    <DIV id="card_${card.id}" class="card" style="background-position-x: ${-1 * 80 * card.id}px;"></DIV>
+                                    <DIV id="card_${card.id}" class="card" style="background-position-x: calc(-1 * var(--card-width) * ${card.id})px;"></DIV>
                                 </DIV>`);
                     count++;
                 });
@@ -149,9 +152,6 @@ function (dojo, declare) {
                 <SPAN id="tableauLabel_${player.player_id}" class="tableauLabel ${player.color_name}">${player.player_name}</SPAN>
                 <DIV id="tableauCardContainer_${player.player_id}" class="cardRow tableauCardContainer">
                     <DIV id="actionBoard_${player.player_id}" class="actionBoard"></DIV>
-                    <DIV id="cardTarget_${player.player_id}_0" class="cardTarget addSpace">
-                        <DIV id="card_9" class="card"></DIV>
-                    </DIV>
                 </DIV>
             </DIV>`);
         },
@@ -171,11 +171,27 @@ function (dojo, declare) {
                 </DIV>
             `);
         },
+
+        createPlayerHand: function(player, hand) 
+        {
+            //if player has no cards, return
+            if (Object.keys(hand).length == 0) { return; }
+
+            count =0;
+            Object.values(hand).forEach(card => {
+                document.getElementById('tableauCardContainer_' + player.player_id).insertAdjacentHTML('beforeend', `
+                <DIV id="cardTarget_${player.player_id}_${count}" class="cardTarget addSpace">
+                    <DIV id="card_${card.id}" class="card" style="background-position-x: ${-80 * card.id}px;"></DIV>
+                </DIV>`)});
+                count++;
+        },
         
         setup: function( gamedatas )
         {
             console.log( "Starting game setup" );
-            // Setup game notifications to handle (see "setupNotifications" method below)
+            
+
+            // (see "setupNotifications" method below)
             this.setupNotifications();
 
             this.createHeader();
@@ -186,11 +202,16 @@ function (dojo, declare) {
                 this.createPiece(gamedatas.players[piece.piece_owner], piece);
             });
             
+
             Object.values(gamedatas.players).forEach(player => {
                 this.createPlayerPanel(player);
                 this.createPlayerTableau(player);
-            });
 
+                playerHand = this.ttUtility.pickByNestedProperty(gamedatas.hands, 'location_arg', player.player_id);
+                
+                this.createPlayerHand(player, playerHand);
+            });
+            
             //move the current player's tableau to the top
             let currentPlayerTableau = document.querySelector('#tableau_'+this.player_id);
             let tableauContainer = document.querySelector('#tableauContainer');
