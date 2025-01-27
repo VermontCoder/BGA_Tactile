@@ -77,7 +77,7 @@ function (dojo, declare) {
                 
                     document.getElementById(`storeRow${rowCount-1}`).insertAdjacentHTML('beforeend',
                                 `<DIV id="store_${count}" class="cardTarget addSpace">
-                                    <DIV id="card_${card.id}" class="card" style="background-position-x: calc(-1 * var(--card-width) * ${card.id})px;"></DIV>
+                                    <DIV id="card_${card.id}" class="card" style="background-position-x: ${-80 * card.id}px;"></DIV>
                                 </DIV>`);
                     count++;
                 });
