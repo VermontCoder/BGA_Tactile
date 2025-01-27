@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Bga\Games\tactiledf;
+namespace Bga\Games\tactile;
 
 class ttCards
 {

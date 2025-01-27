@@ -1,6 +1,6 @@
 <?php
 
-namespace Bga\Games\tactiledf;
+namespace Bga\Games\tactile;
 
 class ttDebug
 {

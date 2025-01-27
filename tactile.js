@@ -1,15 +1,15 @@
 /**
  *------
  * BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
- * tactiledf implementation : © <Your name here> <Your email address here>
+ * tactile implementation : © <Your name here> <Your email address here>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  *
- * tactiledf.js
+ * tactile.js
  *
- * tactiledf user interface script
+ * tactile user interface script
  * 
  * In this file, you are describing the logic of your user interface, in Javascript language.
  *
@@ -22,9 +22,9 @@ define([
     g_gamethemeurl + "modules/js/ttUtility.js",
 ],
 function (dojo, declare) {
-    return declare("bgagame.tactiledf", ebg.core.gamegui, {
+    return declare("bgagame.tactile", ebg.core.gamegui, {
         constructor: function(){
-            console.log('tactiledf constructor');
+            console.log('tactile constructor');
 
             this.ttUtility = new bgagame.ttUtility();
               
@@ -352,7 +352,7 @@ function (dojo, declare) {
             In this method, you associate each of your game notifications with your local method to handle it.
             
             Note: game notification names correspond to "notifyAllPlayers" and "notifyPlayer" calls in
-                  your tactiledf.game.php file.
+                  your tactile.game.php file.
         
         */
         setupNotifications: function()
