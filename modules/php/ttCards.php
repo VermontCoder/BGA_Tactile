@@ -9,7 +9,7 @@ class ttCards
     
     const CARDTYPES = ['move', 'push', 'gain'];
     const COLORS = ['red','yellow','green','blue'];
-    public static array $CARDDATA = array();
+    const CARDSTATUS = ['innactive' => 0, 'active' => 1, 'exhausted'=> 2]; //index into type_arg
 
     public function __construct(Game $game)
     {

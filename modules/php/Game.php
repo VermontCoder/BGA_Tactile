@@ -20,6 +20,9 @@ namespace Bga\Games\tactile;
 
 require_once(APP_GAMEMODULE_PATH . "module/table/table.game.php");
 
+const FIRST_ACTION_CARD_ACTION ='firstActionCardAction'; //records first action card action performed by player
+const SECOND_ACTION_CARD_ACTION ='secondActionCardAction'; //records second action card action performed by player
+
 class Game extends \Table
 {
     private static array $CARD_TYPES;
@@ -38,12 +41,8 @@ class Game extends \Table
     {
         parent::__construct();
 
-        $this->initGameStateLabels([
-            "my_first_global_variable" => 10,
-            "my_second_global_variable" => 11,
-            "my_first_game_variant" => 100,
-            "my_second_game_variant" => 101,
-        ]);        
+        $this->globals->set(FIRST_ACTION_CARD_ACTION, null);        
+        $this->globals->set(SECOND_ACTION_CARD_ACTION, null);
 
         //deck object is initialized here, but all operations on it are handled in ttCards.php
         $this->cards = $this->getNew( "module.common.deck" );
@@ -110,13 +109,11 @@ class Game extends \Table
      * @return array
      * @see ./states.inc.php
      */
-    public function argPlayerTurn(): array
+    public function argSelectAction(): array
     {
         // Get some values from the current game situation from the database.
 
-        return [
-            "playableCardsIds" => [1, 2],
-        ];
+        return this.getAllDatas();
     }
 
     /**
@@ -150,6 +147,10 @@ class Game extends \Table
         
         $this->activeNextPlayer();
 
+        //clear previous player's action card actions.
+        $this->globals->set(FIRST_ACTION_CARD_ACTION, null);        
+        $this->globals->set(SECOND_ACTION_CARD_ACTION, null);
+    
         // Go to another gamestate
         // Here, we would detect if the game is over, and in this case use "endGame" transition instead 
         $this->gamestate->nextState("nextPlayer");
@@ -217,9 +218,6 @@ class Game extends \Table
         
         return $result;
 
-
-
-
     }
 
     protected function getGameState(): array
@@ -264,7 +262,7 @@ class Game extends \Table
         $this->cards->pickCardsForLocation( 6, 'deck', 'store');
 
         //test data
-        $this->cards->pickCardsForLocation( 2, 'deck', 'hand', 2383264);
+        $this->cards->pickCardsForLocation( 12, 'deck', 'hand', 2383264);
 
         // Init global values with their initial values.
 

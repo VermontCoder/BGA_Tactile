@@ -45,8 +45,7 @@ define([
             return {
                 color: cardData[0],
                 action: cardData[1],
-                resource0: cardData[2],
-                resource1: cardData[3]
+                resources: [cardData[2], cardData[3]]
             };
         },
 

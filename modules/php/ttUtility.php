@@ -14,4 +14,14 @@ class ttUtility
         return strval($x) . '_' . strval($y);
     }
 
+    public static function getCardData(array $card) : array
+    {
+        $cardData = explode('_',$card['type']);
+
+        return [
+            'color' => $cardData[0],
+            'action' => $cardData[1],
+            'resources' => [$cardData[2], $cardData[3]]
+        ];
+    }
 }
