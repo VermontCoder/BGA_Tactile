@@ -48,6 +48,16 @@ define([
                 resource0: cardData[2],
                 resource1: cardData[3]
             };
+        },
+
+        getActionBoardActionData(id)
+        {
+            actionData = id.split('_');
+
+            return {
+                player_id: actionData[1],
+                action: actionData[2]
+            };
         }
     });
 
