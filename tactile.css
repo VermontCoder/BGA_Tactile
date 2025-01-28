@@ -358,8 +358,9 @@
      position: absolute;
      height:var(--action-board-selection-dim);
      width: var(--action-board-selection-dim);
-     background-color: red;
  }
+
+ .actionBoardSelectionTarget.red {background-color: red;}
  
 
 

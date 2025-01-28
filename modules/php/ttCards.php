@@ -9,7 +9,7 @@ class ttCards
     
     const CARDTYPES = ['move', 'push', 'gain'];
     const COLORS = ['red','yellow','green','blue'];
-    public static array $CARDDATA = array(); 
+    public static array $CARDDATA = array();
 
     public function __construct(Game $game)
     {

@@ -54,73 +54,89 @@ function (dojo, declare) {
             <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">`);
         },
         
+        createTopAndTableauContainer: function() {
+            document.getElementById('game_play_area').insertAdjacentHTML('beforeend', `
+            <DIV id="ttTopContainer" style="display: flex"></DIV>
+            <DIV id="tableauContainer" class="tableauContainer"></DIV>`);
+        },
+
+        //************************************* */
+        createStoreCards: function(storeData)
+        {
+            count =0;
+            rowCount = 0;
+            Object.values(storeData).forEach(card => 
+            {
+                if (count % 3 == 0) 
+                {
+                    document.getElementById('store').insertAdjacentHTML('beforeend', 
+                    `<DIV id="storeRow${rowCount}" class="cardRow"></DIV>`);
+                    rowCount++;
+                }
+            
+                document.getElementById(`storeRow${rowCount-1}`).insertAdjacentHTML('beforeend',
+                            `<DIV id="store_${count}" class="cardTarget addSpace">
+                                <DIV id="card_${card.id}" class="card" style="background-position-x: ${-80 * card.id}px;"></DIV>
+                            </DIV>`);
+                count++;
+            });
+        },
+
+        createResourceBank: function()
+        {
+            document.getElementById('store').insertAdjacentHTML('beforeend', 
+                `<DIV id="resourceRow" class="cardRow" style="padding-left:5px; padding-right:5px;">
+                    <DIV id="redBank" class="bank">
+                        <DIV id="redResourceBank1" class="resource red"></DIV>
+                        <DIV id="redBankBottomRow" class="cardRow">
+                            <DIV id="redResourceBank2" class="resource red addSpaceSmall"></DIV>
+                            <DIV id="redResourceBank3" class="resource red addSpaceSmall"></DIV>
+                        </DIV>
+                    </DIV>
+                    <DIV id="blueBank" class="bank">
+                        <DIV id="blueResourceBank1" class="resource blue"></DIV>
+                        <DIV id="blueBankBottomRow" class="cardRow">
+                            <DIV id="blueResourceBank2" class="resource blue addSpaceSmall"></DIV>
+                            <DIV id="blueResourceBank3" class="resource blue addSpaceSmall"></DIV>
+                        </DIV>
+                    </DIV>
+                    <DIV id="greenBank" class="bank">
+                        <DIV id="greenResourceBank1" class="resource green"></DIV>
+                        <DIV id="greenBankBottomRow" class="cardRow">
+                            <DIV id="greenResourceBank2" class="resource green addSpaceSmall"></DIV>
+                            <DIV id="greenResourceBank3" class="resource green addSpaceSmall"></DIV>
+                        </DIV>
+                    </DIV>
+                    <DIV id="yellowBank" class="bank">
+                        <DIV id="yellowResourceBank1" class="resource yellow"></DIV>
+                        <DIV id="yellowBankBottomRow" class="cardRow">
+                            <DIV id="yellowResourceBank2" class="resource yellow addSpaceSmall"></DIV>
+                            <DIV id="yellowResourceBank3" class="resource yellow addSpaceSmall"></DIV>
+                        </DIV>
+                    </DIV>
+                </DIV>`);
+        },
+
         createStore: function(gamedatas) 
         {
             //store
-            document.getElementById('game_play_area').insertAdjacentHTML('beforeend', `
-            <DIV id="ttTopContainer" style="display: flex">
+            document.getElementById('ttTopContainer').insertAdjacentHTML('beforeend', `
                 <DIV id="store" class="store">
                     <DIV id="deck" class="deck addSpace"></DIV>
                 </DIV>
             </DIV>`);
 
-            count =0;
-            rowCount = 0;
-            Object.values(gamedatas.store).forEach(card => 
-                {
-                    if (count % 3 == 0) 
-                    {
-                        document.getElementById('store').insertAdjacentHTML('beforeend', 
-                        `<DIV id="storeRow${rowCount}" class="cardRow"></DIV>`);
-                        rowCount++;
-                    }
-                
-                    document.getElementById(`storeRow${rowCount-1}`).insertAdjacentHTML('beforeend',
-                                `<DIV id="store_${count}" class="cardTarget addSpace">
-                                    <DIV id="card_${card.id}" class="card" style="background-position-x: ${-80 * card.id}px;"></DIV>
-                                </DIV>`);
-                    count++;
-                });
-            
-            document.getElementById('store').insertAdjacentHTML('beforeend', 
-                    `<DIV id="resourceRow" class="cardRow" style="padding-left:5px; padding-right:5px;">
-                        <DIV id="redBank" class="bank">
-                            <DIV id="redResourceBank1" class="resource red"></DIV>
-                            <DIV id="redBankBottomRow" class="cardRow">
-                                <DIV id="redResourceBank2" class="resource red addSpaceSmall"></DIV>
-                                <DIV id="redResourceBank3" class="resource red addSpaceSmall"></DIV>
-                            </DIV>
-                        </DIV>
-                        <DIV id="blueBank" class="bank">
-                            <DIV id="blueResourceBank1" class="resource blue"></DIV>
-                            <DIV id="blueBankBottomRow" class="cardRow">
-                                <DIV id="blueResourceBank2" class="resource blue addSpaceSmall"></DIV>
-                                <DIV id="blueResourceBank3" class="resource blue addSpaceSmall"></DIV>
-                            </DIV>
-                        </DIV>
-                        <DIV id="greenBank" class="bank">
-                            <DIV id="greenResourceBank1" class="resource green"></DIV>
-                            <DIV id="greenBankBottomRow" class="cardRow">
-                                <DIV id="greenResourceBank2" class="resource green addSpaceSmall"></DIV>
-                                <DIV id="greenResourceBank3" class="resource green addSpaceSmall"></DIV>
-                            </DIV>
-                        </DIV>
-                        <DIV id="yellowBank" class="bank">
-                            <DIV id="yellowResourceBank1" class="resource yellow"></DIV>
-                            <DIV id="yellowBankBottomRow" class="cardRow">
-                                <DIV id="yellowResourceBank2" class="resource yellow addSpaceSmall"></DIV>
-                                <DIV id="yellowResourceBank3" class="resource yellow addSpaceSmall"></DIV>
-                            </DIV>
-                        </DIV>
-                    </DIV>`);
-                
-                
-                document.getElementById('ttTopContainer').insertAdjacentHTML('beforeend', 
-                    `<DIV id="board" class="board"></DIV>`);
+           this.createStoreCards(gamedatas.store);
+           this.createResourceBank();
         },
-            
+        //************************************* */
+        
+        
         createBoard: function( gamedatas) {
             console.log( "Creating Board" );
+
+            document.getElementById('ttTopContainer').insertAdjacentHTML('beforeend', 
+                `<DIV id="board" class="board"></DIV>`);
 
             //board
             tiles = Object.values(gamedatas.board);
@@ -134,27 +150,36 @@ function (dojo, declare) {
 
                 document.getElementById('board').insertAdjacentHTML('beforeend', '<DIV id="'+tileId+'" class="'+tileClass+'"></DIV>');
             });
-
-            //tableau container
-            document.getElementById('game_play_area').insertAdjacentHTML('beforeend',
-             `<DIV id="tableauContainer" class="tableauContainer"></DIV>`);
         },
 
         createPiece: function(player,piece) { 
             const divText = '<DIV id="'+piece.piece_id+'" class="playingPiece '+player.color_name+'"></DIV>';
             document.getElementById('tile_'+piece.location).insertAdjacentHTML('beforeend', divText);
+        },
 
+
+        //************************************* */
+        createPlayerActionBoard: function(player) {
+            document.getElementById('tableauCardContainer_' + player.player_id).insertAdjacentHTML('beforeend', `
+            <DIV id="actionBoard_${player.player_id}" class="actionBoard">
+                <DIV id="action_${player.player_id}_move" class="actionBoardSelectionTarget" style="top:39px; left:16px;"></DIV>
+                <DIV id="action_${player.player_id}_gain" class="actionBoardSelectionTarget" style="top:67px; left:16px;"></DIV>
+                <DIV id="action_${player.player_id}_buy" class="actionBoardSelectionTarget red" style="top:95px; left:16px;"></DIV>
+                <DIV id="action_${player.player_id}_swap" class="actionBoardSelectionTarget" style="top:123px; left:16px;"></DIV>
+                <DIV id="action_${player.player_id}_reset" class="actionBoardSelectionTarget" style="top:151px; left:16px;"></DIV>
+            </DIV>`);
         },
 
         createPlayerTableau: function(player) {
             document.getElementById('tableauContainer').insertAdjacentHTML('beforeend', `
             <DIV id="tableau_${player.player_id}" class = "tableau">
                 <SPAN id="tableauLabel_${player.player_id}" class="tableauLabel ${player.color_name}">${player.player_name}</SPAN>
-                <DIV id="tableauCardContainer_${player.player_id}" class="cardRow tableauCardContainer">
-                    <DIV id="actionBoard_${player.player_id}" class="actionBoard"></DIV>
-                </DIV>
+                <DIV id="tableauCardContainer_${player.player_id}" class="cardRow tableauCardContainer"></DIV>
             </DIV>`);
+
+            this.createPlayerActionBoard(player);
         },
+        //************************************* */
 
         createPlayerPanel: function(player) 
         {
@@ -195,6 +220,7 @@ function (dojo, declare) {
             this.setupNotifications();
 
             this.createHeader();
+            this.createTopAndTableauContainer();
             this.createStore(gamedatas);
             this.createBoard(gamedatas);
 
