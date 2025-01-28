@@ -246,6 +246,7 @@ function (dojo, declare) {
             tableauContainer.prepend(currentPlayerTableau);
             
             console.log( "Ending game setup" );
+            console.log(gamedatas.legalActions);
         },
        
 

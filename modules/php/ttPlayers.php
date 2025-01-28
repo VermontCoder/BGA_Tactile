@@ -78,7 +78,7 @@ class ttPlayers
         $sql = "SELECT player_id, player_color, color_name, player_canal, player_name, player_avatar, red_resource_qty,
         blue_resource_qty, green_resource_qty, yellow_resource_qty FROM player";
         $this->players = $this->game->getCollectionFromDb($sql);
-        //(new ttDebug($this->game))->showVariable('players', $this->$players);
+        (new ttDebug($this->game))->showVariable('players', $this->players);
 
         return $this->players;
     }

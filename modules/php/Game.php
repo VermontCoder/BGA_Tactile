@@ -20,9 +20,6 @@ namespace Bga\Games\tactile;
 
 require_once(APP_GAMEMODULE_PATH . "module/table/table.game.php");
 
-const FIRST_ACTION_CARD_ACTION ='firstActionCardAction'; //records first action card action performed by player
-const SECOND_ACTION_CARD_ACTION ='secondActionCardAction'; //records second action card action performed by player
-
 class Game extends \Table
 {
     private static array $CARD_TYPES;
@@ -41,8 +38,18 @@ class Game extends \Table
     {
         parent::__construct();
 
-        $this->globals->set(FIRST_ACTION_CARD_ACTION, null);        
-        $this->globals->set(SECOND_ACTION_CARD_ACTION, null);
+        $this->initGameStateLabels([
+            "my_first_global_variable" => 10,
+            "my_second_global_variable" => 11,
+            "my_first_game_variant" => 100,
+            "my_second_game_variant" => 101,
+        ]);        
+
+        $this->FIRST_ACTION_CARD_ACTION ='firstActionCardAction'; //records first action card action performed by player
+        $this->SECOND_ACTION_CARD_ACTION ='secondActionCardAction'; //records second action card action performed by player
+
+        $this->globals->set($this->FIRST_ACTION_CARD_ACTION, null);        
+        $this->globals->set($this->SECOND_ACTION_CARD_ACTION, null);
 
         //deck object is initialized here, but all operations on it are handled in ttCards.php
         $this->cards = $this->getNew( "module.common.deck" );
@@ -113,7 +120,7 @@ class Game extends \Table
     {
         // Get some values from the current game situation from the database.
 
-        return this.getAllDatas();
+        return $this->getAllDatas();
     }
 
     /**
@@ -214,7 +221,9 @@ class Game extends \Table
         $result['store'] = $this->cards->getCardsInLocation('store');
 
         $result['hands'] = $this->cards->getCardsInLocation('hand');
-        
+
+        $legalActions = new ttLegalMoves($this);
+        $result['legalActions'] = $legalActions->legalActions();
         
         return $result;
 

@@ -80,7 +80,7 @@ $machinestates = [
             "actPush",
             "actEndTurn"
         ],
-        "transitions" => ["endTurn" => 10, "selectAction" => 2, "gameEnd" => 99]
+        "transitions" => [ "selectAction" => 2, "nextPlayer" => 10, "gameEnd" => 99]
     ],
 
     10 => [

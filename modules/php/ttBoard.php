@@ -67,7 +67,7 @@ class ttBoard
     {
         $sql = "SELECT tile_id, color FROM board";
         $board = $this->game->getCollectionFromDb($sql);
-        (new ttDebug($this->game))->showVariable('board', $board);
+        //(new ttDebug($this->game))->showVariable('board', $board);
 
         foreach ($board as $tile_id => $tile) {
             // $tile_id = $board['tile_id'];
