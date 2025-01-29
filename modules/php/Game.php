@@ -224,6 +224,11 @@ class Game extends \Table
 
         $legalActions = new ttLegalMoves($this);
         $result['legalActions'] = $legalActions->legalActions();
+
+        if (in_array('move',$result['legalActions']))
+        {
+            $result['legalMoves'] = $legalActions->legalMoves();
+        }
         
         return $result;
 

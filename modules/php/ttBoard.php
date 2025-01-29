@@ -6,12 +6,14 @@ namespace Bga\Games\tactile;
 
 class ttBoard
 {
-    public int $BOARD_WIDTH = 6;
-    public int $BOARD_HEIGHT = 6;
-    public array $tiles = array();
-
+    const BOARD_WIDTH = 6;
+    const BOARD_HEIGHT = 6;
+    
     const COLORS = ['red','yellow','green','blue'];
     const PLAYERHOMES = ['0_0' => 'green', '5_0' => 'blue', '0_5' => 'red', '5_5' => 'yellow'];
+    const PLAYERGOALS = ['green' => '5_5', 'blue' => '0_5', 'red' => '5_0', 'yellow' => '0_0'];
+
+    public array $tiles = array();
 
     public function __construct(Game $game)
     {
@@ -20,9 +22,9 @@ class ttBoard
 
     public function createBoard()
     {
-        for ($i = 0; $i < $this->BOARD_HEIGHT; $i++)
+        for ($i = 0; $i < self::BOARD_HEIGHT; $i++)
         {
-            for ($j = 0; $j < $this->BOARD_WIDTH; $j++)
+            for ($j = 0; $j < self::BOARD_WIDTH; $j++)
             {
                 $tile_id = ttUtility::xy2id($i,$j);
                 if(isset(self::PLAYERHOMES[$tile_id]))

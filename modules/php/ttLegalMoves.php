@@ -54,6 +54,32 @@ class ttLegalMoves
         return $legal;
     }
 
+    public function legalMoves() : array
+    {
+        $legalMoves = [];
+        $player_id = (int)$this->game->getActivePlayerId();
+
+        $piecesObj = new ttPieces($this->game);
+        
+        $pieces = $piecesObj->deserializePiecesFromDb();
+        $pieceLocations = $piecesObj->getPieceLocations();
+
+        foreach($pieces as $piece)
+        {
+            if ($piece['piece_owner'] != $player_id) continue;
+
+            $possibleMoves = ttUtility::getAdjacentSpacesIDs($piece['location']);
+
+            $pieceMoves = [$piece['piece_id'] => $possibleMoves];
+            
+            
+            
+            $legalMoves[] = $pieceMoves;
+        }
+
+        return $legalMoves;
+    }
+
 
     
 }

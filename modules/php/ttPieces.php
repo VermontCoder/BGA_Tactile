@@ -55,4 +55,21 @@ class ttPieces
 
         return $this->pieces;
     }
+
+    //* These functions are only callable after deserializePiecesFromDb has been called
+    public function getPieceLocations()
+    {
+        $pieceLocations = [];
+        foreach ($this->pieces as $piece)
+        {
+            $pieceLocations[$piece['piece_id']] = $piece['location'];
+        }
+
+        return $pieceLocations;
+    }
+
+    public function isPieceFinished(string $piece_id)
+    {
+       return $this->pieces[$piece_id]['finished'];
+    }
 }
