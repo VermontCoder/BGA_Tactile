@@ -36,7 +36,7 @@ class ttPieces
     private function serializePiecesToDb($pieces)
     {
         foreach ($pieces as $piece) {
-            $query_values[] = vsprintf("('%s', '%s', '%s', '%s')", [
+            $query_values[] = vsprintf("('%s', '%s', '%s', '%s', '%d')", [
                 $piece['piece_id'],
                 $piece['piece_owner'],
                 $piece['piece_color'],
@@ -45,7 +45,7 @@ class ttPieces
             ]);
         }
 
-        $query = sprintf("INSERT INTO pieces (piece_id, piece_owner, piece_color location, finished) VALUES %s", implode(',', $query_values));
+        $query = sprintf("INSERT INTO pieces (piece_id, piece_owner, piece_color, location, finished) VALUES %s", implode(',', $query_values));
         $this->game::DbQuery($query);
     }
 
@@ -53,6 +53,11 @@ class ttPieces
     {
         $sql = "SELECT piece_id, piece_owner, piece_color, location, finished FROM pieces";
         $this->pieces = $this->game->getCollectionFromDb($sql);
+
+        foreach ($this->pieces as $piece)
+        {
+            $this->pieces[$piece['piece_id']]['finished'] = boolval($piece['finished']);
+        }
         //(new ttDebug($this->game))->showVariable('players', $this->$players);
 
         return $this->pieces;
@@ -70,8 +75,8 @@ class ttPieces
         return $pieceLocations;
     }
 
-    public function isPieceFinished(string $piece_id)
+    public static function isPieceFinished(array $piece) : bool
     {
-       return $this->pieces[$piece_id]['finished'];
+        return $piece['finished'];
     }
 }
