@@ -202,13 +202,27 @@ function (dojo, declare) {
             //if player has no cards, return
             if (Object.keys(hand).length == 0) { return; }
 
-            count =0;
-            Object.values(hand).forEach(card => {
+            let count =0;
+
+            //use custom sort function to sort by card type - first by color, then by action
+            Object.values(hand).sort((a, b) => {
+                debugger;
+                const cardDataA = this.ttUtility.getCardData(a);
+                const cardDataB = this.ttUtility.getCardData(b);
+                
+                if (cardDataA.color === cardDataB.color) {
+                    return cardDataA.action.localeCompare(cardDataB.action);
+                }
+                return cardDataA.color.localeCompare(cardDataB.color);
+            }).forEach(card => {
                 document.getElementById('tableauCardContainer_' + player.player_id).insertAdjacentHTML('beforeend', `
-                <DIV id="cardTarget_${player.player_id}_${count}" class="cardTarget addSpace">
-                    <DIV id="card_${card.id}" class="card" style="background-position-x: ${-80 * card.id}px;"></DIV>
-                </DIV>`)});
-                count++;
+                    <div id="cardTarget_${player.player_id}_${count}" class="cardTarget addSpace">
+                        <div id="card_${card.id}" class="card" style="background-position-x: ${-80 * card.id}px;"></div>
+                    </div>`);
+                
+                    count++;
+            });
+            
         },
         
         setup: function( gamedatas )
