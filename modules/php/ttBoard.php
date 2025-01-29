@@ -10,8 +10,12 @@ class ttBoard
     const BOARD_HEIGHT = 6;
     
     const COLORS = ['red','yellow','green','blue'];
-    const PLAYERHOMES = ['0_0' => 'green', '5_0' => 'blue', '0_5' => 'red', '5_5' => 'yellow'];
-    const PLAYERGOALS = ['green' => '5_5', 'blue' => '0_5', 'red' => '5_0', 'yellow' => '0_0'];
+    const PLAYERHOMES = ['0_0' => 'blue', '5_0' => 'green', '0_5' => 'red', '5_5' => 'yellow'];
+    const COLORHOMES = ['blue' => '0_0', 'green' => '5_0', 'red' => '0_5', 'yellow' => '5_5'];
+    
+    const PLAYERGOALS = ['blue' => '5_5', 'green' => '0_5', 'red' => '5_0', 'yellow' => '0_0'];
+    const ILLEGALTILES = ['blue' => ['0_5', '5_0'], 'green' => ['0_0', '5_5'], 'red' => ['0_0', '5_5'], 'yellow' => ['0_5', '5_0']];
+    //TBD - 3 player different.
 
     public array $tiles = array();
 

@@ -23,6 +23,7 @@ class ttPieces
                 $piece = array();
                 $piece['piece_id'] = $player_id . '_'.strval($i);
                 $piece['piece_owner'] = $player_id;
+                $piece['piece_color'] = $player['color_name'];
                 $piece['finished'] = false;
                 $piece['location'] = self::PIECESHOMES[$player['color_name']];
                 $this->pieces[] = $piece;
@@ -32,24 +33,25 @@ class ttPieces
         $this->serializePiecesToDb($this->pieces);
     }
 
-    public function serializePiecesToDb($pieces)
+    private function serializePiecesToDb($pieces)
     {
         foreach ($pieces as $piece) {
             $query_values[] = vsprintf("('%s', '%s', '%s', '%s')", [
                 $piece['piece_id'],
                 $piece['piece_owner'],
+                $piece['piece_color'],
                 $piece['location'],
                 $piece['finished'],
             ]);
         }
 
-        $query = sprintf("INSERT INTO pieces (piece_id, piece_owner, location, finished) VALUES %s", implode(',', $query_values));
+        $query = sprintf("INSERT INTO pieces (piece_id, piece_owner, piece_color location, finished) VALUES %s", implode(',', $query_values));
         $this->game::DbQuery($query);
     }
 
     public function deserializePiecesFromDb()
     {
-        $sql = "SELECT piece_id, piece_owner, location, finished FROM pieces";
+        $sql = "SELECT piece_id, piece_owner, piece_color, location, finished FROM pieces";
         $this->pieces = $this->game->getCollectionFromDb($sql);
         //(new ttDebug($this->game))->showVariable('players', $this->$players);
 

@@ -68,7 +68,8 @@ CREATE TABLE IF NOT EXISTS `board` (
 -- piece_id:  "player_id_piece_id"
 CREATE TABLE IF NOT EXISTS `pieces` (
   `piece_id` varchar(16) NOT NULL,
-  `piece_owner` int(11) unsigned NOT NULL, 
+  `piece_owner` int(11) unsigned NOT NULL,
+  `piece_color` varchar(10) NOT NULL, 
   `finished` tinyint(1) NOT NULL,
   `location` varchar(3) NOT NULL,
   PRIMARY KEY (`piece_id`)
