@@ -76,6 +76,7 @@ class ttLegalMoves
                 [ttBoard::PLAYERGOALS[$piece['piece_color']],ttBoard::COLORHOMES[$piece['piece_color']]]);
 
             $illegalLocations = array_merge($illegalLocations, ttBoard::ILLEGALTILES[$piece['piece_color']]);
+
             $possibleMoves = array_diff($possibleMoves, array_values($illegalLocations));
 
 
