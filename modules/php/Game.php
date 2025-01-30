@@ -43,13 +43,7 @@ class Game extends \Table
             "my_second_global_variable" => 11,
             "my_first_game_variant" => 100,
             "my_second_game_variant" => 101,
-        ]);        
-
-        $this->FIRST_ACTION_CARD_ACTION ='firstActionCardAction'; //records first action card action performed by player
-        $this->SECOND_ACTION_CARD_ACTION ='secondActionCardAction'; //records second action card action performed by player
-
-        $this->globals->set($this->FIRST_ACTION_CARD_ACTION, null);        
-        $this->globals->set($this->SECOND_ACTION_CARD_ACTION, null);
+        ]);
 
         //deck object is initialized here, but all operations on it are handled in ttCards.php
         $this->cards = $this->getNew( "module.common.deck" );
@@ -154,13 +148,16 @@ class Game extends \Table
         
         $this->activeNextPlayer();
 
-        //clear previous player's action card actions.
-        $this->globals->set(FIRST_ACTION_CARD_ACTION, null);        
-        $this->globals->set(SECOND_ACTION_CARD_ACTION, null);
+        $player_id = (int)$this->getActivePlayerId(); //get the new active player id
+
+        $actionBoardSelections = new ttActionBoardSelections($this);
+        $actionBoardSelections->clearPlayerSelections($player_id);
     
         // Go to another gamestate
         // Here, we would detect if the game is over, and in this case use "endGame" transition instead 
         $this->gamestate->nextState("nextPlayer");
+
+
     }
 
     /**
@@ -230,8 +227,8 @@ class Game extends \Table
             $result['legalMoves'] = $legalActions->legalMoves();
         }
 
-        $result['actionBoardActions'] = [ $this->globals->get($this->FIRST_ACTION_CARD_ACTION),
-         $this->globals->get($this->SECOND_ACTION_CARD_ACTION)];
+        $actionBoardSelections = new ttActionBoardSelections($this);
+        $result['actionBoardSelections'] = $actionBoardSelections->deserializeActionBoardSelectionsFromDb();
         
         return $result;
 

@@ -23,13 +23,11 @@ class ttLegalMoves
         //get cards in player's hand which are active
         $activeCardsInHand = $this->game->cards->getCardsOfTypeInLocation(null, ttCards::CARDSTATUS['active'],'hand', $this->game->getActivePlayerId());
 
-        $firstActionCardAction = $this->game->globals->get($this->game->FIRST_ACTION_CARD_ACTION);
-        $secondActionCardAction = $this->game->globals->get($this->game->SECOND_ACTION_CARD_ACTION);
-
         foreach(ttLegalMoves::ACTIONS as $action)
         {
-            if ($this->checkActionLegal($action, $activeCardsInHand,$firstActionCardAction,$secondActionCardAction))
+            if ($this->checkActionLegal($action, $activeCardsInHand()))
             {
+                
                 $legalActions[]= $action;
             }
         }
@@ -37,7 +35,7 @@ class ttLegalMoves
         return $legalActions;
     }
 
-    private function checkActionLegal(string $action, array $activeCardsInHand, ?string $firstActionCardAction, ?string $secondActionCardAction) : bool
+    private function checkActionLegal(string $action, array $activeCardsInHand) : bool
     {
         $legal = !($firstActionCardAction == $action || $secondActionCardAction == $action);
 

@@ -75,9 +75,10 @@ CREATE TABLE IF NOT EXISTS `pieces` (
   PRIMARY KEY (`piece_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `action_card_selections` (
-  `selection_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `div_id` varchar(30) DEFAULT NULL, 
-  `player_id` int(11) unsigned DEFAULT NULL,
-  PRIMARY KEY (`selection_id`)
+CREATE TABLE IF NOT EXISTS `action_board_selections` (
+  `selection_div_id` varchar(50) NOT NULL AUTO_INCREMENT,
+  `action` varchar(30) NOT NULL, 
+  `player_id` int(11) unsigned NOT NULL,
+  `selected` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`selection_div_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
