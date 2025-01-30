@@ -21,14 +21,21 @@ class ttActionBoardSelections
         {
             foreach(ttLegalMoves::ACTIONS as $action)
             {
+                //don't do push
+                if($action == 'push')
+                {
+                    continue;
+                }
+                
                 $actionBoardSelection = array();
                 $actionBoardSelection['selection_div_id'] = $divPrefix.$player_id.'_'.$action;
                 $actionBoardSelection['action'] = $action;
                 $actionBoardSelection['player_id'] = $player_id;
                 $actionBoardSelection['selected'] = 0;
+                $this->actionBoardSelections[] = $actionBoardSelection;
             }
             
-            $this->actionBoardSelections[] = $actionBoardSelection;
+            
         }
         
         $this->serializeActionBoardSelectionsToDb();
