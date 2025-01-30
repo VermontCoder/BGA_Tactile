@@ -20,13 +20,16 @@ define([
     "ebg/core/gamegui",
     "ebg/counter",
     g_gamethemeurl + "modules/js/ttUtility.js",
+    g_gamethemeurl + "modules/js/ttEventHandlers.js"
 ],
+
 function (dojo, declare) {
     return declare("bgagame.tactile", ebg.core.gamegui, {
         constructor: function(){
             console.log('tactile constructor');
 
             this.ttUtility = new bgagame.ttUtility();
+            this.ttEventHandlers = new bgagame.ttEventHandlers();
               
             // Here, you can init the global variables of your user interface
             // Example:
@@ -117,7 +120,7 @@ function (dojo, declare) {
                 </DIV>`);
         },
 
-        createStore: function(gamedatas) 
+        createStore: function(store) 
         {
             //store
             document.getElementById('ttTopContainer').insertAdjacentHTML('beforeend', `
@@ -126,27 +129,27 @@ function (dojo, declare) {
                 </DIV>
             </DIV>`);
 
-           this.createStoreCards(gamedatas.store);
+           this.createStoreCards(store);
            this.createResourceBank();
         },
         //************************************* */
         
         
-        createBoard: function( gamedatas) {
+        createBoard: function( board, playerHomes) {
             console.log( "Creating Board" );
 
             document.getElementById('ttTopContainer').insertAdjacentHTML('beforeend', 
                 `<DIV id="board" class="board"></DIV>`);
 
             //board
-            tiles = Object.values(gamedatas.board);
+            tiles = Object.values(board);
 
             // Sort tiles by tile_id, y coord followed by x coord
             tiles.sort((a, b) => (a.tile_id.substring(2,3) + '_' + a.tile_id.substring(0,1)) > (b.tile_id.substring(2,3) + '_' + b.tile_id.substring(0,1)) ? 1 : -1);
             
             Object.values(tiles).forEach(tile => {
                 const tileId = 'tile_' + tile.tile_id;
-                const tileClass = 'tile ' +tile.color + (gamedatas.playerHomes[tile.tile_id] ? 'Home' : '');
+                const tileClass = 'tile ' +tile.color + (playerHomes[tile.tile_id] ? 'Home' : '');
 
                 document.getElementById('board').insertAdjacentHTML('beforeend', '<DIV id="'+tileId+'" class="'+tileClass+'"></DIV>');
             });
@@ -164,7 +167,7 @@ function (dojo, declare) {
             <DIV id="actionBoard_${player.player_id}" class="actionBoard">
                 <DIV id="action_${player.player_id}_move" class="actionBoardSelectionTarget" style="top:39px; left:16px;"></DIV>
                 <DIV id="action_${player.player_id}_gain" class="actionBoardSelectionTarget" style="top:67px; left:16px;"></DIV>
-                <DIV id="action_${player.player_id}_buy" class="actionBoardSelectionTarget red" style="top:95px; left:16px;"></DIV>
+                <DIV id="action_${player.player_id}_buy" class="actionBoardSelectionTarget" style="top:95px; left:16px;"></DIV>
                 <DIV id="action_${player.player_id}_swap" class="actionBoardSelectionTarget" style="top:123px; left:16px;"></DIV>
                 <DIV id="action_${player.player_id}_reset" class="actionBoardSelectionTarget" style="top:151px; left:16px;"></DIV>
             </DIV>`);
@@ -206,7 +209,7 @@ function (dojo, declare) {
 
             //use custom sort function to sort by card type - first by color, then by action
             Object.values(hand).sort((a, b) => {
-                debugger;
+                //debugger;
                 const cardDataA = this.ttUtility.getCardData(a);
                 const cardDataB = this.ttUtility.getCardData(b);
                 
@@ -235,8 +238,8 @@ function (dojo, declare) {
 
             this.createHeader();
             this.createTopAndTableauContainer();
-            this.createStore(gamedatas);
-            this.createBoard(gamedatas);
+            this.createStore(gamedatas.store);
+            this.createBoard(gamedatas.board, gamedatas.playerHomes);
 
             Object.values(gamedatas.pieces).forEach(piece => {
                 this.createPiece(gamedatas.players[piece.piece_owner], piece);
@@ -256,9 +259,14 @@ function (dojo, declare) {
             let currentPlayerTableau = document.querySelector('#tableau_'+this.player_id);
             let tableauContainer = document.querySelector('#tableauContainer');
 
-            // Move stuff
             tableauContainer.prepend(currentPlayerTableau);
-            
+
+            //Highlight already chosen actions on the action board
+            for (i=0; i < 2;i++) {
+                curChoice = gamedatas.actionBoardActions[i];
+                if(curChoice != null) { $( curChoice ).classList.add('red') }
+            }
+
             console.log( "Ending game setup" );
             console.log(gamedatas.legalActions);
         },
@@ -273,23 +281,44 @@ function (dojo, declare) {
         onEnteringState: function( stateName, args )
         {
             console.log( 'Entering state: '+stateName, args );
+
+           
             
             switch( stateName )
             {
-            
-            /* Example:
-            
-            case 'myGameState':
-            
-                // Show some HTML block at this game state
-                dojo.style( 'my_html_block_id', 'display', 'block' );
+                case 'selectAction':
+                    if (!this.isCurrentPlayerActive()) return;
+
+                    // Add onClick handler to all divs of the action board
+                    const actionBoardChoices = document.querySelectorAll('#actionBoard_'+this.getActivePlayerId()+' .actionBoardSelectionTarget');
+                    actionBoardChoices.forEach(choice => {
+                        choice.removeEventListener('click', this.ttEventHandlers.onActionCardClick);
+                        choice.addEventListener('click', (e) => this.ttEventHandlers.onActionCardClick.call(this,e.target.id));
+                    });
+
+                    //Remove handlers if the action has already been chosen; add a check mark.
+                    for (i=0; i <args.actionBoardActions.length;i++) {
+                        curChoice = args.actionBoardActions[i];
+                        if(curChoice != null) 
+                        { 
+                            $( curChoice ).classList.add('red');
+                            $( curChoice ).removeEventListener('click', this.ttEventHandlers.onActionCardClick);
+                        }
+                    }
                 
-                break;
-           */
+                    // Add onClick handler to all divs of class "card" within #tableauContainer div
+                    const cards = document.querySelectorAll('#tableauCardContainer_'+ this.getActivePlayerId()+ ' .card');
+                    cards.forEach(card => {
+                        card.removeEventListener('click', this.ttEventHandlers.onCardClick);
+                        if (this.ttUtility.getCardStatus(card) === 'active') 
+                        {
+                            card.addEventListener('click', (e) => this.ttEventHandlers.onCardClick.call(this,e.target.id));
+                        }
+                    });
+                    break;
            
-           
-            case 'dummy':
-                break;
+                case 'dummy':
+                    break;
             }
         },
 
@@ -368,20 +397,8 @@ function (dojo, declare) {
             _ make a call to the game server
         
         */
-        
-        // Example:
-        
-        onCardClick: function( card_id )
-        {
-            console.log( 'onCardClick', card_id );
 
-            this.bgaPerformAction("actPlayCard", { 
-                card_id,
-            }).then(() =>  {                
-                // What to do after the server call if it succeeded
-                // (most of the time, nothing, as the game will react to notifs / change of state instead)
-            });        
-        },    
+       /* SEE ttEventHandlers.js */    
 
         
         ///////////////////////////////////////////////////

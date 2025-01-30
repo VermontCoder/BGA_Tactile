@@ -229,6 +229,9 @@ class Game extends \Table
         {
             $result['legalMoves'] = $legalActions->legalMoves();
         }
+
+        $result['actionBoardActions'] = [ $this->globals->get($this->FIRST_ACTION_CARD_ACTION),
+         $this->globals->get($this->SECOND_ACTION_CARD_ACTION)];
         
         return $result;
 
@@ -276,7 +279,8 @@ class Game extends \Table
         $this->cards->pickCardsForLocation( 6, 'deck', 'store');
 
         //test data
-        $this->cards->pickCardsForLocation( 12, 'deck', 'hand', 2383264);
+        $this->cards->pickCardsForLocation( 4, 'deck', 'hand', 2383264);
+        $this->cards->pickCardsForLocation( 4, 'deck', 'hand', 2383265);
 
         // Init global values with their initial values.
 

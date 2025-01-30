@@ -49,6 +49,13 @@ define([
             };
         },
 
+        getCardStatus(card)
+        {
+            const statuses = ['innactive', 'active', 'exhuasted'];
+
+            return statuses[card.type_arg];
+        },
+
         getActionBoardActionData(id)
         {
             actionData = id.split('_');
@@ -57,8 +64,6 @@ define([
                 player_id: actionData[1],
                 action: actionData[2]
             };
-        }
+        },
     });
-
-
 });
