@@ -19,13 +19,13 @@ class ttLegalMoves
     public function legalActions() : array
     {
         $legalActions = [];
-
+        $player_id = (int)$this->game->getActivePlayerId();
         //get cards in player's hand which are active
-        $activeCardsInHand = $this->game->cards->getCardsOfTypeInLocation(null, ttCards::CARDSTATUS['active'],'hand', $this->game->getActivePlayerId());
+        $activeCardsInHand = $this->game->cards->getCardsOfTypeInLocation(null, ttCards::CARDSTATUS['active'],'hand', $player_id);
 
         foreach(ttLegalMoves::ACTIONS as $action)
         {
-            if ($this->checkActionLegal($action, $activeCardsInHand()))
+            if ($this->checkActionLegal($action, $player_id, $activeCardsInHand))
             {
                 $legalActions[]= $action;
             }

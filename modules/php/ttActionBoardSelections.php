@@ -36,7 +36,7 @@ class ttActionBoardSelections
 
     public function serializeActionBoardSelectionsToDb()
     {
-        foreach ($this->$actionBoardSelections as $actionBoardSelection) {
+        foreach ($this->actionBoardSelections as $actionBoardSelection) {
             $query_values[] = vsprintf("('%s', '%s', '%s', '%d')", [
                 $actionBoardSelection['selection_div_id'],
                 $actionBoardSelection['action'],
@@ -108,7 +108,7 @@ class ttActionBoardSelections
         return $selected;
     }
     
-    public function getSelectedForPlayer($player_id)
+    public function getPlayerSelections($player_id)
     {
         if (empty($this->actionBoardSelections))
         {

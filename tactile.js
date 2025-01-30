@@ -261,11 +261,11 @@ function (dojo, declare) {
 
             tableauContainer.prepend(currentPlayerTableau);
 
-            //Highlight already chosen actions on the action board
-            for (i=0; i < 2;i++) {
-                curChoice = gamedatas.actionBoardActions[i];
-                if(curChoice != null) { $( curChoice ).classList.add('red') }
-            }
+
+            // for (let key in gamedatas.actionBoardSelections) {
+            //     console.log(key, yourobject[key]);
+            // }
+            debugger;
 
             console.log( "Ending game setup" );
             console.log(gamedatas.legalActions);
@@ -297,8 +297,8 @@ function (dojo, declare) {
                     });
 
                     //Remove handlers if the action has already been chosen; add a check mark.
-                    for (i=0; i <args.actionBoardActions.length;i++) {
-                        curChoice = args.actionBoardActions[i];
+                    for (i=0; i <args.args.actionBoardActions.length;i++) {
+                        curChoice = args.args.actionBoardActions[i];
                         if(curChoice != null) 
                         { 
                             $( curChoice ).classList.add('red');
