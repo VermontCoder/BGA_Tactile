@@ -271,6 +271,9 @@ class Game extends \Table
         $ttCards = new ttCards($this);
         $ttCards->createCards();
 
+        $ttActionBoardSelections = new ttActionBoardSelections($this);
+        $ttActionBoardSelections->createActionBoardSelections($ttPlayers->players);
+        
         $this->cards->shuffle('deck');
 
         $this->cards->pickCardsForLocation( 6, 'deck', 'store');

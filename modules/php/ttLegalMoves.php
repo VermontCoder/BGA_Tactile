@@ -27,7 +27,6 @@ class ttLegalMoves
         {
             if ($this->checkActionLegal($action, $activeCardsInHand()))
             {
-                
                 $legalActions[]= $action;
             }
         }
@@ -35,9 +34,17 @@ class ttLegalMoves
         return $legalActions;
     }
 
-    private function checkActionLegal(string $action, array $activeCardsInHand) : bool
+    private function checkActionLegal(string $action, int $player_id, array $activeCardsInHand) : bool
     {
-        $legal = !($firstActionCardAction == $action || $secondActionCardAction == $action);
+        $actionBoardSelections = new ttActionBoardSelections($this->game);
+        $playerSelections = $actionBoardSelections->getPlayerSelections($player_id);
+
+        $legal = true;
+
+        //if the player has already made a selection of this action, it is not legal to make another selection of the same action
+        $legal = !array_filter($playerSelections, function($selection) use ($action) {
+            return $selection['action'] == $action;
+        });
 
         foreach($activeCardsInHand as $card)
         {

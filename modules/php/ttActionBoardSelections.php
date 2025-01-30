@@ -72,7 +72,7 @@ class ttActionBoardSelections
         }
     }
 
-    public function selectSelection($selection_div_id)
+    public function setSelected($selection_div_id)
     {
         $sql = "UPDATE action_board_selections SET selected = 1 WHERE selection_div_id = $selection_div_id";
         $this->game::DbQuery($sql);
@@ -86,5 +86,45 @@ class ttActionBoardSelections
                 break;
             }
         }
+    }
+
+    public function getAllSelected()
+    {
+        if (empty($this->actionBoardSelections))
+        {
+            $this->deserializeActionBoardSelectionsFromDb();
+        }
+
+        $selected = array();
+
+        foreach($this->actionBoardSelections as $actionBoardSelection)
+        {
+            if($actionBoardSelection['selected'] == 1)
+            {
+                $selected[] = $actionBoardSelection['action'];
+            }
+        }
+
+        return $selected;
+    }
+    
+    public function getSelectedForPlayer($player_id)
+    {
+        if (empty($this->actionBoardSelections))
+        {
+            $this->deserializeActionBoardSelectionsFromDb();
+        }
+
+        $selected = array();
+
+        foreach($this->actionBoardSelections as $actionBoardSelection)
+        {
+            if($actionBoardSelection['player_id'] == $player_id && $actionBoardSelection['selected'] == 1)
+            {
+                $selected[] = $actionBoardSelection['action'];
+            }
+        }
+
+        return $selected;
     }
 }
