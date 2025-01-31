@@ -13,10 +13,18 @@ define([
         
         },
 
-        onActionCardClick: function( action_card_action_id, game ) {
-            console.log('onActionCardClick', 'lll'+ JSON.stringify(action_card_action_id));
+        //In all click handlers, "this" refers to the game object 
+        // due to use of the call method of javascript!
+
+        onActionCardClick: function( action_card_action_id ) {
+            console.log('onActionCardClick', JSON.stringify(action_card_action_id));
             //show selection
             document.getElementById(action_card_action_id).classList.toggle('red');
+
+            this.clientStateArgs.action_card_selected_id = action_card_action_id;
+            this.setClientState("client_playerPicksMove", {
+                               descriptionmyturn : _("${you} must select piece to move"),
+                           });
 
             // this.bgaPerformAction("actPlayCard", {
             //     card_id,

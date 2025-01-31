@@ -30,6 +30,7 @@ function (dojo, declare) {
 
             this.ttUtility = new bgagame.ttUtility();
             this.ttEventHandlers = new bgagame.ttEventHandlers();
+            this.clientStateArgs = {};
               
             // Here, you can init the global variables of your user interface
             // Example:
@@ -261,12 +262,6 @@ function (dojo, declare) {
 
             tableauContainer.prepend(currentPlayerTableau);
 
-
-            // for (let key in gamedatas.actionBoardSelections) {
-            //     console.log(key, yourobject[key]);
-            // }
-            debugger;
-
             console.log( "Ending game setup" );
             console.log(gamedatas.legalActions);
         },
@@ -297,12 +292,12 @@ function (dojo, declare) {
                     });
 
                     //Remove handlers if the action has already been chosen; add a check mark.
-                    for (i=0; i <args.args.actionBoardActions.length;i++) {
-                        curChoice = args.args.actionBoardActions[i];
-                        if(curChoice != null) 
-                        { 
-                            $( curChoice ).classList.add('red');
-                            $( curChoice ).removeEventListener('click', this.ttEventHandlers.onActionCardClick);
+                    
+                    selections = args.args.actionBoardSelections;
+                    for (let selectionDivID in selections) {
+                        if (selections[selectionDivID]['selected'] == true) {
+                            $(selectionDivID).classList.add('selected');
+                            $(selectionDivID).removeEventListener('click', this.ttEventHandlers.onActionCardClick);
                         }
                     }
                 
