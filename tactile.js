@@ -263,7 +263,7 @@ function (dojo, declare) {
             tableauContainer.prepend(currentPlayerTableau);
 
             console.log( "Ending game setup" );
-            console.log(gamedatas.legalActions);
+            //console.log(gamedatas.legalActions);
         },
        
 
@@ -284,11 +284,12 @@ function (dojo, declare) {
                 case 'selectAction':
                     if (!this.isCurrentPlayerActive()) return;
 
+                    console.log('selectAction');
                     // Add onClick handler to all divs of the action board
                     const actionBoardChoices = document.querySelectorAll('#actionBoard_'+this.getActivePlayerId()+' .actionBoardSelectionTarget');
                     actionBoardChoices.forEach(choice => {
-                        choice.removeEventListener('click', this.ttEventHandlers.onActioBoardClick);
-                        choice.addEventListener('click', (e) => this.ttEventHandlers.onActioBoardClick.call(this,e.target.id));
+                        choice.removeEventListener('click', (e) => this.ttEventHandlers.onActionBoardClick.call(this,e.target.id));
+                        choice.addEventListener('click', (e) => this.ttEventHandlers.onActionBoardClick.call(this,e.target.id));
                     });
 
                     //Remove handlers if the action has already been chosen; add a check mark.
@@ -297,7 +298,7 @@ function (dojo, declare) {
                     for (let selectionDivID in selections) {
                         if (selections[selectionDivID]['selected'] == true) {
                             $(selectionDivID).classList.add('selected');
-                            $(selectionDivID).removeEventListener('click', this.ttEventHandlers.onActioBoardClick);
+                            $(selectionDivID).removeEventListener('click', this.ttEventHandlers.onActionBoardClick);
                         }
                     }
                 
@@ -429,14 +430,15 @@ function (dojo, declare) {
 
         notif_showVariable: function( notif )
         {
-            console.log( JSON.stringify(notif) );
+            //console.log( JSON.stringify(notif) );
         },
         
         notif_move: function( notif )
         {
             console.log( 'notif_move' );
             console.log( notif );
-            $(notif.args.selectedDivID).classList.add('selected');
+            
+            $(notif.args.selectionDivID).classList.add('selected');
             
             // Note: notif.args contains the arguments specified during you "notifyAllPlayers" / "notifyPlayer" PHP call    
         }
