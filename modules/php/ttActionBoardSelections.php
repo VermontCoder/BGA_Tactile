@@ -34,8 +34,6 @@ class ttActionBoardSelections
                 $actionBoardSelection['selected'] = 0;
                 $this->actionBoardSelections[] = $actionBoardSelection;
             }
-            
-            
         }
         
         $this->serializeActionBoardSelectionsToDb();

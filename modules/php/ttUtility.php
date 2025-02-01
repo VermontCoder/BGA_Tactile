@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Bga\Games\tactile;
 
-require_once("ttDebug.php");
-
 class ttUtility
 {
 
@@ -28,6 +26,16 @@ class ttUtility
             'color' => $cardData[0],
             'action' => $cardData[1],
             'resources' => [$cardData[2], $cardData[3]]
+        ];
+    }
+
+    public static function parseActionCardSelectionID(string $actionCardSelectionID) : array
+    {
+        $actionCardSelectionData = explode('_', $actionCardSelectionID);
+
+        return [
+            'player_id' => $actionCardSelectionData[1],
+            'action' => $actionCardSelectionData[2]
         ];
     }
 

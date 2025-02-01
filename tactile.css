@@ -360,7 +360,7 @@
      width: var(--action-board-selection-dim);
  }
 
- .actionBoardSelectionTarget.red {background-color: red;}
+ .actionBoardSelectionTarget.selected {background-color: red;}
  
 
 
