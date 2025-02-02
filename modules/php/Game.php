@@ -72,6 +72,8 @@ class Game extends \Table
             throw new \BgaUserException('Invalid action board action choice');
         }
 
+        $actionBoardSelections = new ttActionBoardSelections($this);
+        $actionBoardSelections->setSelected($selectionDivID);
 
         $this->notifyAllPlayers("move", clienttranslate('${player_name} selected <B>${action}<B>'), [
                     "player_name" => $this->getActivePlayerName(),

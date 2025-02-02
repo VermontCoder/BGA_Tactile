@@ -32,6 +32,11 @@ define([
             );
         },
 
+        getPlayerHand: function(player_id, hands)
+        {
+            return this.pickByNestedProperty(hands, 'location_arg', player_id);
+        },
+
         removeDOMElement: function(elementName)
         {
             var x = document.querySelector('#'+elementName)

@@ -79,7 +79,7 @@ class ttActionBoardSelections
 
     public function setSelected($selection_div_id)
     {
-        $sql = "UPDATE action_board_selections SET selected = 1 WHERE selection_div_id = $selection_div_id";
+        $sql = "UPDATE action_board_selections SET selected = 1 WHERE selection_div_id = '$selection_div_id'";
         $this->game::DbQuery($sql);
 
         //also modify in memory array

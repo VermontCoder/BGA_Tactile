@@ -183,7 +183,7 @@ function (dojo, declare) {
 
 
         //************************************* */
-        createPlayerActionBoard: function(player) {
+        createPlayerActionBoard: function(player, actionBoardSelections) {
             document.getElementById('tableauCardContainer_' + player.player_id).insertAdjacentHTML('beforeend', `
             <DIV id="actionBoard_${player.player_id}" class="actionBoard">
                 <DIV id="action_${player.player_id}_move" class="actionBoardSelectionTarget" style="top:39px; left:16px;"></DIV>
@@ -199,16 +199,29 @@ function (dojo, declare) {
                  choice.addEventListener('click', (e) => this.ttEventHandlers.onActionBoardClick.call(this,e.target.id));
             });
 
+            
+            for (let selectionDivID in actionBoardSelections) 
+            {
+                //only manipulate the action board of this player
+                if (actionBoardSelections[selectionDivID]['player_id'] != player.player_id) continue;
+
+                if (actionBoardSelections[selectionDivID]['selected'] == true) {
+                    $(selectionDivID).classList.add('selected');
+                }
+                else {
+                    $(selectionDivID).classList.remove('selected');
+                }
+            }
         },
 
-        createPlayerTableau: function(player) {
-            document.getElementById('tableauContainer').insertAdjacentHTML('beforeend', `
+        createPlayerTableau: function(player, actionBoardSelections) {
+            document.getElementById('tableauContainer').insertAdjacentHTML('afterbegin', `
             <DIV id="tableau_${player.player_id}" class = "tableau">
                 <SPAN id="tableauLabel_${player.player_id}" class="tableauLabel ${player.color_name}">${player.player_name}</SPAN>
                 <DIV id="tableauCardContainer_${player.player_id}" class="cardRow tableauCardContainer"></DIV>
             </DIV>`);
 
-            this.createPlayerActionBoard(player);
+            this.createPlayerActionBoard(player, actionBoardSelections);
         },
         //************************************* */
 
@@ -282,9 +295,9 @@ function (dojo, declare) {
 
             Object.values(gamedatas.players).forEach(player => {
                 this.createPlayerPanel(player);
-                this.createPlayerTableau(player);
+                this.createPlayerTableau(player, gamedatas.actionBoardSelections);
 
-                playerHand = this.ttUtility.pickByNestedProperty(gamedatas.hands, 'location_arg', player.player_id);
+                playerHand = this.ttUtility.getPlayerHand(player.player_id, gamedatas.hands);
                 
                 this.createPlayerHand(player, playerHand);
             });
@@ -310,26 +323,12 @@ function (dojo, declare) {
         {
             console.log( 'Entering state: '+stateName, args );
 
-           
-            
             switch( stateName )
             {
                 case 'selectAction':
-                    if (!this.isCurrentPlayerActive()) return;
+                    //debugger;
 
-                    console.log('selectAction');
-                   
-                    //Remove handlers if the action has already been chosen; add a check mark.
-                    
-                    selections = args.args.actionBoardSelections;
-                    for (let selectionDivID in selections) {
-                        if (selections[selectionDivID]['selected'] == true) {
-                            $(selectionDivID).classList.add('selected');
-                        }
-                    }
-                
-                    // Add onClick handler to all divs of class "card" within #tableauContainer div
-                    
+                    this.updateState(args.args);
                     break;
            
                 case 'dummy':
@@ -374,7 +373,9 @@ function (dojo, declare) {
             {            
                 switch( stateName )
                 {
-                //  case 'playerTurn':    
+                    case 'selectAction':
+                        this.addActionButton('actionBtnDoneWithTurn', _('Done with turn'), () => this.bgaPerformAction("actDoneWithTurn"), null, null, 'red'); 
+                        break;   
                 //     const playableCardsIds = args.playableCardsIds; // returned by the argPlayerTurn
 
                 //     // Add test action buttons in the action status bar, simulating a card click:
@@ -391,12 +392,16 @@ function (dojo, declare) {
         ///////////////////////////////////////////////////
         //// Utility methods
         
-        /*
-        
-            Here, you can defines some utility methods that you can use everywhere in your javascript
-            script.
-        
-        */
+        updateState: function( args )
+        {
+            players = args.players;
+            activePlayer = players[this.player_id];
+
+            $('tableau_' + this.player_id).remove();
+            this.createPlayerTableau(activePlayer, args.actionBoardSelections);
+            playerHand = this.ttUtility.getPlayerHand(activePlayer.player_id, args.hands);
+            this.createPlayerHand(activePlayer, playerHand);
+        },
 
 
         ///////////////////////////////////////////////////
@@ -457,7 +462,9 @@ function (dojo, declare) {
             console.log( 'notif_move' );
             console.log( notif );
             
-            $(notif.args.selectionDivID).classList.add('selected');
+            //animation code?
+
+            //$(notif.args.selectionDivID).classList.add('selected');
             
             // Note: notif.args contains the arguments specified during you "notifyAllPlayers" / "notifyPlayer" PHP call    
         }

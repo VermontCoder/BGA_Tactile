@@ -21,11 +21,9 @@ define([
 
             //this.gamedatas.gamestate.args.variable is variable from state args - I think.
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
-            //show selection
-            //document.getElementById(action_board_action_id).classList.toggle('red');
-
+           
             this.clientStateArgs.selectionDivID = selectionDivID;
-            // this.setClientState("client_playerPicksMove", {
+            // this.setClientState("client_selectPiece", {
             //                    descriptionmyturn : _("${you} must select piece to move"),
             //                });
 
