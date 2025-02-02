@@ -17,6 +17,9 @@ define([
         // due to use of the call method of javascript!
 
         onActionBoardClick: function( selectionDivID ) {
+            if(!this.isCurrentPlayerActive()) { return; }
+
+            //this.gamedatas.gamestate.args.variable is variable from state args - I think.
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
             //show selection
             //document.getElementById(action_board_action_id).classList.toggle('red');
@@ -31,8 +34,44 @@ define([
             });
         },
 
-        onCardClick: function( card_id, game )
+        onTileClick: function( tileID ) {
+            if(!this.isCurrentPlayerActive()) { return; }
+            console.log('onTileClick', JSON.stringify(tileID));
+           
+            //TBD tile click handling.
+        },
+
+        onPieceClick: function( pieceID ) {
+            if(!this.isCurrentPlayerActive()) { return; }
+            console.log('onPieceClick', JSON.stringify(pieceID));
+           
+            //TBD piece click handling.
+        },
+
+        onResourceBankClick: function( resource_id ) {
+            if(!this.isCurrentPlayerActive()) { return; }
+            console.log('onResourceBankClick', JSON.stringify(resource_id));
+
+            //TBD resource click handling.
+        },
+
+        onPlayerResourceBankClick: function( resource_id ) {
+            if(!this.isCurrentPlayerActive()) { return; }
+            console.log('onPlayerResourceBankClick', JSON.stringify(resource_id));
+
+            //TBD player resource click handling.
+        },
+
+        onStoreCardClick: function( card_id ) {
+            if(!this.isCurrentPlayerActive()) { return; }
+            console.log('onStoreCardClick', JSON.stringify(card_id));
+
+            //TBD store card click handling.
+        },
+
+        onCardClick: function( card_id )
         {
+            if(!this.isCurrentPlayerActive()) { return; }
             console.log( 'onCardClick', card_id );
 
             // this.bgaPerformAction("actPlayCard", { 

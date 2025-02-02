@@ -80,8 +80,12 @@ function (dojo, declare) {
             
                 document.getElementById(`storeRow${rowCount-1}`).insertAdjacentHTML('beforeend',
                             `<DIV id="store_${count}" class="cardTarget addSpace">
-                                <DIV id="card_${card.id}" class="card" style="background-position-x: ${-80 * card.id}px;"></DIV>
+                                <DIV id="storecard_${card.id}" class="card" style="background-position-x: ${-80 * card.id}px;"></DIV>
                             </DIV>`);
+                
+                //add event listener.
+                $('storecard_'+card.id).addEventListener('click', (e) => this.ttEventHandlers.onStoreCardClick.call(this,e.target.id));
+                
                 count++;
             });
         },
@@ -119,7 +123,16 @@ function (dojo, declare) {
                         </DIV>
                     </DIV>
                 </DIV>`);
+
+                //click handlers
+                //currentTarget is the div that was clicked, not the child div.
+                const resourceBankDivs = document.querySelectorAll('.bank');
+                resourceBankDivs.forEach(resourceBankDiv => {         
+                    resourceBankDiv.addEventListener('click', (e) => this.ttEventHandlers.onResourceBankClick.call(this,e.currentTarget.id));
+                });
         },
+
+        
 
         createStore: function(store) 
         {
@@ -154,11 +167,18 @@ function (dojo, declare) {
 
                 document.getElementById('board').insertAdjacentHTML('beforeend', '<DIV id="'+tileId+'" class="'+tileClass+'"></DIV>');
             });
+
+            //click handlers
+            const tileDivs = document.querySelectorAll('#board > div');
+            tileDivs.forEach(tileDiv => {         
+                 tileDiv.addEventListener('click', (e) => this.ttEventHandlers.onTileClick.call(this,e.target.id));
+            });
         },
 
         createPiece: function(player,piece) { 
             const divText = '<DIV id="'+piece.piece_id+'" class="playingPiece '+player.color_name+'"></DIV>';
             document.getElementById('tile_'+piece.location).insertAdjacentHTML('beforeend', divText);
+            $(piece.piece_id).addEventListener('click', (e) => this.ttEventHandlers.onPieceClick.call(this,e.target.id));
         },
 
 
@@ -172,6 +192,13 @@ function (dojo, declare) {
                 <DIV id="action_${player.player_id}_swap" class="actionBoardSelectionTarget" style="top:123px; left:16px;"></DIV>
                 <DIV id="action_${player.player_id}_reset" class="actionBoardSelectionTarget" style="top:151px; left:16px;"></DIV>
             </DIV>`);
+
+            //click handlers
+            const actionBoardChoices = document.querySelectorAll('#actionBoard_'+player.player_id+' .actionBoardSelectionTarget');
+            actionBoardChoices.forEach(choice => {         
+                 choice.addEventListener('click', (e) => this.ttEventHandlers.onActionBoardClick.call(this,e.target.id));
+            });
+
         },
 
         createPlayerTableau: function(player) {
@@ -199,6 +226,11 @@ function (dojo, declare) {
                     <DIV id="yellowResource_${player.player_id}" class="resourceAmount"> : ${player.yellow_resource_qty} </DIV>
                 </DIV>
             `);
+
+            resourcePlayer = document.querySelectorAll('.resource');
+            resourcePlayer.forEach(resource => {         
+                resource.addEventListener('click', (e) => this.ttEventHandlers.onPlayerResourceBankClick.call(this,e.target.id));
+            });
         },
 
         createPlayerHand: function(player, hand) 
@@ -223,10 +255,11 @@ function (dojo, declare) {
                     <div id="cardTarget_${player.player_id}_${count}" class="cardTarget addSpace">
                         <div id="card_${card.id}" class="card" style="background-position-x: ${-80 * card.id}px;"></div>
                     </div>`);
-                
+
+                    //add event listener.
+                    $('card_'+card.id).addEventListener('click', (e) => this.ttEventHandlers.onCardClick.call(this,e.target.id));
                     count++;
             });
-            
         },
         
         setup: function( gamedatas )
@@ -285,32 +318,18 @@ function (dojo, declare) {
                     if (!this.isCurrentPlayerActive()) return;
 
                     console.log('selectAction');
-                    // Add onClick handler to all divs of the action board
-                    const actionBoardChoices = document.querySelectorAll('#actionBoard_'+this.getActivePlayerId()+' .actionBoardSelectionTarget');
-                    actionBoardChoices.forEach(choice => {
-                        choice.removeEventListener('click', (e) => this.ttEventHandlers.onActionBoardClick.call(this,e.target.id));
-                        choice.addEventListener('click', (e) => this.ttEventHandlers.onActionBoardClick.call(this,e.target.id));
-                    });
-
+                   
                     //Remove handlers if the action has already been chosen; add a check mark.
                     
                     selections = args.args.actionBoardSelections;
                     for (let selectionDivID in selections) {
                         if (selections[selectionDivID]['selected'] == true) {
                             $(selectionDivID).classList.add('selected');
-                            $(selectionDivID).removeEventListener('click', this.ttEventHandlers.onActionBoardClick);
                         }
                     }
                 
                     // Add onClick handler to all divs of class "card" within #tableauContainer div
-                    const cards = document.querySelectorAll('#tableauCardContainer_'+ this.getActivePlayerId()+ ' .card');
-                    cards.forEach(card => {
-                        card.removeEventListener('click', this.ttEventHandlers.onCardClick);
-                        if (this.ttUtility.getCardStatus(card) === 'active') 
-                        {
-                            card.addEventListener('click', (e) => this.ttEventHandlers.onCardClick.call(this,e.target.id));
-                        }
-                    });
+                    
                     break;
            
                 case 'dummy':

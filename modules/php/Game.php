@@ -73,9 +73,9 @@ class Game extends \Table
         }
 
 
-        $this->notifyAllPlayers("move", clienttranslate('${player_name} selected ${action}'), [
+        $this->notifyAllPlayers("move", clienttranslate('${player_name} selected <B>${action}<B>'), [
                     "player_name" => $this->getActivePlayerName(),
-                    "action" => $action,
+                    "action" => strtoupper($action),
                     "selectionDivID" => $selectionDivID,
             ]);
         
