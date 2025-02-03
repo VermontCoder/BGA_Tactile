@@ -478,7 +478,7 @@ function (dojo, declare) {
         {
             console.log( 'notif_move' );
             console.log( notif );
-            $(notif.args.selectionDivID).classList.add('selected');
+           
             
             //animation code?
 

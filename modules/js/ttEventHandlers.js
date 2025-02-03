@@ -17,19 +17,27 @@ define([
         // due to use of the call method of javascript!
 
         onActionBoardClick: function( selectionDivID ) {
+
+            //Do not respond if not current player or this move has already been processed.
             if(!this.isCurrentPlayerActive()) { return; }
+            if(this.gamedatas.gamestate.args.actionBoardSelections['selected']) { return; } 
 
             //this.gamedatas.gamestate.args.variable is variable from state args - I think.
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
+
+            //check if this is actually an uncheck
+            if ($(selectionDivID).classList.contains('selected')) {
+                $(selectionDivID).classList.remove('selected');
+                this.restoreServerGameState();
+                return;
+            }
 
             selectionData = this.ttUtility.getActionBoardActionData(selectionDivID);
             switch(selectionData.action)
             {
                 case 'move':
-                    this.setClientState("client_selectPiece", 
-                    {
-                        descriptionmyturn : _("${you} must select piece to move"),
-                    });
+                    $(selectionDivID).classList.add('selected');
+                    this.ttMoveSequence.beginMove.call(this);
                     break;
                 case 'gain':
                     break;
@@ -99,5 +107,7 @@ define([
             //     // (most of the time, nothing, as the game will react to notifs / change of state instead)
             // });        
         }
+
+
     });
 }); 

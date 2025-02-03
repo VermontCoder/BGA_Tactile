@@ -10,5 +10,13 @@ define([
         {
         
         },
-    });
+
+        beginMove: function()
+        {
+            this.setClientState("client_selectPiece", 
+            {
+                descriptionmyturn : _("${you} must select piece to move"),
+            });
+        },
+    }); 
 });
