@@ -79,10 +79,15 @@ class Game extends \Table
                     "player_name" => $this->getActivePlayerName(),
                     "action" => strtoupper($action),
                     "selectionDivID" => $selectionDivID,
+                    "legalActions" => $legalActions->legalActions(),
             ]);
         
-        // at the end of the action, move to the next state
-        $this->gamestate->nextState("nextPlayer");
+       
+        //if no legal actions are left, move to the next player
+        if (count($legalActions->legalActions()) == 0)
+        {
+            $this->gamestate->nextState("nextPlayer");
+        }
 
 
         // Retrieve the active player ID.

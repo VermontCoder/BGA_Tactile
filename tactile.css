@@ -327,7 +327,7 @@
  }
  
  .tableauLabel.red {background-color: red;}
- .tableauLabel.yellow {background-color: yellow;}
+ .tableauLabel.yellow {background-color: yellow; color: black;}
  .tableauLabel.green {background-color: green;}
  .tableauLabel.blue {background-color: blue;}
  

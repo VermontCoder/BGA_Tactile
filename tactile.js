@@ -394,13 +394,19 @@ function (dojo, declare) {
         
         updateState: function( args )
         {
-            players = args.players;
-            activePlayer = players[this.player_id];
+            const players = args.players;
+            for (const player_id in players) 
+            {
+                const player = players[player_id];
 
-            $('tableau_' + this.player_id).remove();
-            this.createPlayerTableau(activePlayer, args.actionBoardSelections);
-            playerHand = this.ttUtility.getPlayerHand(activePlayer.player_id, args.hands);
-            this.createPlayerHand(activePlayer, playerHand);
+                $('tableau_' + player_id).remove();
+                this.createPlayerTableau(player, args.actionBoardSelections);
+                playerHand = this.ttUtility.getPlayerHand(player.player_id, args.hands);
+                this.createPlayerHand(player, playerHand);
+            }
+
+            //move the current player's tableau to the top
+            $('tableauContainer').prepend($('tableau_'+this.player_id));
         },
 
 
@@ -454,17 +460,18 @@ function (dojo, declare) {
 
         notif_showVariable: function( notif )
         {
-            //console.log( JSON.stringify(notif) );
+            console.log( JSON.stringify(notif) );
         },
         
         notif_move: function( notif )
         {
             console.log( 'notif_move' );
             console.log( notif );
+            $(notif.args.selectionDivID).classList.add('selected');
             
             //animation code?
 
-            //$(notif.args.selectionDivID).classList.add('selected');
+            
             
             // Note: notif.args contains the arguments specified during you "notifyAllPlayers" / "notifyPlayer" PHP call    
         }

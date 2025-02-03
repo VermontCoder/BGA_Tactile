@@ -113,7 +113,7 @@ class ttActionBoardSelections
         return $selected;
     }
     
-    public function getPlayerSelections($player_id)
+    public function getPlayerSelections(int $player_id) : array
     {
         if (empty($this->actionBoardSelections))
         {

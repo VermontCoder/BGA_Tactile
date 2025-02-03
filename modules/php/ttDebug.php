@@ -11,6 +11,10 @@ class ttDebug
 
     public function showVariable($nameOfVariable,$variable)
     {
-        $this->game->notifyAllPlayers('showVariable', $nameOfVariable.':'.json_encode( $variable));
+        $this->game->notifyAllPlayers('showVariable', $nameOfVariable.':'.json_encode( $variable),
+        [
+            "nameOfVariable" => $nameOfVariable,
+            "variable" => $variable,
+        ]);
     }
 }

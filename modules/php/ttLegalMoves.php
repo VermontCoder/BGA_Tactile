@@ -39,17 +39,23 @@ class ttLegalMoves
         $actionBoardSelections = new ttActionBoardSelections($this->game);
         $playerSelections = $actionBoardSelections->getPlayerSelections($player_id);
 
-        $legal = true;
+        //if the player has already made two selections, the only legal selections come from the cards.
+        $legal = count($playerSelections) < 2;
 
         //if the player has already made a selection of this action, it is not legal to make another selection of the same action
-        $legal = !array_filter($playerSelections, function($selection) use ($action) {
-            return $selection['action'] == $action;
-        });
+         // Check if any of the arrays in $playerSelections contain a key 'action' with a value matching $action
+        foreach ($playerSelections as $selection) 
+        {
+            if ($selection == $action) {
+                $legal = false;
+                break;
+            }
+        }
 
         foreach($activeCardsInHand as $card)
         {
             $cardData = ttUtility::getCardData($card);
-            if($card['action'] == $action)
+            if($cardData['action'] == $action)
             {
                 $legal = true;
                 break;
