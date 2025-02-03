@@ -21,15 +21,35 @@ define([
 
             //this.gamedatas.gamestate.args.variable is variable from state args - I think.
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
+
+            selectionData = this.ttUtility.getActionBoardActionData(selectionDivID);
+            switch(selectionData.action)
+            {
+                case 'move':
+                    this.setClientState("client_selectPiece", 
+                    {
+                        descriptionmyturn : _("${you} must select piece to move"),
+                    });
+                    break;
+                case 'gain':
+                    break;
+                case 'buy':
+                    break;
+                case 'swap':
+                    break;
+                case 'reset':
+                    break;
+                
+            }
            
-            this.clientStateArgs.selectionDivID = selectionDivID;
+            //this.clientStateArgs.selectionDivID = selectionDivID;
             // this.setClientState("client_selectPiece", {
             //                    descriptionmyturn : _("${you} must select piece to move"),
             //                });
 
-            this.bgaPerformAction("actActionBoardClick", {
-                selectionDivID,
-            });
+            // this.bgaPerformAction("actActionBoardClick", {
+            //     selectionDivID,
+            // });
         },
 
         onTileClick: function( tileID ) {

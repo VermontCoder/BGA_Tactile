@@ -20,7 +20,12 @@ define([
     "ebg/core/gamegui",
     "ebg/counter",
     g_gamethemeurl + "modules/js/ttUtility.js",
-    g_gamethemeurl + "modules/js/ttEventHandlers.js"
+    g_gamethemeurl + "modules/js/ttEventHandlers.js",
+    g_gamethemeurl + "modules/js/ttMoveSequence.js",
+    g_gamethemeurl + "modules/js/ttGainSequence.js",
+    g_gamethemeurl + "modules/js/ttBuySequence.js",
+    g_gamethemeurl + "modules/js/ttSwapSequence.js",
+    g_gamethemeurl + "modules/js/ttResetSequence.js"
 ],
 
 function (dojo, declare) {
@@ -30,7 +35,13 @@ function (dojo, declare) {
 
             this.ttUtility = new bgagame.ttUtility();
             this.ttEventHandlers = new bgagame.ttEventHandlers();
-            this.clientStateArgs = {};
+            this.ttMoveSequence = new bgagame.ttMoveSequence();
+            this.ttGainSequence = new bgagame.ttGainSequence();
+            this.ttBuySequence = new bgagame.ttBuySequence();
+            this.ttSwapSequence = new bgagame.ttSwapSequence();
+            this.ttResetSequence = new bgagame.ttResetSequence();
+            
+            //this.clientStateArgs = {};
               
             // Here, you can init the global variables of your user interface
             // Example:
