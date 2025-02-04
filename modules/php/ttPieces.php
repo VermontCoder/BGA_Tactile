@@ -7,7 +7,6 @@ namespace Bga\Games\tactile;
 class ttPieces
 {
     public array $pieces = array();
-    const PIECESHOMES = ['green' => '0_0', 'blue' => '5_0', 'red' => '0_5', 'yellow' => '5_5'];
 
     public function __construct(Game $game)
     {
@@ -25,7 +24,7 @@ class ttPieces
                 $piece['player_id'] = $player_id;
                 $piece['piece_color'] = $player['color_name'];
                 $piece['finished'] = false;
-                $piece['location'] = self::PIECESHOMES[$player['color_name']];
+                $piece['location'] = ttBoard::COLORHOMES[$player['color_name']];
                 $this->pieces[] = $piece;
             }
         }
