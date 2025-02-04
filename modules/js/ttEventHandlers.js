@@ -23,6 +23,7 @@ define([
             if(this.gamedatas.gamestate.args.actionBoardSelections['selected']) { return; } 
 
             //this.gamedatas.gamestate.args.variable is variable from state args - I think.
+            //this.gamedatas.gamestate.name is the name of the client state.
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
 
             //check if this is actually an uncheck
@@ -69,6 +70,34 @@ define([
 
         onPieceClick: function( pieceID ) {
             if(!this.isCurrentPlayerActive()) { return; }
+
+            //does this piece have any moves?
+            const legalMoves = this.gamedatas.gamestate.args.legalMoves[pieceID];
+            if (legalMoves.length == 0) 
+            {
+                this.showMessage(_("This piece has no legal moves!"),'error');
+                this.restoreServerGameState(); 
+                return; 
+            }
+
+            //are we in the right state to be able to move a piece?
+            if(this.gamedatas.gamestate.name == 'client_selectPiece_move') 
+            {
+                //check if piece is the active player's piece
+                if (!pieceID.startsWith(String(this.getActivePlayerId()))) { return; }
+                this.ttMoveSequence.selectPiece.call(this, pieceID); 
+            }
+            else if (this.gamedatas.gamestate.name == 'client_selectPiece_push')
+            {
+                //check if piece is NOT the active player's piece
+                if (pieceID.startsWith(String(this.getActivePlayerId()))) { return; }
+                this.ttPushSequence.selectPiece.call(this, pieceID);
+            }
+            else
+            {
+                return;
+            }
+
             console.log('onPieceClick', JSON.stringify(pieceID));
            
             //TBD piece click handling.

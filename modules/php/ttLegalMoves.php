@@ -42,7 +42,7 @@ class ttLegalMoves
         //if the player has already made two selections, the only legal selections come from the cards.
         $legal = count($playerSelections) < 2;
 
-        //if the player has already made a selection of this action, it is not legal to make another selection of the same action
+        //if the player has already made a selection of this action on the action board, it is not legal to make another selection of the same action
          // Check if any of the arrays in $playerSelections contain a key 'action' with a value matching $action
         foreach ($playerSelections as $selection) 
         {
@@ -68,7 +68,7 @@ class ttLegalMoves
     public function legalMoves() : array
     {
         $legalMoves = [];
-        $player_id = (int)$this->game->getActivePlayerId();
+        //$player_id = (int)$this->game->getActivePlayerId();
 
         $piecesObj = new ttPieces($this->game);
         
@@ -77,7 +77,7 @@ class ttLegalMoves
 
         foreach($pieces as $piece)
         {
-            if ($piece['piece_owner'] != $player_id) continue;
+            //if ($piece['piece_owner'] != $player_id) continue;
             if (ttPieces::isPieceFinished($piece)) continue;
 
             $possibleMoves = ttUtility::getAdjacentSpacesIDs($piece['location']);
@@ -90,10 +90,7 @@ class ttLegalMoves
 
             $possibleMoves = array_diff($possibleMoves, array_values($illegalLocations));
 
-
-            $pieceMoves = [$piece['piece_id'] => $possibleMoves];
-            
-            $legalMoves[] = $pieceMoves;
+            $legalMoves[ $piece['piece_id']] = $possibleMoves;
         }
 
         return $legalMoves;
