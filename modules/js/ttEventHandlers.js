@@ -67,9 +67,10 @@ define([
 
         onTileClick: function( tileID ) {
             if(!this.isCurrentPlayerActive()) { return; }
+            if(!$(tileID).classList.contains('legalMove')) { return; }
             console.log('onTileClick', JSON.stringify(tileID));
            
-            //TBD tile click handling.
+            this.ttMoveSequence.movePiece.call(this, tileID);
         },
 
         onPieceClick: function( pieceID ) {
@@ -150,7 +151,11 @@ define([
 
             //restore action board selections
             this.createActionBoardSelections(this.getActivePlayerId(),
-                    this.gamedatas.gamestate.args.actionBoardSelections); 
+                    this.gamedatas.gamestate.args.actionBoardSelections);
+            
+            //clear any other highlighting
+            const allDivs = document.querySelectorAll('*');
+            allDivs.forEach(el => el.classList.remove('highlighted'));
         }
     });
 }); 

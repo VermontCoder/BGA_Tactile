@@ -40,6 +40,29 @@ define([
             }
 
             this.curPiece = pieceID;
+        },
+
+        movePiece: function( tileID )
+        {
+            console.log("movePiece: " + tileID);
+
+            this.bgaPerformAction("actMoveOrPush", { 
+                pieceID: this.curPiece,
+                tileID: tileID,
+                isPush: false
+            }
+            )//.then(() =>  {                
+                // What to do after the server call if it succeeded
+                // (most of the time, nothing, as the game will react to notifs / change of state instead)
+           // });       
+
+            // this.ajaxcall("/tt/tt/movePiece.html", { 
+            //     pieceID: this.curPiece,
+            //     tileID: tileID,
+            //     lock: true
+            // }, this, function(result) {
+            //     // What to do after the server call
+            // });
         }
     }); 
 });
