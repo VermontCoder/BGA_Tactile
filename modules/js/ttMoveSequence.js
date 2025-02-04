@@ -23,7 +23,15 @@ define([
         {
             console.log("selectPiece: " + pieceID);
 
+            //does this piece have any moves?
             const legalMoves = this.gamedatas.gamestate.args.legalMoves[pieceID];
+            if (legalMoves.length == 0) 
+            {
+                this.showMessage(_("This piece has no legal moves!"),'error');
+                this.restoreServerGameState(); 
+                return; 
+            }
+            
             for(i=0; i< legalMoves.length; i++)
             {
                 const move = legalMoves[i];

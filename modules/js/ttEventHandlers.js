@@ -20,11 +20,13 @@ define([
 
             //Do not respond if not current player or this move has already been processed.
             if(!this.isCurrentPlayerActive()) { return; }
-            if(this.gamedatas.gamestate.args.actionBoardSelections['selected']) { return; } 
+            if(this.gamedatas.gamestate.args.actionBoardSelections[selectionDivID]['selected']) { return; } 
 
             //this.gamedatas.gamestate.args.variable is variable from state args - I think.
             //this.gamedatas.gamestate.name is the name of the client state.
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
+
+            this.ttEventHandlers.clearAllPreviousHighlighting.call(this);
 
             //check if this is actually an uncheck
             if ($(selectionDivID).classList.contains('selected')) {
@@ -33,11 +35,13 @@ define([
                 return;
             }
 
+            $(selectionDivID).classList.add('selected');
+            
             selectionData = this.ttUtility.getActionBoardActionData(selectionDivID);
             switch(selectionData.action)
             {
                 case 'move':
-                    $(selectionDivID).classList.add('selected');
+                    
                     this.ttMoveSequence.beginMove.call(this);
                     break;
                 case 'gain':
@@ -71,27 +75,20 @@ define([
         onPieceClick: function( pieceID ) {
             if(!this.isCurrentPlayerActive()) { return; }
 
-            //does this piece have any moves?
-            const legalMoves = this.gamedatas.gamestate.args.legalMoves[pieceID];
-            if (legalMoves.length == 0) 
-            {
-                this.showMessage(_("This piece has no legal moves!"),'error');
-                this.restoreServerGameState(); 
-                return; 
-            }
-
             //are we in the right state to be able to move a piece?
             if(this.gamedatas.gamestate.name == 'client_selectPiece_move') 
             {
                 //check if piece is the active player's piece
                 if (!pieceID.startsWith(String(this.getActivePlayerId()))) { return; }
+                this.ttEventHandlers.clearTileHighlighting.call(this);
                 this.ttMoveSequence.selectPiece.call(this, pieceID); 
             }
             else if (this.gamedatas.gamestate.name == 'client_selectPiece_push')
             {
                 //check if piece is NOT the active player's piece
                 if (pieceID.startsWith(String(this.getActivePlayerId()))) { return; }
-                this.ttPushSequence.selectPiece.call(this, pieceID);
+                this.ttEventHandlers.clearTileHighlighting.call(this);
+                this.ttMoveSequence.selectPiece.call(this, pieceID);
             }
             else
             {
@@ -127,6 +124,9 @@ define([
         onCardClick: function( card_id )
         {
             if(!this.isCurrentPlayerActive()) { return; }
+            
+            //tbd - check if this card is active.
+            this.ttEventHandlers.clearAllPreviousHighlighting.call(this);
             console.log( 'onCardClick', card_id );
 
             // this.bgaPerformAction("actPlayCard", { 
@@ -135,8 +135,22 @@ define([
             //     // What to do after the server call if it succeeded
             //     // (most of the time, nothing, as the game will react to notifs / change of state instead)
             // });        
+        },
+
+        clearTileHighlighting: function()
+        {
+            //remove tile highlighting
+            const tiles = document.querySelectorAll('.tile');
+            tiles.forEach(el => el.classList.remove('legalMove'));
+        },
+
+        clearAllPreviousHighlighting: function()
+        {
+            this.ttEventHandlers.clearTileHighlighting.call(this);
+
+            //restore action board selections
+            this.createActionBoardSelections(this.getActivePlayerId(),
+                    this.gamedatas.gamestate.args.actionBoardSelections); 
         }
-
-
     });
 }); 

@@ -210,11 +210,15 @@ function (dojo, declare) {
                  choice.addEventListener('click', (e) => this.ttEventHandlers.onActionBoardClick.call(this,e.target.id));
             });
 
+            this.createActionBoardSelections(player.player_id, actionBoardSelections);
             
+        },
+
+        createActionBoardSelections: function(player_id, actionBoardSelections) {
             for (let selectionDivID in actionBoardSelections) 
             {
                 //only manipulate the action board of this player
-                if (actionBoardSelections[selectionDivID]['player_id'] != player.player_id) continue;
+                if (actionBoardSelections[selectionDivID]['player_id'] != player_id) continue;
 
                 if (actionBoardSelections[selectionDivID]['selected'] == true) {
                     $(selectionDivID).classList.add('selected');
@@ -338,7 +342,7 @@ function (dojo, declare) {
             {
                 case 'selectAction':
                     //debugger;
-
+                    
                     this.updateState(args.args);
                     break;
            

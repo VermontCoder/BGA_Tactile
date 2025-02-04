@@ -59,6 +59,11 @@ class ttActionBoardSelections
         $sql = "SELECT selection_div_id, action, player_id, selected FROM action_board_selections";
         $this->actionBoardSelections = $this->game->getCollectionFromDb($sql);
 
+        foreach($this->actionBoardSelections as $selection_div_id => $actionBoardSelection)
+        {
+            $this->actionBoardSelections[$selection_div_id]['selected'] = $actionBoardSelection['selected'] == "1" ? true : false;
+        }
+
         return $this->actionBoardSelections;
     }
 
@@ -72,7 +77,7 @@ class ttActionBoardSelections
         {
             if($actionBoardSelection['player_id'] == $player_id)
             {
-                $actionBoardSelection['selected'] = 0;
+                $actionBoardSelection['selected'] = false;
             }
         }
     }
@@ -87,7 +92,7 @@ class ttActionBoardSelections
         {
             if($actionBoardSelection['selection_div_id'] == $selection_div_id)
             {
-                $actionBoardSelection['selected'] = 1;
+                $actionBoardSelection['selected'] = true;
                 break;
             }
         }
@@ -104,7 +109,7 @@ class ttActionBoardSelections
 
         foreach($this->actionBoardSelections as $actionBoardSelection)
         {
-            if($actionBoardSelection['selected'] == 1)
+            if($actionBoardSelection['selected'] == true)
             {
                 $selected[] = $actionBoardSelection['action'];
             }
@@ -124,7 +129,7 @@ class ttActionBoardSelections
 
         foreach($this->actionBoardSelections as $actionBoardSelection)
         {
-            if($actionBoardSelection['player_id'] == $player_id && $actionBoardSelection['selected'] == 1)
+            if($actionBoardSelection['player_id'] == $player_id && $actionBoardSelection['selected'] == true)
             {
                 $selected[] = $actionBoardSelection['action'];
             }
