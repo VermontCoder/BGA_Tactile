@@ -9,13 +9,45 @@ class ttBoard
     const BOARD_WIDTH = 6;
     const BOARD_HEIGHT = 6;
     
-    const COLORS = ['red','yellow','green','blue'];
-    const PLAYERHOMES = ['0_0' => 'blue', '5_0' => 'green', '0_5' => 'red', '5_5' => 'yellow'];
-    const COLORHOMES = ['blue' => '0_0', 'green' => '5_0', 'red' => '0_5', 'yellow' => '5_5'];
+    const BOTTOMLEFT = '0_5';
+    const TOPLEFT = '0_0';
+    const TOPRIGHT = '5_0';
+    const BOTTOMRIGHT = '5_5';
     
-    const PLAYERGOALS = ['blue' => '5_5', 'green' => '0_5', 'red' => '5_0', 'yellow' => '0_0'];
-    const ILLEGALTILES = ['blue' => ['0_5', '5_0'], 'green' => ['0_0', '5_5'], 'red' => ['0_0', '5_5'], 'yellow' => ['0_5', '5_0']];
-    //TBD - 3 player different.
+    const COLORS = ['red','yellow','green','blue'];
+ 
+    // Define player homes using position constants
+    const PLAYERHOMES = [
+        self::TOPLEFT => 'yellow', 
+        self::TOPRIGHT => 'green', 
+        self::BOTTOMLEFT => 'red', 
+        self::BOTTOMRIGHT => 'blue'
+    ];
+
+    const COLORHOMES = [
+         'blue' => self::BOTTOMRIGHT, 
+         'green' => self::TOPRIGHT, 
+         'red' => self::BOTTOMLEFT, 
+         'yellow' => self::TOPLEFT
+    ];
+ 
+     // Define player goals using position constants
+    const PLAYERGOALS = [
+         'blue' => self::TOPLEFT, 
+         'green' => self::BOTTOMLEFT, 
+         'red' => self::TOPRIGHT, 
+         'yellow' => self::BOTTOMRIGHT
+    ];
+ 
+    // Define illegal tiles using position constants
+    const ILLEGALTILES = [
+         'blue' => [self::TOPRIGHT, self::BOTTOMLEFT],
+         'green' => [self::BOTTOMRIGHT, self::TOPLEFT],
+         'red' => [self::TOPLEFT, self::BOTTOMRIGHT],
+         'yellow' => [self::BOTTOMLEFT, self::TOPRIGHT]
+     ];
+ 
+     //TBD - 3 player different.
 
     public array $tiles = array();
 

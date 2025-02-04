@@ -22,7 +22,7 @@ class ttPieces
             {
                 $piece = array();
                 $piece['piece_id'] = 'piece_' . $player_id . '_'.strval($i);
-                $piece['piece_owner'] = $player_id;
+                $piece['player_id'] = $player_id;
                 $piece['piece_color'] = $player['color_name'];
                 $piece['finished'] = false;
                 $piece['location'] = self::PIECESHOMES[$player['color_name']];
@@ -38,20 +38,20 @@ class ttPieces
         foreach ($pieces as $piece) {
             $query_values[] = vsprintf("('%s', '%s', '%s', '%s', '%d')", [
                 $piece['piece_id'],
-                $piece['piece_owner'],
+                $piece['player_id'],
                 $piece['piece_color'],
                 $piece['location'],
                 $piece['finished'],
             ]);
         }
 
-        $query = sprintf("INSERT INTO pieces (piece_id, piece_owner, piece_color, location, finished) VALUES %s", implode(',', $query_values));
+        $query = sprintf("INSERT INTO pieces (piece_id, player_id, piece_color, location, finished) VALUES %s", implode(',', $query_values));
         $this->game::DbQuery($query);
     }
 
     public function deserializePiecesFromDb()
     {
-        $sql = "SELECT piece_id, piece_owner, piece_color, location, finished FROM pieces";
+        $sql = "SELECT piece_id, player_id, piece_color, location, finished FROM pieces";
         $this->pieces = $this->game->getCollectionFromDb($sql);
 
         foreach ($this->pieces as $piece)
@@ -82,7 +82,8 @@ class ttPieces
     public function movePiece($piece_id, $location)
     {
         $this->pieces[$piece_id]['location'] = $location;
-        //$this->serializePiecesToDb($this->pieces);
+        $sql = sprintf("UPDATE pieces SET location = '%s' WHERE piece_id = '%s'", $location, $piece_id); 
+        $this->game::DbQuery($sql);
     }
 
     public static function isPieceFinished(array $piece) : bool

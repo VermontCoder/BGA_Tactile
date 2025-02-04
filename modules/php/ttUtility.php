@@ -53,9 +53,9 @@ class ttUtility
 
         $adjacentSpaces = [];
 
-        if ($x >1) $adjacentSpaces[] = ttUtility::xy2ID($x-1, $y);
+        if ($x >= 1) $adjacentSpaces[] = ttUtility::xy2ID($x-1, $y);
         if ($x < ttBoard::BOARD_WIDTH-1) $adjacentSpaces[] = ttUtility::xy2ID($x+1, $y);
-        if ($y >1) $adjacentSpaces[] = ttUtility::xy2ID($x, $y-1);
+        if ($y >= 1) $adjacentSpaces[] = ttUtility::xy2ID($x, $y-1);
         if ($y < ttBoard::BOARD_HEIGHT-1) $adjacentSpaces[] = ttUtility::xy2ID($x, $y+1);
 
         return $adjacentSpaces;

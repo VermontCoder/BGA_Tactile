@@ -75,6 +75,7 @@ define([
         onPieceClick: function( piece_id ) {
             if(!this.isCurrentPlayerActive()) { return; }
 
+            debugger;
             pieceData = this.ttUtility.parsePieceID(piece_id);
 
             //are we in the right state to be able to move a piece?

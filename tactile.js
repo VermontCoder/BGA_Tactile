@@ -186,6 +186,11 @@ function (dojo, declare) {
             });
         },
 
+        createPieces: function(players,pieces) {
+            Object.values(pieces).forEach(piece => {
+                this.createPiece(players[piece.player_id], piece);
+            });
+        },
         createPiece: function(player,piece) { 
             const divText = '<DIV id="'+piece.piece_id+'" class="playingPiece '+player.color_name+'"></DIV>';
             document.getElementById('tile_'+piece.location).insertAdjacentHTML('beforeend', divText);
@@ -229,7 +234,7 @@ function (dojo, declare) {
             }
         },
 
-        createPlayerTableau: function(player, actionBoardSelections) {
+        createPlayerTableau: function(player, hands, actionBoardSelections) {
             document.getElementById('tableauContainer').insertAdjacentHTML('afterbegin', `
             <DIV id="tableau_${player.player_id}" class = "tableau">
                 <SPAN id="tableauLabel_${player.player_id}" class="tableauLabel ${player.color_name}">${player.player_name}</SPAN>
@@ -237,6 +242,9 @@ function (dojo, declare) {
             </DIV>`);
 
             this.createPlayerActionBoard(player, actionBoardSelections);
+
+            playerHand = this.ttUtility.getPlayerHand(player.player_id, hands);
+            this.createPlayerHand(player, playerHand);
         },
         //************************************* */
 
@@ -260,6 +268,8 @@ function (dojo, declare) {
                 resource.addEventListener('click', (e) => this.ttEventHandlers.onPlayerResourceBankClick.call(this,e.target.id));
             });
         },
+
+        
 
         createPlayerHand: function(player, hand) 
         {
@@ -302,19 +312,11 @@ function (dojo, declare) {
             this.createTopAndTableauContainer();
             this.createStore(gamedatas.store);
             this.createBoard(gamedatas.board, gamedatas.playerHomes);
-
-            Object.values(gamedatas.pieces).forEach(piece => {
-                this.createPiece(gamedatas.players[piece.piece_owner], piece);
-            });
-            
+            this.createPieces(gamedatas.players, gamedatas.pieces);
 
             Object.values(gamedatas.players).forEach(player => {
                 this.createPlayerPanel(player);
-                this.createPlayerTableau(player, gamedatas.actionBoardSelections);
-
-                playerHand = this.ttUtility.getPlayerHand(player.player_id, gamedatas.hands);
-                
-                this.createPlayerHand(player, playerHand);
+                this.createPlayerTableau(player, gamedatas.hands, gamedatas.actionBoardSelections);
             });
             
             //move the current player's tableau to the top
@@ -410,18 +412,24 @@ function (dojo, declare) {
         updateState: function( args )
         {
             const players = args.players;
+
+            //TABLEAU
             for (const player_id in players) 
             {
                 const player = players[player_id];
 
                 $('tableau_' + player_id).remove();
-                this.createPlayerTableau(player, args.actionBoardSelections);
-                playerHand = this.ttUtility.getPlayerHand(player.player_id, args.hands);
-                this.createPlayerHand(player, playerHand);
+                this.createPlayerTableau(player, args.hands, args.actionBoardSelections);
             }
 
             //move the current player's tableau to the top
             $('tableauContainer').prepend($('tableau_'+this.player_id));
+
+            //PIECES
+            document.querySelectorAll('.playingPiece').forEach(piece => piece.remove());
+            this.createPieces(players, args.pieces);
+
+            //STORE
         },
 
         clearTileHighlighting: function()

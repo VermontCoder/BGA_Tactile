@@ -120,14 +120,15 @@ class Game extends \Table
     {
         $legalActions = new ttLegalMoves($this);
         $legalMoves = $legalActions->legalMoves();
+        $location = ttUtility::tileID2location($tileID);
 
-        if (!in_array(ttUtility::tileID2location($tileID),$legalMoves[$piece_id]))
+        if (!in_array($location,$legalMoves[$piece_id]))
         {
             throw new \BgaUserException('Invalid move choice');
         }
 
         $pieces = new ttPieces($this);
-        $pieces->movePiece($piece_id,$tileID,$isPush);
+        $pieces->movePiece($piece_id,$location,$isPush);
 
         $this->notifyAllPlayers("move", clienttranslate('${player_name} moved a piece'), [
             "player_name" => $this->getActivePlayerName(),
