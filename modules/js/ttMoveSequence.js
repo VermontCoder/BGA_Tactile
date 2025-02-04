@@ -19,12 +19,12 @@ define([
             });
         },
 
-        selectPiece: function( pieceID )
+        selectPiece: function( piece_id )
         {
-            console.log("selectPiece: " + pieceID);
+            console.log("selectPiece: " + piece_id);
 
             //does this piece have any moves?
-            const legalMoves = this.gamedatas.gamestate.args.legalMoves[pieceID];
+            const legalMoves = this.gamedatas.gamestate.args.legalMoves[piece_id];
             if (legalMoves.length == 0) 
             {
                 this.showMessage(_("This piece has no legal moves!"),'error');
@@ -39,7 +39,12 @@ define([
                 moveDiv.classList.add('legalMove');
             }
 
-            this.curPiece = pieceID;
+            this.curPiece = piece_id;
+
+            this.setClientState("client_selectTile", 
+            {
+                descriptionmyturn : _("${you} must select tile to move piece to"),  
+            });
         },
 
         movePiece: function( tileID )
@@ -47,7 +52,7 @@ define([
             console.log("movePiece: " + tileID);
 
             this.bgaPerformAction("actMoveOrPush", { 
-                pieceID: this.curPiece,
+                piece_id: this.curPiece,
                 tileID: tileID,
                 isPush: false
             }
@@ -57,7 +62,7 @@ define([
            // });       
 
             // this.ajaxcall("/tt/tt/movePiece.html", { 
-            //     pieceID: this.curPiece,
+            //     piece_id: this.curPiece,
             //     tileID: tileID,
             //     lock: true
             // }, this, function(result) {

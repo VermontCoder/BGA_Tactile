@@ -19,7 +19,7 @@ define([
             });
         },
 
-        selectPiece: function( pieceId )
+        selectPiece: function( piece_id )
         {
 
         }

@@ -26,7 +26,7 @@ define([
             //this.gamedatas.gamestate.name is the name of the client state.
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
 
-            this.ttEventHandlers.clearAllPreviousHighlighting.call(this);
+            this.clearAllPreviousHighlighting();
 
             //check if this is actually an uncheck
             if ($(selectionDivID).classList.contains('selected')) {
@@ -41,7 +41,6 @@ define([
             switch(selectionData.action)
             {
                 case 'move':
-                    
                     this.ttMoveSequence.beginMove.call(this);
                     break;
                 case 'gain':
@@ -73,32 +72,32 @@ define([
             this.ttMoveSequence.movePiece.call(this, tileID);
         },
 
-        onPieceClick: function( pieceID ) {
+        onPieceClick: function( piece_id ) {
             if(!this.isCurrentPlayerActive()) { return; }
+
+            pieceData = this.ttUtility.parsePieceID(piece_id);
 
             //are we in the right state to be able to move a piece?
             if(this.gamedatas.gamestate.name == 'client_selectPiece_move') 
             {
                 //check if piece is the active player's piece
-                if (!pieceID.startsWith(String(this.getActivePlayerId()))) { return; }
-                this.ttEventHandlers.clearTileHighlighting.call(this);
-                this.ttMoveSequence.selectPiece.call(this, pieceID); 
+                if (!pieceData.player_id == this.getActivePlayerId()) { return; }
             }
             else if (this.gamedatas.gamestate.name == 'client_selectPiece_push')
             {
                 //check if piece is NOT the active player's piece
-                if (pieceID.startsWith(String(this.getActivePlayerId()))) { return; }
-                this.ttEventHandlers.clearTileHighlighting.call(this);
-                this.ttMoveSequence.selectPiece.call(this, pieceID);
+                if (pieceData.player_id == this.getActivePlayerId()) { return; }
             }
             else
             {
                 return;
             }
 
-            console.log('onPieceClick', JSON.stringify(pieceID));
+            console.log('onPieceClick', JSON.stringify(pieceData));
+
+            this.clearTileHighlighting();
+            this.ttMoveSequence.selectPiece.call(this, piece_id); 
            
-            //TBD piece click handling.
         },
 
         onResourceBankClick: function( resource_id ) {
@@ -138,24 +137,6 @@ define([
             // });        
         },
 
-        clearTileHighlighting: function()
-        {
-            //remove tile highlighting
-            const tiles = document.querySelectorAll('.tile');
-            tiles.forEach(el => el.classList.remove('legalMove'));
-        },
-
-        clearAllPreviousHighlighting: function()
-        {
-            this.ttEventHandlers.clearTileHighlighting.call(this);
-
-            //restore action board selections
-            this.createActionBoardSelections(this.getActivePlayerId(),
-                    this.gamedatas.gamestate.args.actionBoardSelections);
-            
-            //clear any other highlighting
-            const allDivs = document.querySelectorAll('*');
-            allDivs.forEach(el => el.classList.remove('highlighted'));
-        }
+        
     });
 }); 

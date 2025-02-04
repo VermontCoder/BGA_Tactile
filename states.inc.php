@@ -73,12 +73,11 @@ $machinestates = [
         "possibleactions" => [
             // these actions are called from the front with bgaPerformAction, and matched to the function on the game.php file
             "actActionBoardClick",
-            "actMove", 
+            "actMoveOrPush", 
             "actGain",
             "actBuy",
             "actSwap",
             "actReset",
-            "actPush",
             "actEndTurn"
         ],
         "transitions" => [ "selectAction" => 2, "nextPlayer" => 10, "gameEnd" => 99]

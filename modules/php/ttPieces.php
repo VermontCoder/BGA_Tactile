@@ -21,7 +21,7 @@ class ttPieces
             for($i=0; $i<2; $i++)
             {
                 $piece = array();
-                $piece['piece_id'] = $player_id . '_'.strval($i);
+                $piece['piece_id'] = 'piece_' . $player_id . '_'.strval($i);
                 $piece['piece_owner'] = $player_id;
                 $piece['piece_color'] = $player['color_name'];
                 $piece['finished'] = false;
@@ -77,6 +77,12 @@ class ttPieces
         }
 
         return $pieceLocations;
+    }
+
+    public function movePiece($piece_id, $location)
+    {
+        $this->pieces[$piece_id]['location'] = $location;
+        //$this->serializePiecesToDb($this->pieces);
     }
 
     public static function isPieceFinished(array $piece) : bool

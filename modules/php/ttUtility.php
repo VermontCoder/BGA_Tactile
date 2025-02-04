@@ -18,6 +18,12 @@ class ttUtility
         return ['x' => intval($loc[0]), 'y' => intval($loc[1])];
     }
 
+    public static function tileID2location(string $tileID): string
+    {
+        $tileData = explode('_', $tileID);
+        return $tileData[1] . '_' . $tileData[2];
+    }
+
     public static function getCardData(array $card) : array
     {
         $cardData = explode('_',$card['type']);

@@ -116,6 +116,30 @@ class Game extends \Table
         
     }
 
+    public function actMoveOrPush(string $piece_id, string $tileID, bool $isPush)
+    {
+        $legalActions = new ttLegalMoves($this);
+        $legalMoves = $legalActions->legalMoves();
+
+        if (!in_array(ttUtility::tileID2location($tileID),$legalMoves[$piece_id]))
+        {
+            throw new \BgaUserException('Invalid move choice');
+        }
+
+        $pieces = new ttPieces($this);
+        $pieces->movePiece($piece_id,$tileID,$isPush);
+
+        $this->notifyAllPlayers("move", clienttranslate('${player_name} moved a piece'), [
+            "player_name" => $this->getActivePlayerName(),
+            "piece_id" => $piece_id,
+            "tileID" => $tileID,
+            "isPush" => $isPush,
+        ]);
+
+        $this->gamestate->nextState("nextPlayer");
+        
+    }
+
     public function actPass(): void
     {
         // Retrieve the active player ID.

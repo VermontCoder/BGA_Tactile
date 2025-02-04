@@ -54,6 +54,12 @@ define([
             };
         },
 
+        parsePieceID(piece_id)
+        {
+            pieceData = piece_id.split('_');
+            return { 'player_id': parseInt(pieceData[1]), 'pieceNum': parseInt(pieceData[2]) };
+        },
+
         getCardStatus(card)
         {
             const statuses = ['innactive', 'active', 'exhuasted'];

@@ -342,8 +342,8 @@ function (dojo, declare) {
             {
                 case 'selectAction':
                     //debugger;
-                    
                     this.updateState(args.args);
+                    this.clearAllPreviousHighlighting();
                     break;
            
                 case 'dummy':
@@ -424,6 +424,25 @@ function (dojo, declare) {
             $('tableauContainer').prepend($('tableau_'+this.player_id));
         },
 
+        clearTileHighlighting: function()
+        {
+            //remove tile highlighting
+            const tiles = document.querySelectorAll('.tile');
+            tiles.forEach(el => el.classList.remove('legalMove'));
+        },
+
+        clearAllPreviousHighlighting: function()
+        {
+            this.clearTileHighlighting();
+
+            //restore action board selections
+            this.createActionBoardSelections(this.getActivePlayerId(),
+                    this.gamedatas.gamestate.args.actionBoardSelections);
+            
+            //clear any other highlighting
+            const allDivs = document.querySelectorAll('*');
+            allDivs.forEach(el => el.classList.remove('highlighted'));
+        },
 
         ///////////////////////////////////////////////////
         //// Player's action
