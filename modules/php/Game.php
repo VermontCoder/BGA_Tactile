@@ -116,7 +116,7 @@ class Game extends \Table
         
     }
 
-    public function actMoveOrPush(string $piece_id, string $tileID, bool $isPush)
+    public function actMoveOrPush(string $piece_id, string $tileID, string $origin) :void
     {
         $legalActions = new ttLegalMoves($this);
         $legalMoves = $legalActions->legalMoves();
@@ -128,17 +128,45 @@ class Game extends \Table
         }
 
         $pieces = new ttPieces($this);
-        $pieces->movePiece($piece_id,$location,$isPush);
+        $pieces->movePiece($piece_id,$location);
 
-        $this->notifyAllPlayers("move", clienttranslate('${player_name} moved a piece'), [
+        if (str_starts_with($origin, 'card'))
+        {
+            $cards = new ttCards($this);
+            $cards->setCardStatus(ttCards::getCardIDFromDivID($origin), 'exhausted');
+        }
+        else
+        {
+            $actionBoardSelections = new ttActionBoardSelections($this);
+            $actionBoardSelections->setSelected($origin);
+        }
+
+        $isPush = ttPieces::parsePieceDivData($piece_id)['player_id'] != $this->getActivePlayerId();
+
+        $this->notifyAllPlayers("moveOrPush", clienttranslate('${player_name} moved a piece'), [
             "player_name" => $this->getActivePlayerName(),
             "piece_id" => $piece_id,
             "tileID" => $tileID,
             "isPush" => $isPush,
         ]);
 
+        //if no legal actions are left, move to the next player
+        //Otherwise, stay move back to selectAction
+        $nextState = $legalActions->hasLegalActions() ? "selectAction" : "nextPlayer";
+        $this->gamestate->nextState($nextState);
+    }
+
+    public function actDoneWithTurn() : void
+    {
+        // Retrieve the active player ID.
+        $player_id = (int)$this->getActivePlayerId();
+
+        $this->notifyAllPlayers("doneWithTurn", clienttranslate('${player_name} has finished their turn'), [
+            "player_id" => $player_id,
+            "player_name" => $this->getActivePlayerName(),
+        ]);
+
         $this->gamestate->nextState("nextPlayer");
-        
     }
 
     public function actPass(): void

@@ -11,6 +11,15 @@ class ttCards
     const COLORS = ['red','yellow','green','blue'];
     const CARDSTATUS = ['innactive' => 0, 'active' => 1, 'exhausted'=> 2]; //index into type_arg
 
+    public static function getCardIDFromDivID(string $divID) : int
+    {
+        if (str_starts_with($divID, 'card_')) return (int)substr($divID, 5);
+        if (str_starts_with($divID, 'storecard_')) return (int)substr($divID, 10);
+
+        throw new \BgaVisibleSystemException("Invalid cardID: $divID");
+        return -1;
+    }
+
     public function __construct(Game $game)
     {
         $this->game = $game;
@@ -43,5 +52,11 @@ class ttCards
 
         $this->game::DbQuery("UPDATE card SET card_id=card_location_arg+500");
         $this->game::DbQuery("UPDATE card SET card_id=card_id-501");
+    }
+
+    public function setCardStatus(int $card_id, string $status) : void
+    {
+        $sql = sprintf("UPDATE card SET type_arg = %01d WHERE card_id = %01d", ttCards::CARDSTATUS[$status], $card_id);
+        $this->game::DbQuery($sql);
     }
 }

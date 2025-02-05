@@ -13,9 +13,9 @@ define([
 
         beginMove: function()
         {
-            this.setClientState("client_selectPiece_push", 
+            this.setClientState("client_selectPiece", 
             {
-                descriptionmyturn : _("${you} must select piece to move"),
+                descriptionmyturn : _("${you} must select piece to push"),
             });
         },
 

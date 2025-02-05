@@ -8,6 +8,12 @@ class ttPieces
 {
     public array $pieces = array();
 
+    public static function parsePieceDivData($piece_id)
+    {
+        $pieceData = explode('_', $piece_id);
+        return ['player_id' => $pieceData[1], 'piece_number' => $pieceData[2]];
+    }
+
     public function __construct(Game $game)
     {
         $this->game = $game;
@@ -83,10 +89,5 @@ class ttPieces
         $this->pieces[$piece_id]['location'] = $location;
         $sql = sprintf("UPDATE pieces SET location = '%s' WHERE piece_id = '%s'", $location, $piece_id); 
         $this->game::DbQuery($sql);
-    }
-
-    public static function isPieceFinished(array $piece) : bool
-    {
-        return $piece['finished'];
     }
 }

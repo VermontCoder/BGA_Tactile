@@ -13,7 +13,7 @@ define([
 
         beginMove: function()
         {
-            this.setClientState("client_selectPiece_move", 
+            this.setClientState("client_selectPiece", 
             {
                 descriptionmyturn : _("${you} must select piece to move"),
             });
@@ -54,7 +54,7 @@ define([
             this.bgaPerformAction("actMoveOrPush", { 
                 piece_id: this.curPiece,
                 tileID: tileID,
-                isPush: false
+                origin: this.eventOrigin
             }
             )//.then(() =>  {                
                 // What to do after the server call if it succeeded

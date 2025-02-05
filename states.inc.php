@@ -78,7 +78,7 @@ $machinestates = [
             "actBuy",
             "actSwap",
             "actReset",
-            "actEndTurn"
+            "actDoneWithTurn"
         ],
         "transitions" => [ "selectAction" => 2, "nextPlayer" => 10, "gameEnd" => 99]
     ],

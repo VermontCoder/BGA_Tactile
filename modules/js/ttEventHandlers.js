@@ -16,26 +16,31 @@ define([
         //In all click handlers, "this" refers to the game object 
         // due to use of the call method of javascript!
 
+        //this.gamedatas.gamestate.args.variable is variable from state args - I think.
+        //this.gamedatas.gamestate.name is the name of the client state.
+
         onActionBoardClick: function( selectionDivID ) {
 
             //Do not respond if not current player or this move has already been processed.
             if(!this.isCurrentPlayerActive()) { return; }
             if(this.gamedatas.gamestate.args.actionBoardSelections[selectionDivID]['selected']) { return; } 
 
-            //this.gamedatas.gamestate.args.variable is variable from state args - I think.
-            //this.gamedatas.gamestate.name is the name of the client state.
+            
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
 
-            this.clearAllPreviousHighlighting();
-
+            
             //check if this is actually an uncheck
             if ($(selectionDivID).classList.contains('selected')) {
                 $(selectionDivID).classList.remove('selected');
                 this.restoreServerGameState();
                 return;
             }
+            this.clearAllPreviousHighlighting();
 
             $(selectionDivID).classList.add('selected');
+
+            //record the event origin for later use.
+            this.eventOrigin = selectionDivID;
             
             selectionData = this.ttUtility.getActionBoardActionData(selectionDivID);
             switch(selectionData.action)
@@ -75,20 +80,15 @@ define([
         onPieceClick: function( piece_id ) {
             if(!this.isCurrentPlayerActive()) { return; }
 
-            debugger;
             pieceData = this.ttUtility.parsePieceID(piece_id);
 
             //are we in the right state to be able to move a piece?
-            if(this.gamedatas.gamestate.name == 'client_selectPiece_move') 
+            if(this.gamedatas.gamestate.name == 'client_selectPiece' || this.gamedatas.gamestate.name == 'client_selectTile') 
             {
                 //check if piece is the active player's piece
-                if (!pieceData.player_id == this.getActivePlayerId()) { return; }
-            }
-            else if (this.gamedatas.gamestate.name == 'client_selectPiece_push')
-            {
-                //check if piece is NOT the active player's piece
-                if (pieceData.player_id == this.getActivePlayerId()) { return; }
-            }
+                //TO DO handle push. This is a push if this.eventOrigin starts with 'card_' AND gamedatas.gamestate.args.hands[card_id].type == contains push
+                if (pieceData.player_id != this.getActivePlayerId()) { return; }
+            } 
             else
             {
                 return;
@@ -129,6 +129,9 @@ define([
             //tbd - check if this card is active.
             this.ttEventHandlers.clearAllPreviousHighlighting.call(this);
             console.log( 'onCardClick', card_id );
+
+            //record the event origin for later use.
+            this.eventOrigin = card_id;
 
             // this.bgaPerformAction("actPlayCard", { 
             //     card_id,

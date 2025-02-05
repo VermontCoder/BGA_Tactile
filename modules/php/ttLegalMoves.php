@@ -20,12 +20,17 @@ class ttLegalMoves
     {
         $legalActions = [];
         $player_id = (int)$this->game->getActivePlayerId();
+        
         //get cards in player's hand which are active
         $activeCardsInHand = $this->game->cards->getCardsOfTypeInLocation(null, ttCards::CARDSTATUS['active'],'hand', $player_id);
 
+        //get the player's selections on the action board
+        $actionBoardSelections = new ttActionBoardSelections($this->game);
+        $playerSelections = $actionBoardSelections->getPlayerSelections($player_id);
+
         foreach(ttLegalMoves::ACTIONS as $action)
         {
-            if ($this->checkActionLegal($action, $player_id, $activeCardsInHand))
+            if ($this->checkActionLegal($action, $playerSelections, $activeCardsInHand))
             {
                 $legalActions[]= $action;
             }
@@ -34,11 +39,13 @@ class ttLegalMoves
         return $legalActions;
     }
 
-    private function checkActionLegal(string $action, int $player_id, array $activeCardsInHand) : bool
+    public function hasLegalActions() : bool
     {
-        $actionBoardSelections = new ttActionBoardSelections($this->game);
-        $playerSelections = $actionBoardSelections->getPlayerSelections($player_id);
+        return count($this->legalActions()) > 0;
+    }
 
+    private function checkActionLegal(string $action, array $playerSelections, array $activeCardsInHand) : bool
+    {
         //if the player has already made two selections, the only legal selections come from the cards.
         $legal = count($playerSelections) < 2;
 
@@ -70,15 +77,13 @@ class ttLegalMoves
         $legalMoves = [];
         //$player_id = (int)$this->game->getActivePlayerId();
 
-        $piecesObj = new ttPieces($this->game);
-        
-        $pieces = $piecesObj->deserializePiecesFromDb();
-        $pieceLocations = $piecesObj->getPieceLocations();
+        $pieces = new ttPieces($this->game);
+        $pieceLocations = $pieces->getPieceLocations();
 
-        foreach($pieces as $piece)
+        foreach($pieces->pieces as $piece)
         {
             //if ($piece['player_id'] != $player_id) continue;
-            if (ttPieces::isPieceFinished($piece)) continue;
+            if ($piece['finished']) continue;
 
             $adjacentLocations = ttUtility::getAdjacentSpacesIDs($piece['location']);
 
