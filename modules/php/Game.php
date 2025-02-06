@@ -59,62 +59,6 @@ class Game extends \Table
      *
      * @throws BgaUserException
      */
-    public function actActionBoardClick(string $selectionDivID): void
-    {
-
-        //Stub for actual action board click handling
-        $action = ttUtility::parseActionCardSelectionID($selectionDivID)['action'];
-
-        //check if the action is legal
-        $legalActions = new ttLegalMoves($this);
-        if (!in_array($action,$legalActions->legalActions()))
-        {
-            throw new \BgaUserException('Invalid action board action choice');
-        }
-
-        $actionBoardSelections = new ttActionBoardSelections($this);
-        $actionBoardSelections->setSelected($selectionDivID);
-
-        $this->notifyAllPlayers("move", clienttranslate('${player_name} selected <B>${action}<B>'), [
-                    "player_name" => $this->getActivePlayerName(),
-                    "action" => strtoupper($action),
-                    "selectionDivID" => $selectionDivID,
-                    "legalActions" => $legalActions->legalActions(),
-            ]);
-        
-       
-        //if no legal actions are left, move to the next player
-        if (count($legalActions->legalActions()) == 0)
-        {
-            $this->gamestate->nextState("nextPlayer");
-        }
-
-
-        // Retrieve the active player ID.
-        // $player_id = (int)$this->getActivePlayerId();
-
-
-        // // check input values
-        // $args = $this->argPlayerTurn();
-        // $playableCardsIds = $args['playableCardsIds'];
-        // if (!in_array($card_id, $playableCardsIds)) {
-        //     throw new \BgaUserException('Invalid card choice');
-        // }
-
-        // // Add your game logic to play a card here.
-        // $card_name = self::$CARD_TYPES[$card_id]['card_name'];
-
-        // // Notify all players about the card played.
-        // $this->notifyAllPlayers("cardPlayed", clienttranslate('${player_name} plays ${card_name}'), [
-        //     "player_id" => $player_id,
-        //     "player_name" => $this->getActivePlayerName(),
-        //     "card_name" => $card_name,
-        //     "card_id" => $card_id,
-        //     "i18n" => ['card_name'],
-        // ]);
-
-        
-    }
 
     public function actMoveOrPush(string $piece_id, string $tileID, string $origin) :void
     {
@@ -122,17 +66,23 @@ class Game extends \Table
         $legalMoves = $legalActions->legalMoves();
         $location = ttUtility::tileID2location($tileID);
 
+
+        //1 - check for destination legality
         if (!in_array($location,$legalMoves[$piece_id]))
         {
             throw new \BgaUserException('Invalid move choice');
         }
 
+        //2 - actually move or push the piece
         $pieces = new ttPieces($this);
         $pieces->movePiece($piece_id,$location);
 
+        $cards = new ttCards($this);
+
+        //was this action done from the Action Board or the card? Will start with card if it is from a card.
+        //3 - Set card or action board selection to correct value.
         if (str_starts_with($origin, 'card'))
         {
-            $cards = new ttCards($this);
             $cards->setCardStatus(ttCards::getCardIDFromDivID($origin), 'exhausted');
         }
         else
@@ -141,6 +91,7 @@ class Game extends \Table
             $actionBoardSelections->setSelected($origin);
         }
 
+        //if the piece owner is not the active player, this is a push
         $isPush = ttPieces::parsePieceDivData($piece_id)['player_id'] != $this->getActivePlayerId();
 
         $this->notifyAllPlayers("moveOrPush", clienttranslate('${player_name} moved a piece'), [
@@ -149,6 +100,18 @@ class Game extends \Table
             "tileID" => $tileID,
             "isPush" => $isPush,
         ]);
+
+        //4 - Did we activate any cards?
+        if (!$isPush)
+        {
+            $board = new ttBoard($this);
+            $board->deserializeBoardFromDb();
+            $color = $board->tiles[$location]['color'];
+
+            $cards->activateCardsByColor(intval($this->getActivePlayerId()), $color);
+            $result = self::DbQuery('SELECT ROW_COUNT();');
+            $this->dump('result_cnt', $result);
+        }
 
         //if no legal actions are left, move to the next player
         //Otherwise, stay move back to selectAction
@@ -234,6 +197,9 @@ class Game extends \Table
 
         $actionBoardSelections = new ttActionBoardSelections($this);
         $actionBoardSelections->clearPlayerSelections($player_id);
+
+        $cards = new ttCards($this);
+        $cards->deactivateAllCards($player_id);
     
         // Go to another gamestate
         // Here, we would detect if the game is over, and in this case use "endGame" transition instead 

@@ -13,7 +13,7 @@ class ttActionBoardSelections
         $this->game = $game;
     }
 
-    public function createActionBoardSelections($players)
+    public function createActionBoardSelections(array $players) : void
     {
         $divPrefix = 'action_';
 
@@ -39,7 +39,7 @@ class ttActionBoardSelections
         $this->serializeActionBoardSelectionsToDb();
     }
 
-    public function serializeActionBoardSelectionsToDb()
+    public function serializeActionBoardSelectionsToDb() : void
     {
         foreach ($this->actionBoardSelections as $actionBoardSelection) {
             $query_values[] = vsprintf("('%s', '%s', '%s', '%d')", [
@@ -54,7 +54,7 @@ class ttActionBoardSelections
         $this->game::DbQuery($query);
     }
 
-    public function deserializeActionBoardSelectionsFromDb()
+    public function deserializeActionBoardSelectionsFromDb() : array
     {
         $sql = "SELECT selection_div_id, action, player_id, selected FROM action_board_selections";
         $this->actionBoardSelections = $this->game->getCollectionFromDb($sql);
@@ -67,7 +67,7 @@ class ttActionBoardSelections
         return $this->actionBoardSelections;
     }
 
-    public function clearPlayerSelections($player_id)
+    public function clearPlayerSelections(int $player_id) : void
     {
         $sql = "UPDATE action_board_selections SET selected = 0 WHERE player_id = $player_id";
         $this->game::DbQuery($sql);
@@ -82,7 +82,7 @@ class ttActionBoardSelections
         }
     }
 
-    public function setSelected($selection_div_id)
+    public function setSelected(string $selection_div_id) : void
     {
         $sql = "UPDATE action_board_selections SET selected = 1 WHERE selection_div_id = '$selection_div_id'";
         $this->game::DbQuery($sql);
@@ -98,7 +98,7 @@ class ttActionBoardSelections
         }
     }
 
-    public function getAllSelected()
+    public function getAllSelected() : array
     {
         if (empty($this->actionBoardSelections))
         {

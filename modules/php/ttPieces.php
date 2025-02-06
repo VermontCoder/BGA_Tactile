@@ -54,7 +54,7 @@ class ttPieces
         $this->game::DbQuery($query);
     }
 
-    public function deserializePiecesFromDb()
+    public function deserializePiecesFromDb() : array
     {
         $sql = "SELECT piece_id, player_id, piece_color, location, finished FROM pieces";
         $this->pieces = $this->game->getCollectionFromDb($sql);
@@ -68,7 +68,7 @@ class ttPieces
         return $this->pieces;
     }
 
-    public function getPieceLocations()
+    public function getPieceLocations() : array
     {
         if (empty($this->pieces))
         {
@@ -84,10 +84,15 @@ class ttPieces
         return $pieceLocations;
     }
 
-    public function movePiece($piece_id, $location)
+    public function movePiece($piece_id, $location) : void
     {
         $this->pieces[$piece_id]['location'] = $location;
         $sql = sprintf("UPDATE pieces SET location = '%s' WHERE piece_id = '%s'", $location, $piece_id); 
         $this->game::DbQuery($sql);
+
+        if (!empty($this->pieces))
+        {
+            $this->pieces[$piece_id]['location'] = $location;
+        }
     }
 }

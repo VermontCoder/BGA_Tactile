@@ -56,7 +56,7 @@ class ttBoard
         $this->game = $game;
     }
 
-    public function createBoard()
+    public function createBoard() : void
     {
         $tileColors = [];
 
@@ -93,7 +93,7 @@ class ttBoard
         $this->serializeBoardToDb();
     }
 
-    public function serializeBoardToDb()
+    public function serializeBoardToDb() : void
     {
         foreach ($this->tiles as $tile_id => $tile) {
             $query_values[] = vsprintf("('%s', '%s')", [
@@ -110,7 +110,7 @@ class ttBoard
         );
     }
 
-    public function deserializeBoardFromDb()
+    public function deserializeBoardFromDb() : array
     {
         $sql = "SELECT tile_id, color FROM board";
         $board = $this->game->getCollectionFromDb($sql);

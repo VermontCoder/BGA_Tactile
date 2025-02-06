@@ -25,7 +25,7 @@ class ttCards
         $this->game = $game;
     }
 
-    public function createCards()
+    public function createCards() : void
     {
         $cards = array();
 
@@ -57,6 +57,18 @@ class ttCards
     public function setCardStatus(int $card_id, string $status) : void
     {
         $sql = sprintf("UPDATE card SET type_arg = %01d WHERE card_id = %01d", ttCards::CARDSTATUS[$status], $card_id);
+        $this->game::DbQuery($sql);
+    }
+
+    public function activateCardsByColor(int $player_id, string $color) 
+    {
+        $sql = sprintf("UPDATE card SET card_type_arg = %01d WHERE card_type LIKE '%s_%%' AND card_location = 'hand' AND card_location_arg = %01d", ttCards::CARDSTATUS['active'], $color, $player_id);
+        return $this->game::DbQuery($sql);
+    }
+
+    public function deactivateAllCards(int $player_id) : void
+    {
+        $sql = sprintf("UPDATE card SET card_type_arg = %01d WHERE card_location = 'hand' AND card_location_arg = %01d", ttCards::CARDSTATUS['innactive'], $player_id);
         $this->game::DbQuery($sql);
     }
 }

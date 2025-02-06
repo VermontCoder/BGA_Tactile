@@ -40,6 +40,8 @@ function (dojo, declare) {
             this.ttBuySequence = new bgagame.ttBuySequence();
             this.ttSwapSequence = new bgagame.ttSwapSequence();
             this.ttResetSequence = new bgagame.ttResetSequence();
+
+            this.cardStatuses = { 0: 'innactive', 1: 'active', 2: 'exhausted' };
             
             //this.clientStateArgs = {};
               
@@ -61,6 +63,35 @@ function (dojo, declare) {
             
             "gamedatas" argument contains all datas retrieved by your "getAllDatas" PHP method.
         */
+
+        setup: function( gamedatas )
+        {
+            console.log( "Starting game setup" );
+            
+
+            // (see "setupNotifications" method below)
+            this.setupNotifications();
+
+            this.createHeader();
+            this.createTopAndTableauContainer();
+            this.createStore(gamedatas.store);
+            this.createBoard(gamedatas.board, gamedatas.playerHomes);
+            this.createPieces(gamedatas.players, gamedatas.pieces);
+
+            Object.values(gamedatas.players).forEach(player => {
+                this.createPlayerPanel(player);
+                this.createPlayerTableau(player, gamedatas.hands, gamedatas.actionBoardSelections);
+            });
+            
+            //move the current player's tableau to the top
+            let currentPlayerTableau = document.querySelector('#tableau_'+this.player_id);
+            let tableauContainer = document.querySelector('#tableauContainer');
+
+            tableauContainer.prepend(currentPlayerTableau);
+
+            console.log( "Ending game setup" );
+            //console.log(gamedatas.legalActions);
+        },
 
         createHeader: function() {
             //fonts
@@ -142,8 +173,6 @@ function (dojo, declare) {
                     resourceBankDiv.addEventListener('click', (e) => this.ttEventHandlers.onResourceBankClick.call(this,e.currentTarget.id));
                 });
         },
-
-        
 
         createStore: function(store) 
         {
@@ -293,40 +322,17 @@ function (dojo, declare) {
                     <div id="cardTarget_${player.player_id}_${count}" class="cardTarget addSpace">
                         <div id="card_${card.id}" class="card" style="background-position-x: ${-80 * card.id}px;"></div>
                     </div>`);
+                    //debugger;
+
+                    //add active class if card is active
+                    if (this.cardStatuses[parseInt(card.type_arg)] == 'active') {
+                        $('card_'+card.id).classList.add('active');
+                    }
 
                     //add event listener.
                     $('card_'+card.id).addEventListener('click', (e) => this.ttEventHandlers.onCardClick.call(this,e.target.id));
                     count++;
             });
-        },
-        
-        setup: function( gamedatas )
-        {
-            console.log( "Starting game setup" );
-            
-
-            // (see "setupNotifications" method below)
-            this.setupNotifications();
-
-            this.createHeader();
-            this.createTopAndTableauContainer();
-            this.createStore(gamedatas.store);
-            this.createBoard(gamedatas.board, gamedatas.playerHomes);
-            this.createPieces(gamedatas.players, gamedatas.pieces);
-
-            Object.values(gamedatas.players).forEach(player => {
-                this.createPlayerPanel(player);
-                this.createPlayerTableau(player, gamedatas.hands, gamedatas.actionBoardSelections);
-            });
-            
-            //move the current player's tableau to the top
-            let currentPlayerTableau = document.querySelector('#tableau_'+this.player_id);
-            let tableauContainer = document.querySelector('#tableauContainer');
-
-            tableauContainer.prepend(currentPlayerTableau);
-
-            console.log( "Ending game setup" );
-            //console.log(gamedatas.legalActions);
         },
        
 
@@ -485,7 +491,7 @@ function (dojo, declare) {
         {
             console.log( 'notifications subscriptions setup' );
             dojo.subscribe( 'showVariable', this, "notif_showVariable" );
-            dojo.subscribe('move', this, "notif_move");
+            dojo.subscribe('moveOrPush', this, "notif_moveOrPush");
             
             // TODO: here, associate your game notifications with local methods
             
@@ -502,38 +508,18 @@ function (dojo, declare) {
 
         notif_showVariable: function( notif )
         {
-            console.log( JSON.stringify(notif) );
+            console.log( notif );
         },
         
-        notif_move: function( notif )
+        notif_moveOrPush: function( notif )
         {
-            console.log( 'notif_move' );
+            console.log( 'notif_moveOrPush' );
             console.log( notif );
            
             
             //animation code?
-
-            
             
             // Note: notif.args contains the arguments specified during you "notifyAllPlayers" / "notifyPlayer" PHP call    
         }
-        // TODO: from this point and below, you can write your game notifications handling methods
-        
-        /*
-
-       
-        Example:
-        
-        notif_cardPlayed: function( notif )
-        {
-            console.log( 'notif_cardPlayed' );
-            console.log( notif );
-            
-            // Note: notif.args contains the arguments specified during you "notifyAllPlayers" / "notifyPlayer" PHP call
-            
-            // TODO: play the card in the user interface.
-        },    
-        
-        */
    });             
 });

@@ -19,7 +19,7 @@ class ttPlayers
         $this->game = $game;
     }
 
-    public function createPlayers($players)
+    public function createPlayers($players) : void
     {
         $gameinfos = $this->game->getGameinfos();
         $default_colors = $gameinfos['player_colors'];
@@ -73,7 +73,7 @@ class ttPlayers
 
     }
 
-    public function deserializePlayersFromDb()
+    public function deserializePlayersFromDb() : array
     {
         $sql = "SELECT player_id, player_color, color_name, player_canal, player_name, player_avatar, red_resource_qty,
         blue_resource_qty, green_resource_qty, yellow_resource_qty FROM player";
