@@ -58,6 +58,15 @@ class ttBoard
 
     public function createBoard()
     {
+        $tileColors = [];
+
+        for ($i = 0; $i < count(self::COLORS); $i++)
+        {
+            $tileColors = array_merge($tileColors, array_fill(0, 8, self::COLORS[$i]));
+        }
+
+        shuffle($tileColors);
+
         for ($i = 0; $i < self::BOARD_HEIGHT; $i++)
         {
             for ($j = 0; $j < self::BOARD_WIDTH; $j++)
@@ -74,7 +83,7 @@ class ttBoard
                 {
                     $this->tiles[$tile_id] = array(
                         'tile_id' => $tile_id,
-                        'color' => self::COLORS[random_int(0,3)],
+                        'color' => array_shift($tileColors),
                     );
                 }
 

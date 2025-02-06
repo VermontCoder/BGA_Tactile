@@ -59,7 +59,7 @@
      display: flex;
      align-items: center;
      flex-direction: column;
-     left: 20px;
+     left: 10px;
      width: var(--store-width);
      height: var(--board-dim);
      background-color: #d3d3d3;  
@@ -113,7 +113,7 @@
  /* Board styles */
  .board {
      position: absolute;
-     left: calc(var(--store-width) + 30px);
+     left: calc(var(--store-width) + 20px);
      width: var(--board-dim);
      height: var(--board-dim);
      background-color: #e0e0e0;
@@ -391,7 +391,7 @@
 		top: 6px;
 		width: calc(100% - 12px);
 		height: calc(100% - 12px);
-		background: inherit;
+		background : inherit;
 		border-radius: 5px;
 	}
 }
