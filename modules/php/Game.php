@@ -110,8 +110,6 @@ class Game extends \Table
 
             $result= $cards->activateCardsByColor(intval($this->getActivePlayerId()), $color);
 
-            $this->dump('result_cnt2', $result);
-
             $this->notifyAllPlayers("activate", clienttranslate('${player_name} activated ${numCardsActivated} ${color} card(s)'), [
                 "player_name" => $this->getActivePlayerName(),
                 "numCardsActivated" => $result,
@@ -259,9 +257,9 @@ class Game extends \Table
         $result['hands'] = $this->cards->getCardsInLocation('hand');
 
         $legalActions = new ttLegalMoves($this);
-        $result['legalActions'] = $legalActions->legalActions();
+        $result['legalActions'] = $legalActions->legalActions($result['hands']);
 
-        if (in_array('move',$result['legalActions']))
+        if (in_array('move',$result['legalActions']) || in_array('push',$result['legalActions']))
         {
             $result['legalMoves'] = $legalActions->legalMoves();
         }

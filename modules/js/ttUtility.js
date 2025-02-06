@@ -43,9 +43,10 @@ define([
             if (x) x.remove()
         },
 
-        getCardData(card)
+        //parse the card type field to get the color, action, and resources
+        getCardDataFromType(card)
         {
-            cardData = card.type.split('_');
+            const cardData = card.type.split('_');
 
             return {
                 color: cardData[0],
@@ -61,7 +62,7 @@ define([
 
         parsePieceID(piece_id)
         {
-            pieceData = piece_id.split('_');
+            const pieceData = piece_id.split('_');
             return { 'player_id': parseInt(pieceData[1]), 'pieceNum': parseInt(pieceData[2]) };
         },
 
@@ -74,7 +75,7 @@ define([
 
         getActionBoardActionData(id)
         {
-            actionData = id.split('_');
+            const actionData = id.split('_');
 
             return {
                 player_id: actionData[1],

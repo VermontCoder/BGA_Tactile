@@ -310,8 +310,8 @@ function (dojo, declare) {
             //use custom sort function to sort by card type - first by color, then by action
             Object.values(hand).sort((a, b) => {
                 //debugger;
-                const cardDataA = this.ttUtility.getCardData(a);
-                const cardDataB = this.ttUtility.getCardData(b);
+                const cardDataA = this.ttUtility.getCardDataFromType(a);
+                const cardDataB = this.ttUtility.getCardDataFromType(b);
                 
                 if (cardDataA.color === cardDataB.color) {
                     return cardDataA.action.localeCompare(cardDataB.action);

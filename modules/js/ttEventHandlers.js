@@ -42,31 +42,9 @@ define([
             this.eventOrigin = selectionDivID;
             
             selectionData = this.ttUtility.getActionBoardActionData(selectionDivID);
-            switch(selectionData.action)
-            {
-                case 'move':
-                case 'push':
-                    this.ttMoveSequence.beginMove.call(this);
-                    break;
-                case 'gain':
-                    break;
-                case 'buy':
-                    break;
-                case 'swap':
-                    break;
-                case 'reset':
-                    break;
-                
-            }
-           
-            //this.clientStateArgs.selectionDivID = selectionDivID;
-            // this.setClientState("client_selectPiece", {
-            //                    descriptionmyturn : _("${you} must select piece to move"),
-            //                });
 
-            // this.bgaPerformAction("actActionBoardClick", {
-            //     selectionDivID,
-            // });
+            //use call to keep the "this" context.
+            this.ttEventHandlers.beginSequence.call(this,selectionData.action);
         },
 
         onTileClick: function( tileID ) {
@@ -126,9 +104,14 @@ define([
         {
             if(!this.isCurrentPlayerActive()) { return; }
 
-            cardID = this.ttUtility.getCardIDFromDivID(cardDivID);
+            const cardID = this.ttUtility.getCardIDFromDivID(cardDivID);
+
+            //raw data from db
+            const cardData = this.gamedatas.gamestate.args.hands[cardID];
+            const cardTypeData = this.ttUtility.getCardDataFromType(cardData);
+
             //do not respond if this card is not in the active player's hand.
-            if (this.gamedatas.gamestate.args.hands[cardID].location_arg != this.getActivePlayerId()) { return; }
+            if (cardData.location_arg != this.getActivePlayerId()) { return; }
             
             if ($(cardDivID).classList.contains('active'))
             {
@@ -140,6 +123,9 @@ define([
 
                 //record the event origin for later use.
                 this.eventOrigin = cardDivID;
+
+                //use call to keep the "this" context.
+                this.ttEventHandlers.beginSequence.call(this,cardTypeData.action);
             }
 
             // this.bgaPerformAction("actPlayCard", { 
@@ -149,6 +135,26 @@ define([
             //     // (most of the time, nothing, as the game will react to notifs / change of state instead)
             // });        
         },
+
+        beginSequence: function(action)
+        {
+            switch(action)
+            {
+                case 'move':
+                case 'push':
+                    this.ttMoveSequence.beginMove.call(this);
+                    break;
+                case 'gain':
+                    break;
+                case 'buy':
+                    break;
+                case 'swap':
+                    break;
+                case 'reset':
+                    break;
+                
+            }
+        }
 
         
     });

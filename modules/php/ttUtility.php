@@ -24,7 +24,7 @@ class ttUtility
         return $tileData[1] . '_' . $tileData[2];
     }
 
-    public static function getCardData(array $card) : array
+    public static function getCardDataFromType(array $card) : array
     {
         $cardData = explode('_',$card['type']);
 

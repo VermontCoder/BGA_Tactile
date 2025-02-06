@@ -22,7 +22,8 @@ class ttLegalMoves
         $player_id = (int)$this->game->getActivePlayerId();
         
         //get cards in player's hand which are active
-        $activeCardsInHand = $this->game->cards->getCardsOfTypeInLocation(null, ttCards::CARDSTATUS['active'],'hand', $player_id);
+        $cards = new ttCards($this->game);
+        $activeCardsInHand = $cards->getActiveCards($player_id);
 
         //get the player's selections on the action board
         $actionBoardSelections = new ttActionBoardSelections($this->game);
@@ -59,9 +60,10 @@ class ttLegalMoves
             }
         }
 
+        $this->game->dump('active cards in hand',$activeCardsInHand);
         foreach($activeCardsInHand as $card)
         {
-            $cardData = ttUtility::getCardData($card);
+            $cardData = ttUtility::getCardDataFromType($card);
             if($cardData['action'] == $action)
             {
                 $legal = true;
