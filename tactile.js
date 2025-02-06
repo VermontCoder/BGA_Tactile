@@ -41,7 +41,7 @@ function (dojo, declare) {
             this.ttSwapSequence = new bgagame.ttSwapSequence();
             this.ttResetSequence = new bgagame.ttResetSequence();
 
-            this.cardStatuses = { 0: 'innactive', 1: 'active', 2: 'exhausted' };
+            this.cardStatuses = { 0: 'inactive', 1: 'active', 2: 'exhausted' };
             
             //this.clientStateArgs = {};
               
@@ -492,6 +492,7 @@ function (dojo, declare) {
             console.log( 'notifications subscriptions setup' );
             dojo.subscribe( 'showVariable', this, "notif_showVariable" );
             dojo.subscribe('moveOrPush', this, "notif_moveOrPush");
+            dojo.subscribe('activate', this, "notif_activate");
             
             // TODO: here, associate your game notifications with local methods
             
@@ -520,6 +521,12 @@ function (dojo, declare) {
             //animation code?
             
             // Note: notif.args contains the arguments specified during you "notifyAllPlayers" / "notifyPlayer" PHP call    
+        },
+
+        notif_activate: function( notif )
+        {
+            console.log( 'notif_activate' );
+            console.log( notif );
         }
    });             
 });

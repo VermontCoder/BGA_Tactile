@@ -54,6 +54,11 @@ define([
             };
         },
 
+        getCardIDFromDivID(divID)
+        {
+            return parseInt(divID.split('_')[1]);
+        },
+
         parsePieceID(piece_id)
         {
             pieceData = piece_id.split('_');
@@ -62,7 +67,7 @@ define([
 
         getCardStatus(card)
         {
-            const statuses = ['innactive', 'active', 'exhuasted'];
+            const statuses = ['inactive', 'active', 'exhuasted'];
 
             return statuses[card.type_arg];
         },

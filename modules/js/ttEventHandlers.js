@@ -28,7 +28,6 @@ define([
             
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
 
-            
             //check if this is actually an uncheck
             if ($(selectionDivID).classList.contains('selected')) {
                 $(selectionDivID).classList.remove('selected');
@@ -46,6 +45,7 @@ define([
             switch(selectionData.action)
             {
                 case 'move':
+                case 'push':
                     this.ttMoveSequence.beginMove.call(this);
                     break;
                 case 'gain':
@@ -115,23 +115,32 @@ define([
             //TBD player resource click handling.
         },
 
-        onStoreCardClick: function( card_id ) {
+        onStoreCardClick: function( cardDivID ) {
             if(!this.isCurrentPlayerActive()) { return; }
             console.log('onStoreCardClick', JSON.stringify(card_id));
 
             //TBD store card click handling.
         },
 
-        onCardClick: function( card_id )
+        onCardClick: function( cardDivID )
         {
             if(!this.isCurrentPlayerActive()) { return; }
-            
-            //tbd - check if this card is active.
-            this.ttEventHandlers.clearAllPreviousHighlighting.call(this);
-            console.log( 'onCardClick', card_id );
 
-            //record the event origin for later use.
-            this.eventOrigin = card_id;
+            cardID = this.ttUtility.getCardIDFromDivID(cardDivID);
+            //do not respond if this card is not in the active player's hand.
+            if (this.gamedatas.gamestate.args.hands[cardID].location_arg != this.getActivePlayerId()) { return; }
+            
+            if ($(cardDivID).classList.contains('active'))
+            {
+                //do selection
+                this.clearAllPreviousHighlighting();
+                $(cardDivID).classList.add('highlighted');
+
+                console.log( 'onCardClick', cardDivID);
+
+                //record the event origin for later use.
+                this.eventOrigin = cardDivID;
+            }
 
             // this.bgaPerformAction("actPlayCard", { 
             //     card_id,

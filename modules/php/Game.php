@@ -108,9 +108,15 @@ class Game extends \Table
             $board->deserializeBoardFromDb();
             $color = $board->tiles[$location]['color'];
 
-            $cards->activateCardsByColor(intval($this->getActivePlayerId()), $color);
-            $result = self::DbQuery('SELECT ROW_COUNT();');
-            $this->dump('result_cnt', $result);
+            $result= $cards->activateCardsByColor(intval($this->getActivePlayerId()), $color);
+
+            $this->dump('result_cnt2', $result);
+
+            $this->notifyAllPlayers("activate", clienttranslate('${player_name} activated ${numCardsActivated} ${color} card(s)'), [
+                "player_name" => $this->getActivePlayerName(),
+                "numCardsActivated" => $result,
+                "color" => strtoupper($color),
+            ]);
         }
 
         //if no legal actions are left, move to the next player
@@ -130,21 +136,6 @@ class Game extends \Table
         ]);
 
         $this->gamestate->nextState("nextPlayer");
-    }
-
-    public function actPass(): void
-    {
-        // Retrieve the active player ID.
-        $player_id = (int)$this->getActivePlayerId();
-
-        // Notify all players about the choice to pass.
-        $this->notifyAllPlayers("cardPlayed", clienttranslate('${player_name} passes'), [
-            "player_id" => $player_id,
-            "player_name" => $this->getActivePlayerName(),
-        ]);
-
-        // at the end of the action, move to the next state
-        $this->gamestate->nextState("pass");
     }
 
     /**

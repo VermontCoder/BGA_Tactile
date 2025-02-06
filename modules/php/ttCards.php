@@ -9,7 +9,7 @@ class ttCards
     
     const CARDTYPES = ['move', 'push', 'gain'];
     const COLORS = ['red','yellow','green','blue'];
-    const CARDSTATUS = ['innactive' => 0, 'active' => 1, 'exhausted'=> 2]; //index into type_arg
+    const CARDSTATUS = ['inactive' => 0, 'active' => 1, 'exhausted'=> 2]; //index into type_arg
 
     public static function getCardIDFromDivID(string $divID) : int
     {
@@ -54,6 +54,10 @@ class ttCards
         $this->game::DbQuery("UPDATE card SET card_id=card_id-501");
     }
 
+    /**
+     * @param int $card_id
+     * @param string $status - 'active', 'inactive', 'exhausted'
+     */
     public function setCardStatus(int $card_id, string $status) : void
     {
         $sql = sprintf("UPDATE card SET type_arg = %01d WHERE card_id = %01d", ttCards::CARDSTATUS[$status], $card_id);
@@ -63,12 +67,17 @@ class ttCards
     public function activateCardsByColor(int $player_id, string $color) 
     {
         $sql = sprintf("UPDATE card SET card_type_arg = %01d WHERE card_type LIKE '%s_%%' AND card_location = 'hand' AND card_location_arg = %01d", ttCards::CARDSTATUS['active'], $color, $player_id);
-        return $this->game::DbQuery($sql);
+        $result = $this->game::DbQuery($sql);
+
+        //return number of cards activated
+        $result = $this->game::DbQuery("SELECT ROW_COUNT() AS affected_rows");
+        $row = $result->fetch_assoc();
+        return $row['affected_rows'];
     }
 
     public function deactivateAllCards(int $player_id) : void
     {
-        $sql = sprintf("UPDATE card SET card_type_arg = %01d WHERE card_location = 'hand' AND card_location_arg = %01d", ttCards::CARDSTATUS['innactive'], $player_id);
+        $sql = sprintf("UPDATE card SET card_type_arg = %01d WHERE card_location = 'hand' AND card_location_arg = %01d", ttCards::CARDSTATUS['inactive'], $player_id);
         $this->game::DbQuery($sql);
     }
 }
