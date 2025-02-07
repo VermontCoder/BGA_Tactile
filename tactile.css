@@ -340,6 +340,10 @@
     transform: translateY(-20px);
  }
 
+ .card.exhausted {
+    filter: brightness(50%);
+ }
+
 .card.highlighted {
     border: 2px solid #00ff00; /* Highlight border color */
     box-shadow: 0 0 15px rgba(0, 255, 0, 0.8); /* Highlight glow effect */

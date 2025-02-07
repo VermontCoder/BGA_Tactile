@@ -249,7 +249,15 @@ class Game extends \Table
         $result['board'] = $board->deserializeBoardFromDb();
 
         $pieces = new ttPieces($this);
-        $result['pieces'] = $pieces->deserializePiecesFromDb();
+        $piecesData = $pieces->deserializePiecesFromDb();
+
+        //append color of tile that the piece is on to the piece data
+        foreach ($piecesData as $piece_id => $piece)
+        {
+            $piecesData[$piece_id]['tile_color'] = $pieces->getTileColorPieceIsOn($piece_id, $board->tiles);
+        }
+
+        $result['pieces'] = $piecesData;
         
         $result['playerHomes'] = $board::PLAYERHOMES;
         $result['store'] = $this->cards->getCardsInLocation('store');

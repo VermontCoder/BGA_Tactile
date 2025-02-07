@@ -54,10 +54,17 @@ define([
                 resources: [cardData[2], cardData[3]]
             };
         },
-
+        
         getCardIDFromDivID(divID)
         {
             return parseInt(divID.split('_')[1]);
+        },
+
+        getCardDataFromDivID(divID,hands)
+        {
+            const cardID = this.getCardIDFromDivID(divID);
+            const card = hands[cardID];
+            return this.getCardDataFromType(card);
         },
 
         parsePieceID(piece_id)

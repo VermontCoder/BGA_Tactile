@@ -42,12 +42,6 @@ function (dojo, declare) {
             this.ttResetSequence = new bgagame.ttResetSequence();
 
             this.cardStatuses = { 0: 'inactive', 1: 'active', 2: 'exhausted' };
-            
-            //this.clientStateArgs = {};
-              
-            // Here, you can init the global variables of your user interface
-            // Example:
-            // this.myGlobalValue = 0;
 
         },
         
@@ -327,6 +321,11 @@ function (dojo, declare) {
                     //add active class if card is active
                     if (this.cardStatuses[parseInt(card.type_arg)] == 'active') {
                         $('card_'+card.id).classList.add('active');
+                    }
+
+                    //add exhausted class if card is exhausted
+                    if (this.cardStatuses[parseInt(card.type_arg)] == 'exhausted') {
+                        $('card_'+card.id).classList.add('exhausted');
                     }
 
                     //add event listener.

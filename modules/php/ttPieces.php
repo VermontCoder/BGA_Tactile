@@ -95,4 +95,21 @@ class ttPieces
             $this->pieces[$piece_id]['location'] = $location;
         }
     }
+
+    public function getTileColorPieceIsOn($piece_id, $tiles) : ?string
+    {
+        if (empty($this->pieces))
+        {
+            $this->deserializePiecesFromDb();
+        }
+
+         //player homes are considered to have no color
+        if (in_array($this->pieces[$piece_id]['location'],ttBoard::COLORHOMES))
+        {
+            return null;
+        }
+
+        $location = $this->pieces[$piece_id]['location'];
+        return $tiles[$location]['color'];
+    }
 }

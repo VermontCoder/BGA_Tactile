@@ -21,9 +21,10 @@ define([
 
         onActionBoardClick: function( selectionDivID ) {
 
+            const gg = this.gamedatas.gamestate;
             //Do not respond if not current player or this move has already been processed.
             if(!this.isCurrentPlayerActive()) { return; }
-            if(this.gamedatas.gamestate.args.actionBoardSelections[selectionDivID]['selected']) { return; } 
+            if(gg.args.actionBoardSelections[selectionDivID]['selected']) { return; } 
 
             
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
@@ -58,18 +59,29 @@ define([
         onPieceClick: function( piece_id ) {
             if(!this.isCurrentPlayerActive()) { return; }
 
-            pieceData = this.ttUtility.parsePieceID(piece_id);
+            const gg = this.gamedatas.gamestate;
 
-            //are we in the right state to be able to move a piece?
-            if(this.gamedatas.gamestate.name == 'client_selectPiece' || this.gamedatas.gamestate.name == 'client_selectTile') 
+            const pieceData = this.ttUtility.parsePieceID(piece_id);
+
+            //check if piece is selectable
+            const isCorrectState = gg.name == 'client_selectPiece' || gg.name == 'client_selectTile';
+            const isOfCardOrigin = this.eventOrigin.startsWith('card_');
+            const isPiecePlayersPiece = pieceData.player_id == this.getActivePlayerId();
+
+            if (!isCorrectState) { return; }
+            if (isOfCardOrigin)
             {
-                //check if piece is the active player's piece
-                //TO DO handle push. This is a push if this.eventOrigin starts with 'card_' AND gamedatas.gamestate.args.hands[card_id].type == contains push
-                if (pieceData.player_id != this.getActivePlayerId()) { return; }
-            } 
+                //pull the card's data for the action
+                const cardData = this.ttUtility.getCardDataFromDivID(this.eventOrigin, gg.args.hands);
+                if (cardData.action == 'push')
+                {
+                    //you can only push other player's pieces
+                    if (isPiecePlayersPiece) { return; }
+                }
+            }
             else
             {
-                return;
+                if (!isPiecePlayersPiece) { return; }
             }
 
             console.log('onPieceClick', JSON.stringify(pieceData));
@@ -145,6 +157,7 @@ define([
                     this.ttMoveSequence.beginMove.call(this);
                     break;
                 case 'gain':
+                    this.ttGainSequence.beginGain.call(this);
                     break;
                 case 'buy':
                     break;
