@@ -34,8 +34,12 @@ define([
 
             for(i=0; i< elegibleResourceColors.length; i++)
             {
+                const resourceBank = document.getElementById(elegibleResourceColors[i]+'Bank');
+                resourceBank.classList.add('highlighted');
+                
                 const resourceBankDivs = document.querySelectorAll('#' +elegibleResourceColors[i]+'Bank .resource');
                 resourceBankDivs.forEach( (resourceBankDiv => resourceBankDiv.classList.add('highlighted')));
+
             }
 
             this.setClientState("client_selectResource", 

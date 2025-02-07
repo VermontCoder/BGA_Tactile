@@ -33,6 +33,8 @@
      --action-board-selection-dim: 17px;
      --resource-dim: 25px;
      --resource-dim-highlighted: 28px;
+
+     --highlight-color: rgba(23, 197, 66, 0.856); 
  
      /* z-index values */
      --z-index-deck: 3 ;
@@ -214,6 +216,13 @@
      margin-top: 10px;
  }
  
+ .bank.highlighted {
+    border-radius: 4px;
+    padding: 4px;
+    border: 2px solid var(--highlight-color); /* Highlight border color */
+    box-shadow: 0 0 15px var(--highlight-color); /* Highlight glow effect */
+ }
+
  .resource {
      width: var(--resource-dim);
      height: var(--resource-dim);
@@ -240,7 +249,12 @@
  {
      background: url(img/resource_tokens_small.png) calc(var(--resource-dim) * -3) 0 no-repeat;
  }
- 
+
+ .resource.highlighted
+ {
+     transform: scale(1.2);
+ }
+ /*
  .resource.highlighted.red
  {
      background: url(img/resource_tokens_highlighted_small.png) 0 0 no-repeat;
@@ -260,7 +274,7 @@
  {
      background: url(img/resource_tokens_highlighted_small.png) calc(var(--resource-dim-highlighted) * -3) 0 no-repeat;
  }
- 
+ */
  .resourceContainer {
      display: flex;
      justify-content: center;
@@ -341,12 +355,12 @@
  }
 
  .card.exhausted {
-    filter: brightness(50%);
+    filter: brightness(70%);
  }
 
 .card.highlighted {
-    border: 2px solid #00ff00; /* Highlight border color */
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.8); /* Highlight glow effect */
+    border: 2px solid var(--highlight-color); /* Highlight border color */
+    box-shadow: 0 0 15px var(--highlight-color); /* Highlight glow effect */
     transform: translateY(-20px) scale(1.15); /* Slightly enlarge the card */
 }
  
