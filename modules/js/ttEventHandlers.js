@@ -24,7 +24,12 @@ define([
             const gg = this.gamedatas.gamestate;
             //Do not respond if not current player or this move has already been processed.
             if(!this.isCurrentPlayerActive()) { return; }
-            if(gg.args.actionBoardSelections[selectionDivID]['selected']) { return; } 
+            if(gg.args.actionBoardSelections[selectionDivID]['selected']) { return; }
+            
+            //do not respond if two actions have already been selected.
+            const activePlayerBoardVals = this.ttUtility.pickByNestedProperty(gg.args.actionBoardSelections, 'player_id', this.getActivePlayerId());
+            const selections = this.ttUtility.pickByNestedProperty(activePlayerBoardVals, 'selected', true);
+            if (Object.keys(selections).length >= 2) { return; }
 
             
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
@@ -112,7 +117,7 @@ define([
         onStoreCardClick: function( cardDivID ) {
             if(!this.isCurrentPlayerActive()) { return; }
             console.log('onStoreCardClick', cardDivID);
-            
+
             const cardID = this.ttUtility.getCardIDFromDivID(cardDivID);
 
             if($(cardDivID).classList.contains('highlighted'))

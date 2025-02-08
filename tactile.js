@@ -443,6 +443,11 @@ function (dojo, declare) {
             }
 
             //STORE
+            $('storeRow0').remove();
+            $('storeRow1').remove();
+            $('resourceRow').remove();
+            this.createStoreCards(args.store);
+            this.createResourceBank();
         },
 
         clearTileHighlighting: function()
@@ -501,6 +506,7 @@ function (dojo, declare) {
             dojo.subscribe('moveOrPush', this, "notif_moveOrPush");
             dojo.subscribe('activate', this, "notif_activate");
             dojo.subscribe('gain', this, "notif_gain");
+            dojo.subscribe('buy', this, "notif_buy");
             
             // TODO: here, associate your game notifications with local methods
             
@@ -540,6 +546,12 @@ function (dojo, declare) {
         notif_gain: function( notif )
         {
             console.log( 'notif_gain' );
+            console.log( notif );
+        },
+
+        notif_buy: function( notif )
+        {
+            console.log( 'notif_buy' );
             console.log( notif );
         }
    });             

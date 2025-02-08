@@ -107,7 +107,8 @@ class ttCards
 
         foreach($storeCards as $card)
         {
-            if($this->isCardBuyable($card, $player))
+            $cardData = ttUtility::getCardDataFromType($card);
+            if($this->isCardBuyable($cardData, $player))
             { 
                 $buyable[$card['id']] = $card;
             }

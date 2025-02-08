@@ -100,12 +100,17 @@ class Game extends \Table
             throw new \BgaUserException('Invalid move choice');
         }
 
+        //if the piece owner is not the active player, this is a push
+        $isPush = ttPieces::parsePieceDivData($piece_id)['player_id'] != $this->getActivePlayerId();
+
+        if (!in_array($isPush ? 'push' : 'move',$legalActions->legalActions()))
+        {
+            throw new \BgaUserException('This is not a legal action!');
+        }
+
         //2 - actually move or push the piece
         $pieces = new ttPieces($this);
         $pieces->movePiece($piece_id,$location);
-
-        //if the piece owner is not the active player, this is a push
-        $isPush = ttPieces::parsePieceDivData($piece_id)['player_id'] != $this->getActivePlayerId();
 
         $this->notifyAllPlayers("moveOrPush", clienttranslate('${player_name} ${moveOrPushText} a piece'), [
             "player_name" => $this->getActivePlayerName(),
@@ -165,6 +170,12 @@ class Game extends \Table
         {
             throw new \BgaUserException('Not a legal color to gain');
         }
+
+        $legalActions = new ttLegalMoves($this);
+        if (!in_array('gain',$legalActions->legalActions()))
+        {
+            throw new \BgaUserException('This is not a legal action!');
+        }
                 
         $players = new ttPlayers($this);
         $players->gainResource($this->getActivePlayerId(), $color);
@@ -178,27 +189,35 @@ class Game extends \Table
         $this->goToNextState();
     }
 
-    public function actBuy(int $cardID, string $origin) : void
+    public function actBuy(int $card_id, string $origin) : void
     {
         $player_id = $this->getActivePlayerId();
         
-        $card = $this->cards->getCard($cardID);
+        $card = $this->cards->getCard($card_id);
         $cardData = ttUtility::getCardDataFromType($card);
 
-        $players = (new ttPlayers($this))->deserializePlayersFromDb();
-        $player = $players[$player_id];
+        $players = new ttPlayers($this);
+        $player = $players->deserializePlayersFromDb()[$player_id];
 
         $cards = new ttCards($this);
         if (!$cards->isCardBuyable($cardData,$player))
         {
             throw new \BgaUserException('Not enough resources to buy card');
         }
+
+        $legalActions = new ttLegalMoves($this);
+        if (!in_array('buy',$legalActions->legalActions()))
+        {
+            throw new \BgaUserException('This is not a legal action!');
+        }
         
-        $this->cards->moveCard($cardID, 'hand', $player_id);
+        $this->cards->moveCard($card_id, 'hand', $player_id);
+        $this->cards->pickCardForLocation('deck', 'store', $card_id);
+        $players->spendResources($player_id, $cardData['resources'][0], $cardData['resources'][1]);
 
         $this->notifyAllPlayers("buy", clienttranslate('${player_name} bought a ${color} ${action} card'), [
             "player_name" => $this->getActivePlayerName(),
-            "cardID" => $cardID,
+            "cardID" => $card_id,
             "color" => strtoupper($cardData['color']),
             "action" => strtoupper($cardData['action']),
         ]);

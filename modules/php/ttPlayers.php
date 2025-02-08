@@ -95,4 +95,20 @@ class ttPlayers
             )
         );
     }
+
+    public function spendResources($player_id, $resource0,$resource1) : void
+    {
+        $resourceCol0 = $resource0 . "_resource_qty";
+        $resourceCol1 = $resource1 . "_resource_qty";
+        $this->game->DbQuery(
+            sprintf(
+                "UPDATE player SET %s = %s - 1, %s = %s - 1 WHERE player_id = %s",
+                $resourceCol0,
+                $resourceCol0,
+                $resourceCol1,
+                $resourceCol1,
+                $player_id
+            )
+        );
+    }
 }
