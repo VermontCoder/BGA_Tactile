@@ -116,7 +116,7 @@ function (dojo, declare) {
             
                 document.getElementById(`storeRow${rowCount-1}`).insertAdjacentHTML('beforeend',
                             `<DIV id="store_${count}" class="cardTarget addSpace">
-                                <DIV id="storecard_${card.id}" class="card" style="background-position-x: ${-80 * card.id}px;"></DIV>
+                                <DIV id="storecard_${card.id}" class="storecard" style="background-position-x: ${-80 * card.id}px;"></DIV>
                             </DIV>`);
                 
                 //add event listener.
@@ -434,6 +434,14 @@ function (dojo, declare) {
             document.querySelectorAll('.playingPiece').forEach(piece => piece.remove());
             this.createPieces(players, args.pieces);
 
+            //PLAYER PANELS
+            for (const player_id in players) 
+            {
+                const player = players[player_id];
+                $('resourceContainer_'+player_id).remove();
+                this.createPlayerPanel(player);
+            }
+
             //STORE
         },
 
@@ -492,6 +500,7 @@ function (dojo, declare) {
             dojo.subscribe( 'showVariable', this, "notif_showVariable" );
             dojo.subscribe('moveOrPush', this, "notif_moveOrPush");
             dojo.subscribe('activate', this, "notif_activate");
+            dojo.subscribe('gain', this, "notif_gain");
             
             // TODO: here, associate your game notifications with local methods
             
@@ -525,6 +534,12 @@ function (dojo, declare) {
         notif_activate: function( notif )
         {
             console.log( 'notif_activate' );
+            console.log( notif );
+        },
+
+        notif_gain: function( notif )
+        {
+            console.log( 'notif_gain' );
             console.log( notif );
         }
    });             

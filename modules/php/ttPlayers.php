@@ -82,4 +82,17 @@ class ttPlayers
 
         return $this->players;
     }
+
+    public function gainResource($player_id, $resource) : void
+    {
+        $resourceCol = $resource . "_resource_qty";
+        $this->game->DbQuery(
+            sprintf(
+                "UPDATE player SET %s = %s + 1 WHERE player_id = %s",
+                $resourceCol,
+                $resourceCol,
+                $player_id
+            )
+        );
+    }
 }

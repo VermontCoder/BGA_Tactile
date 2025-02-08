@@ -93,9 +93,13 @@ define([
 
         onResourceBankClick: function( resource_id ) {
             if(!this.isCurrentPlayerActive()) { return; }
-            console.log('onResourceBankClick', JSON.stringify(resource_id));
+            if(!$(resource_id).classList.contains('highlighted')) { return; }
 
-            //TBD resource click handling.
+            console.log('onResourceBankClick', JSON.stringify(resource_id));
+            if (this.gamedatas.gamestate.name == 'client_selectResource')
+            {
+                this.ttGainSequence.gainResource.call(this, resource_id);
+            }
         },
 
         onPlayerResourceBankClick: function( resource_id ) {
@@ -107,9 +111,14 @@ define([
 
         onStoreCardClick: function( cardDivID ) {
             if(!this.isCurrentPlayerActive()) { return; }
-            console.log('onStoreCardClick', JSON.stringify(card_id));
+            console.log('onStoreCardClick', cardDivID);
+            
+            const cardID = this.ttUtility.getCardIDFromDivID(cardDivID);
 
-            //TBD store card click handling.
+            if($(cardDivID).classList.contains('highlighted'))
+            {
+                this.ttBuySequence.buyCard.call(this, cardID);
+            }
         },
 
         onCardClick: function( cardDivID )
@@ -160,6 +169,7 @@ define([
                     this.ttGainSequence.beginGain.call(this);
                     break;
                 case 'buy':
+                    this.ttBuySequence.beginBuy.call(this);
                     break;
                 case 'swap':
                     break;

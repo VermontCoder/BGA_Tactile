@@ -341,7 +341,7 @@
      width: var(--card-width);
  }
  
- .card {
+ .storecard, .card {
      height:var(--card-height);
      width: var(--card-width);
      background: url(img/cards_small.png) 0 0;
@@ -358,10 +358,16 @@
     filter: brightness(70%);
  }
 
-.card.highlighted {
+ .storecard.highlighted {
     border: 2px solid var(--highlight-color); /* Highlight border color */
     box-shadow: 0 0 15px var(--highlight-color); /* Highlight glow effect */
-    transform: translateY(-20px) scale(1.15); /* Slightly enlarge the card */
+    transform: scale(1.1); /* Slightly enlarge the card */
+}
+
+ .card.highlighted {
+    border: 2px solid var(--highlight-color); /* Highlight border color */
+    box-shadow: 0 0 15px var(--highlight-color); /* Highlight glow effect */
+    transform: translateY(-20px) scale(1.1); /* Slightly enlarge the card */
 }
  
  .actionBoard {

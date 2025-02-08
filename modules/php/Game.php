@@ -51,32 +51,11 @@ class Game extends \Table
         $this->cards->autoreshuffle = true;
     }
 
-    /**
-     * Player action, example content.
-     *
-     * In this scenario, each time a player plays a card, this method will be called. This method is called directly
-     * by the action trigger on the front side with `bgaPerformAction`.
-     *
-     * @throws BgaUserException
-     */
-
-    public function actMoveOrPush(string $piece_id, string $tileID, string $origin) :void
+    //Player Actions and supporting functions
+    
+    //exhaust a card or check off a player action on the action board
+    public function endOfActionBoardState($origin) : void
     {
-        $legalActions = new ttLegalMoves($this);
-        $legalMoves = $legalActions->legalMoves();
-        $location = ttUtility::tileID2location($tileID);
-
-
-        //1 - check for destination legality
-        if (!in_array($location,$legalMoves[$piece_id]))
-        {
-            throw new \BgaUserException('Invalid move choice');
-        }
-
-        //2 - actually move or push the piece
-        $pieces = new ttPieces($this);
-        $pieces->movePiece($piece_id,$location);
-
         $cards = new ttCards($this);
 
         //was this action done from the Action Board or the card? Will start with card if it is from a card.
@@ -90,15 +69,50 @@ class Game extends \Table
             $actionBoardSelections = new ttActionBoardSelections($this);
             $actionBoardSelections->setSelected($origin);
         }
+    }
+
+    public function goToNextState() : void
+    {
+        //if no legal actions are left, move to the next player
+        //Otherwise, stay move back to selectAction
+        $nextState = (new ttLegalMoves($this))->hasLegalActions() ? "selectAction" : "nextPlayer";
+
+        if ($nextState == "nextPlayer")
+        {
+            $this->notifyAllPlayers("doneWithTurn", clienttranslate('${player_name} has finished their turn'), 
+            [
+                "player_name" => $this->getActivePlayerName(),
+            ]);
+        }
+        
+        $this->gamestate->nextState($nextState);
+    }
+
+    public function actMoveOrPush(string $piece_id, string $tileID, string $origin) :void
+    {
+        $legalActions = new ttLegalMoves($this);
+        $legalMoves = $legalActions->legalMoves();
+        $location = ttUtility::tileID2location($tileID);
+
+        //1 - check for destination legality
+        if (!in_array($location,$legalMoves[$piece_id]))
+        {
+            throw new \BgaUserException('Invalid move choice');
+        }
+
+        //2 - actually move or push the piece
+        $pieces = new ttPieces($this);
+        $pieces->movePiece($piece_id,$location);
 
         //if the piece owner is not the active player, this is a push
         $isPush = ttPieces::parsePieceDivData($piece_id)['player_id'] != $this->getActivePlayerId();
 
-        $this->notifyAllPlayers("moveOrPush", clienttranslate('${player_name} moved a piece'), [
+        $this->notifyAllPlayers("moveOrPush", clienttranslate('${player_name} ${moveOrPushText} a piece'), [
             "player_name" => $this->getActivePlayerName(),
             "piece_id" => $piece_id,
             "tileID" => $tileID,
             "isPush" => $isPush,
+            "moveOrPushText" => $isPush ? 'pushed' : 'moved',
         ]);
 
         //4 - Did we activate any cards?
@@ -106,7 +120,9 @@ class Game extends \Table
         {
             $board = new ttBoard($this);
             $board->deserializeBoardFromDb();
+            
             $color = $board->tiles[$location]['color'];
+            $cards = new ttCards($this);
 
             $result= $cards->activateCardsByColor(intval($this->getActivePlayerId()), $color);
 
@@ -117,10 +133,78 @@ class Game extends \Table
             ]);
         }
 
-        //if no legal actions are left, move to the next player
-        //Otherwise, stay move back to selectAction
-        $nextState = $legalActions->hasLegalActions() ? "selectAction" : "nextPlayer";
-        $this->gamestate->nextState($nextState);
+        $this->endOfActionBoardState($origin);
+        $this->goToNextState();        
+    }
+
+    public function actGain(string $color, string $origin) : void
+    {
+        $player_id = $this->getActivePlayerId();
+        
+        $ttPieces = new ttPieces($this);
+        $pieces = $ttPieces->deserializePiecesFromDb();
+
+        $board = new ttBoard($this);
+        $board->deserializeBoardFromDb();
+
+        $colorMatch = false;
+        foreach ($pieces as $piece)
+        {
+            if ($piece['player_id'] ==$player_id)
+            {
+                $tileColor = $ttPieces->getTileColorPieceIsOn($piece['piece_id'], $board->tiles);
+                if ($tileColor == $color)
+                {
+                    $colorMatch = true;
+                    break;
+                }
+            }
+        }
+
+        if (!$colorMatch)
+        {
+            throw new \BgaUserException('Not a legal color to gain');
+        }
+                
+        $players = new ttPlayers($this);
+        $players->gainResource($this->getActivePlayerId(), $color);
+        $this->endOfActionBoardState($origin);
+
+        $this->notifyAllPlayers("gain", clienttranslate('${player_name} gained a ${color} resource'), [
+            "player_name" => $this->getActivePlayerName(),
+            "color" => strtoupper($color),
+        ]);
+
+        $this->goToNextState();
+    }
+
+    public function actBuy(int $cardID, string $origin) : void
+    {
+        $player_id = $this->getActivePlayerId();
+        
+        $card = $this->cards->getCard($cardID);
+        $cardData = ttUtility::getCardDataFromType($card);
+
+        $players = (new ttPlayers($this))->deserializePlayersFromDb();
+        $player = $players[$player_id];
+
+        $cards = new ttCards($this);
+        if (!$cards->isCardBuyable($cardData,$player))
+        {
+            throw new \BgaUserException('Not enough resources to buy card');
+        }
+        
+        $this->cards->moveCard($cardID, 'hand', $player_id);
+
+        $this->notifyAllPlayers("buy", clienttranslate('${player_name} bought a ${color} ${action} card'), [
+            "player_name" => $this->getActivePlayerName(),
+            "cardID" => $cardID,
+            "color" => strtoupper($cardData['color']),
+            "action" => strtoupper($cardData['action']),
+        ]);
+
+        $this->endOfActionBoardState($origin);
+        $this->goToNextState();
     }
 
     public function actDoneWithTurn() : void
@@ -251,6 +335,9 @@ class Game extends \Table
         $pieces = new ttPieces($this);
         $piecesData = $pieces->deserializePiecesFromDb();
 
+        $actionBoardSelections = new ttActionBoardSelections($this);
+        $result['actionBoardSelections'] = $actionBoardSelections->deserializeActionBoardSelectionsFromDb();
+
         //append color of tile that the piece is on to the piece data
         foreach ($piecesData as $piece_id => $piece)
         {
@@ -258,10 +345,12 @@ class Game extends \Table
         }
 
         $result['pieces'] = $piecesData;
-        
         $result['playerHomes'] = $board::PLAYERHOMES;
         $result['store'] = $this->cards->getCardsInLocation('store');
 
+        $cards = new ttCards($this);
+        $result['buyableCards'] = $cards->getBuyableCards($result['store'], $result['players'][$this->getActivePlayerId()]);
+        
         $result['hands'] = $this->cards->getCardsInLocation('hand');
 
         $legalActions = new ttLegalMoves($this);
@@ -272,8 +361,6 @@ class Game extends \Table
             $result['legalMoves'] = $legalActions->legalMoves();
         }
 
-        $actionBoardSelections = new ttActionBoardSelections($this);
-        $result['actionBoardSelections'] = $actionBoardSelections->deserializeActionBoardSelectionsFromDb();
         
         return $result;
 

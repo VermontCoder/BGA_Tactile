@@ -30,7 +30,12 @@ define([
             });
 
             //if all the player's pieces are at home or goal tiles, there are no resources to gain.
-            if(elegibleResourceColors.length == 0) {return;} 
+            if(elegibleResourceColors.length == 0) 
+            {
+                this.showMessage(_("You have no pieces on the board that can gain resources!"),'info');
+                this.clearAllPreviousHighlighting();
+                return;
+            } 
 
             for(i=0; i< elegibleResourceColors.length; i++)
             {
@@ -46,6 +51,16 @@ define([
             {
                 descriptionmyturn : _("${you} must select resource to gain"),
             });
-        }   
+        },
+        
+        gainResource: function(resource_id)
+        {
+            const resourceColor = resource_id.replace('Bank','');
+
+            this.bgaPerformAction("actGain", { 
+                color: resourceColor,
+                origin: this.eventOrigin
+            });
+        }
     });
 });

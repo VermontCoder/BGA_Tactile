@@ -91,4 +91,28 @@ class ttCards
         $sql = sprintf("SELECT card_id id, card_type type, card_type_arg type_arg, card_location location, card_location_arg location_arg FROM card WHERE card_location = 'hand' AND card_location_arg = %01d AND card_type_arg = %01d", $player_id, ttCards::CARDSTATUS['active']);
         return $this->game->getCollectionFromDb($sql);
     }
+
+    public function isCardBuyable(array $cardData, array $player) : bool
+    {
+        $player[$cardData['resources'][0].'_resource_qty']--;
+        $player[$cardData['resources'][1].'_resource_qty']--;
+
+        return $player[$cardData['resources'][0].'_resource_qty'] >= 0 && 
+                $player[$cardData['resources'][1].'_resource_qty'] >= 0;
+    }
+
+    public function getBuyableCards(array $storeCards, array $player) : array
+    {
+        $buyable = array();
+
+        foreach($storeCards as $card)
+        {
+            if($this->isCardBuyable($card, $player))
+            { 
+                $buyable[$card['id']] = $card;
+            }
+        }
+
+        return $buyable;
+    }
 }
