@@ -227,7 +227,30 @@
  {
      background: url(img/tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim) * 3)  no-repeat;
  }
+
+ .tile.red.legalMove
+ {
+     background: url(img/tiles_small.png) calc(var(--solid-tile-offset) - 6px) -6px no-repeat;
+     border: none;
+ }
  
+ .tile.yellow.legalMove
+ {
+     background: url(img/tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim) - 6px) -6px no-repeat;
+     border: none;
+ }
+
+.tile.green.legalMove
+{
+    background: url(img/tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim) * 2 - 6px) -6px no-repeat;
+    border: none;
+}
+
+.tile.blue.legalMove
+{
+    background: url(img/tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim) * 3 - 6px) -6px no-repeat;
+    border: none;
+}
  /* resource styles */
  
  .bank {

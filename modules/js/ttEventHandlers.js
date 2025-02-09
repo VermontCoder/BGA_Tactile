@@ -22,16 +22,23 @@ define([
         onActionBoardClick: function( selectionDivID ) {
 
             const gg = this.gamedatas.gamestate;
-            //Do not respond if not current player or this move has already been processed.
+
+            const selectionData = this.ttUtility.getActionBoardActionData(selectionDivID);
+
+            //Do not respond if not current player 
             if(!this.isCurrentPlayerActive()) { return; }
-            if(gg.args.actionBoardSelections[selectionDivID]['selected']) { return; }
             
-            //do not respond if two actions have already been selected.
+            //Do not respond if this action has already been selected.
+            if(gg.args.actionBoardSelections[selectionDivID]['selected']) { return; }
+
+            //Do not respond if this is not the active player's action board.
+            if(selectionData['player_id'] != this.getActivePlayerId()) { return; }
+
+            //Do not respond if two actions have already been selected.
             const activePlayerBoardVals = this.ttUtility.pickByNestedProperty(gg.args.actionBoardSelections, 'player_id', this.getActivePlayerId());
             const selections = this.ttUtility.pickByNestedProperty(activePlayerBoardVals, 'selected', true);
             if (Object.keys(selections).length >= 2) { return; }
 
-            
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
 
             //check if this is actually an uncheck
@@ -47,7 +54,7 @@ define([
             //record the event origin for later use.
             this.eventOrigin = selectionDivID;
             
-            var selectionData = this.ttUtility.getActionBoardActionData(selectionDivID);
+            
 
             //use call to keep the "this" context.
             this.ttEventHandlers.beginSequence.call(this,selectionData.action);
@@ -183,6 +190,7 @@ define([
                     this.ttBuySequence.beginBuy.call(this);
                     break;
                 case 'swap':
+                    this.ttSwapSequence.beginSwap.call(this);
                     break;
                 case 'reset':
                     this.ttResetSequence.beginReset.call(this);
