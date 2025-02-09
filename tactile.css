@@ -167,12 +167,16 @@
      background: url(img/tiles_small.png) 0 0 no-repeat;
      border: 1px solid black;
  }
+
+
  
  .tile.yellowHome
  {
      background: url(img/tiles_small.png) calc(var(--tile-dim) * -1) 0 no-repeat;
      border: 1px solid black;
  }
+
+
  
  .tile.greenHome
  {
@@ -186,6 +190,28 @@
      border: 1px solid black;
  }
  
+ /* When home tiles are highlighted the background image shifts. This is to compensate for that. */
+
+ .tile.redHome.legalMove {
+    background: url(img/tiles_small.png) -6px -6px no-repeat;
+    border: none;
+ }
+
+.tile.yellowHome.legalMove {
+    background: url(img/tiles_small.png) calc(var(--tile-dim) * -1 - 6px) -6px no-repeat;
+    border: none;
+}
+
+.tile.greenHome.legalMove {
+    background: url(img/tiles_small.png) calc(var(--tile-dim) * -2 - 6px) -6px no-repeat;
+    border: none;
+}
+
+.tile.blueHome.legalMove {
+    background: url(img/tiles_small.png) calc(var(--tile-dim) * -3 - 6px) -6px no-repeat;
+    border: none;
+}
+
  .tile.red
  {
      background: url(img/tiles_small.png) var(--solid-tile-offset) 0 no-repeat;
@@ -254,27 +280,7 @@
  {
      transform: scale(1.2);
  }
- /*
- .resource.highlighted.red
- {
-     background: url(img/resource_tokens_highlighted_small.png) 0 0 no-repeat;
- }
- 
- .resource.highlighted.yellow
- {
-     background: url(img/resource_tokens_highlighted_small.png) calc(var(--resource-dim-highlighted) * -1) 0 no-repeat;
- }
- 
- .resource.highlighted.green
- {
-     background: url(img/resource_tokens_highlighted_small.png) calc(var(--resource-dim-highlighted) * -2) 0 no-repeat;
- }
- 
- .resource.highlighted.blue
- {
-     background: url(img/resource_tokens_highlighted_small.png) calc(var(--resource-dim-highlighted) * -3) 0 no-repeat;
- }
- */
+
  .resourceContainer {
      display: flex;
      justify-content: center;
