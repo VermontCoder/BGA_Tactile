@@ -168,16 +168,12 @@
      border: 1px solid black;
  }
 
-
- 
  .tile.yellowHome
  {
      background: url(img/tiles_small.png) calc(var(--tile-dim) * -1) 0 no-repeat;
      border: 1px solid black;
  }
 
-
- 
  .tile.greenHome
  {
      background: url(img/tiles_small.png) calc(var(--tile-dim) * -2) 0 no-repeat;

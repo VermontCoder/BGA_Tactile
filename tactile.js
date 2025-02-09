@@ -197,15 +197,16 @@ function (dojo, declare) {
             
             Object.values(tiles).forEach(tile => {
                 const tileId = 'tile_' + tile.tile_id;
-                const tileClass = 'tile ' +tile.color + (playerHomes[tile.tile_id] ? 'Home' : '');
+                const tileClass = 'tile ' +tile.color + (playerHomes[tile.tile_id] ? playerHomes[tile.tile_id] + 'Home' : '');
 
                 document.getElementById('board').insertAdjacentHTML('beforeend', '<DIV id="'+tileId+'" class="'+tileClass+'"></DIV>');
             });
 
             //click handlers
             const tileDivs = document.querySelectorAll('#board > div');
-            tileDivs.forEach(tileDiv => {         
-                 tileDiv.addEventListener('click', (e) => this.ttEventHandlers.onTileClick.call(this,e.target.id));
+            tileDivs.forEach(tileDiv => {
+                //this passes the currentTarget as opposed to the target, because that will be the tileID if there is a piece here.
+                 tileDiv.addEventListener('click', (e) => this.ttEventHandlers.onTileClick.call(this,e.currentTarget.id));
             });
         },
 

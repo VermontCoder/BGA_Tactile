@@ -71,7 +71,8 @@ class ttCards
      */
     public function activateCardsByColor(int $player_id, string $color) 
     {
-        $sql = sprintf("UPDATE card SET card_type_arg = %01d WHERE card_type LIKE '%s_%%' AND card_location = 'hand' AND card_location_arg = %01d", ttCards::CARDSTATUS['active'], $color, $player_id);
+        $sql = sprintf("UPDATE card SET card_type_arg = %01d WHERE card_type_arg=%01d AND card_type LIKE '%s_%%' AND card_location = 'hand' AND card_location_arg = %01d", 
+            ttCards::CARDSTATUS['active'],ttCards::CARDSTATUS['inactive'], $color, $player_id);
         $result = $this->game::DbQuery($sql);
 
         //return number of cards activated

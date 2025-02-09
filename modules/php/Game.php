@@ -129,11 +129,17 @@ class Game extends \Table
             $color = $board->tiles[$location]['color'];
             $cards = new ttCards($this);
 
-            $result= $cards->activateCardsByColor(intval($this->getActivePlayerId()), $color);
+            $numActivated = 0;
+
+            //color is '' on home tiles - cannot activate cards.
+            if ($color != '')
+            {
+                $numActivated = $cards->activateCardsByColor(intval($this->getActivePlayerId()), $color);
+            }
 
             $this->notifyAllPlayers("activate", clienttranslate('${player_name} activated ${numCardsActivated} ${color} card(s)'), [
                 "player_name" => $this->getActivePlayerName(),
-                "numCardsActivated" => $result,
+                "numCardsActivated" => $numActivated,
                 "color" => strtoupper($color),
             ]);
         }

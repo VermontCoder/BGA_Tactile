@@ -76,7 +76,7 @@ class ttBoard
                 {
                     $this->tiles[$tile_id] = array(
                         'tile_id' => $tile_id,
-                        'color' => self::PLAYERHOMES[$tile_id],
+                        'color' => '',
                     );
                 }
                 else

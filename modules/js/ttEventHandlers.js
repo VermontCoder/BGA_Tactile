@@ -89,6 +89,12 @@ define([
                 if (!isPiecePlayersPiece) { return; }
             }
 
+            /* EXCEPTIONAL SITUATION: if the piece is in a home/goal tile this may actually be a click to move the other piece *into* the home/goal tile.
+            In this case, the tile parent div of the piece will have the "legalMove" class. If this happens, we ignore the click and let the tile click
+            handler do the work to move the other piece on top of this one. */
+
+            if($(piece_id).parentNode.classList.contains('legalMove')) { return; }
+
             console.log('onPieceClick', JSON.stringify(pieceData));
 
             this.clearTileHighlighting();

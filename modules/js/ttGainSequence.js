@@ -21,8 +21,8 @@ define([
                 {
                     const pieceTileColor = pieces[key].tile_color;
 
-                    //pieceTileColor will be null if the piece is at a home or goal tile.
-                    if (pieceTileColor != null)
+                    //pieceTileColor will be '' if the piece is at a home or goal tile.
+                    if (pieceTileColor != '')
                     {
                         elegibleResourceColors.push(pieceTileColor);
                     }
