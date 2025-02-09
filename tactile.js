@@ -404,7 +404,13 @@ function (dojo, declare) {
                 {
                     case 'selectAction':
                         this.addActionButton('actionBtnDoneWithTurn', _('Done with turn'), () => this.bgaPerformAction("actDoneWithTurn"), null, null, 'red'); 
-                        break;   
+                        break;
+                        
+                    case 'client_reset':
+                        this.addActionButton('actionButtonResetYes', _('Yes'), () => this.ttResetSequence.confirmReset.call(this,true), null, null, 'red');
+                        this.addActionButton('actionButtonResetNo', _('No'), () => this.ttResetSequence.confirmReset.call(this,false), null, null, 'red');
+                        break;    
+                //     
                 //     const playableCardsIds = args.playableCardsIds; // returned by the argPlayerTurn
 
                 //     // Add test action buttons in the action status bar, simulating a card click:

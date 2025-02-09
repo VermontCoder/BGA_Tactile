@@ -47,7 +47,7 @@ define([
             //record the event origin for later use.
             this.eventOrigin = selectionDivID;
             
-            selectionData = this.ttUtility.getActionBoardActionData(selectionDivID);
+            var selectionData = this.ttUtility.getActionBoardActionData(selectionDivID);
 
             //use call to keep the "this" context.
             this.ttEventHandlers.beginSequence.call(this,selectionData.action);
@@ -185,6 +185,7 @@ define([
                 case 'swap':
                     break;
                 case 'reset':
+                    this.ttResetSequence.beginReset.call(this);
                     break;
                 
             }

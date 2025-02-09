@@ -232,6 +232,19 @@ class Game extends \Table
         $this->goToNextState();
     }
 
+    public function actReset(string $origin) : void
+    {
+        $this->cards->moveAllCardsInLocation('store', 'discard');
+        $this->cards->pickCardsForLocation( 6, 'deck', 'store');
+
+        $this->notifyAllPlayers("reset", clienttranslate('${player_name} reset the store'), [
+            "player_name" => $this->getActivePlayerName(),
+        ]);
+
+        $this->endOfActionBoardState($origin);
+        $this->goToNextState();
+    }
+
     public function actDoneWithTurn() : void
     {
         // Retrieve the active player ID.
