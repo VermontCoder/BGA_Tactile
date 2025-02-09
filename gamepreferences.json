@@ -1,1 +1,19 @@
-{}
+{    
+    "100": 
+    {
+        "name": "Use Color Blind Tiles",
+        "needReload": true,
+        "values": 
+        {
+            "1": 
+            {
+                "name": "Yes"
+            },
+            "2": 
+            {
+                "name": "No"
+            }
+        },
+        "default": 2
+    }
+}

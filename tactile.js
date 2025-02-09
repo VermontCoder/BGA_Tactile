@@ -83,6 +83,12 @@ function (dojo, declare) {
 
             tableauContainer.prepend(currentPlayerTableau);
 
+            //set color blind preference
+            if (this.getGameUserPreference(100) == 1)
+            {
+                document.querySelector(':root').style.setProperty('--num-tiles-to-offset', 8);
+            }
+
             console.log( "Ending game setup" );
             //console.log(gamedatas.legalActions);
         },
