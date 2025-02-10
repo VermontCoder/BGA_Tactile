@@ -265,8 +265,7 @@
      margin-top: 10px;
      border-radius: 10px;
      padding: 2px;
-     background-color: #f0e68c; /* Light golden color to represent money */
-     border: 2px solid #b8860b; /* Dark golden border */
+     background-color: #CCCCCC; /* Light golden color to represent money */
      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
  }
  
@@ -338,12 +337,15 @@
      background-color: var(--panel-color);
      padding: 10px;
      border-radius: 4px;
-     width: calc(var(--store-width) + var(--board-dim) + 12px);
+     width: 99%; /* leave a small gap on the right */
+     min-width: calc(var(--store-width) + var(--board-dim) + 12px);
+     
  }
  
  .cardRow.tableauCardContainer {
      align-items: left;
      justify-content: left;
+     flex-wrap: wrap;
  }
  
  .tableauLabel {
@@ -415,6 +417,7 @@
      background: url(img/action_board.png) 0 0;
      border-radius: 4px;
      margin-bottom:5px;
+     margin-right:10px;
      box-shadow: 3px 3px 3px #444;
  }
  

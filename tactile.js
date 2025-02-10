@@ -19,6 +19,7 @@ define([
     "dojo","dojo/_base/declare",
     "ebg/core/gamegui",
     "ebg/counter",
+    g_gamethemeurl + "modules/js/ttAnimations.js",
     g_gamethemeurl + "modules/js/ttUtility.js",
     g_gamethemeurl + "modules/js/ttEventHandlers.js",
     g_gamethemeurl + "modules/js/ttMoveSequence.js",
@@ -40,6 +41,7 @@ function (dojo, declare) {
             this.ttBuySequence = new bgagame.ttBuySequence();
             this.ttSwapSequence = new bgagame.ttSwapSequence();
             this.ttResetSequence = new bgagame.ttResetSequence();
+            this.ttAnimations = new bgagame.ttAnimations();
 
             this.cardStatuses = { 0: 'inactive', 1: 'active', 2: 'exhausted' };
 
