@@ -27,14 +27,15 @@
      --board-dim: calc(var(--tile-dim)*6 + (2px*6) + 20px);
      --card-width: 80px;
      --card-height: 120px;
-     --store-width: calc((var(--card-width) + 5px ) * 3 + 20px);
+     --store-width: calc((var(--card-width) + 5px ) * 3 + 25px);
      --action-board-width: 128px;
      --action-board-height: 183px;
      --action-board-selection-dim: 17px;
      --resource-dim: 25px;
      --resource-dim-highlighted: 28px;
 
-     --highlight-color: rgba(23, 197, 66, 0.856); 
+     --highlight-color: rgba(23, 197, 66, 0.856);
+     --panel-color: #eeeeee;
  
      /* z-index values */
      --z-index-deck: 3 ;
@@ -52,7 +53,6 @@
      display: flex;
      height: var(--board-dim);
      margin-bottom: 20px;
-    
  }
  
  /* Store styles */
@@ -64,9 +64,10 @@
      left: 10px;
      width: var(--store-width);
      height: var(--board-dim);
-     background-color: #d3d3d3;  
+     background-color: var(--panel-color);  
      border-radius: 4px;
      margin-top: 10px;
+     padding-right:4px;
  }
  
  /* Deck styles */
@@ -76,7 +77,7 @@
      width: var(--card-width);
      background: url(img/card_back_small.png) 0 0;
      position: relative;
-     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+     box-shadow: 3px 3px 3px #444;
      border-radius: 4px;
      margin-top: 10px !important;
  }
@@ -88,7 +89,7 @@
      height: 100%;
      width: 100%;
      background: url(img/card_back_small.png) 0 0;
-     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+     box-shadow: 3px 3px 3px #444;
      border-radius: 4px;
  }
  
@@ -118,7 +119,7 @@
      left: calc(var(--store-width) + 20px);
      width: var(--board-dim);
      height: var(--board-dim);
-     background-color: #e0e0e0;
+     background-color: var(--panel-color);
      margin-top: 10px;
      padding: 10px;
      font-size: 0; /* remove space between inline-block elements */
@@ -186,7 +187,7 @@
      border: 1px solid black;
  }
  
- /* When home tiles are highlighted the background image shifts. This is to compensate for that. */
+ /* When tiles are highlighted the background image shifts. This is to compensate for that. */
 
  .tile.redHome.legalMove {
     background: url(img/tiles_small.png) -6px -6px no-repeat;
@@ -228,6 +229,9 @@
      background: url(img/tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim) * 3)  no-repeat;
  }
 
+ /* When tiles are highlighted the background image shifts. This is to compensate for that. Only matters for color blind tiles */
+
+ 
  .tile.red.legalMove
  {
      background: url(img/tiles_small.png) calc(var(--solid-tile-offset) - 6px) -6px no-repeat;
@@ -259,11 +263,14 @@
      align-items: center;
      flex-direction: column;
      margin-top: 10px;
+     border-radius: 10px;
+     padding: 2px;
+     background-color: #f0e68c; /* Light golden color to represent money */
+     border: 2px solid #b8860b; /* Dark golden border */
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
  }
  
  .bank.highlighted {
-    border-radius: 4px;
-    padding: 4px;
     border: 2px solid var(--highlight-color); /* Highlight border color */
     box-shadow: 0 0 15px var(--highlight-color); /* Highlight glow effect */
  }
@@ -271,7 +278,7 @@
  .resource {
      width: var(--resource-dim);
      height: var(--resource-dim);
-     filter: drop-shadow(1px 4px 2px rgba(0,0,0,.6));
+     filter: drop-shadow(3px 3px 3px #444);
  }
  
  
@@ -295,10 +302,10 @@
      background: url(img/resource_tokens_small.png) calc(var(--resource-dim) * -3) 0 no-repeat;
  }
 
- .resource.highlighted
+ /* .resource.highlighted
  {
      transform: scale(1.2);
- }
+ } */
 
  .resourceContainer {
      display: flex;
@@ -328,7 +335,7 @@
  .tableau {
      margin: 10px;
      display: inline-block;
-     background-color: #d3d3d3;
+     background-color: var(--panel-color);
      padding: 10px;
      border-radius: 4px;
      width: calc(var(--store-width) + var(--board-dim) + 12px);
@@ -369,9 +376,9 @@
  .storecard, .card {
      height:var(--card-height);
      width: var(--card-width);
-     background: url(img/cards_small.png) 0 0;
+     background: url(img/cards_small.png) 0 0 no-repeat;
      border-radius: 4px;
-     filter: drop-shadow(1px 4px 2px rgba(0,0,0,.6));
+     filter: drop-shadow(3px 3px 3px #444);
      transition: transform 0.3s, box-shadow 0.3s, border 0.3s; /* Add transition for smooth effect */
 }
 
@@ -383,17 +390,23 @@
     filter: brightness(70%);
  }
 
- .storecard.highlighted {
+ .storecard.highlighted, .card.highlighted {
+    height: calc(var(--card-height) + 4px);
+    width: calc(var(--card-width) + 4px);
     border: 2px solid var(--highlight-color); /* Highlight border color */
+    border-radius: 6px;
     box-shadow: 0 0 15px var(--highlight-color); /* Highlight glow effect */
-    transform: scale(1.1); /* Slightly enlarge the card */
+    
 }
 
- .card.highlighted {
-    border: 2px solid var(--highlight-color); /* Highlight border color */
-    box-shadow: 0 0 15px var(--highlight-color); /* Highlight glow effect */
+.card.highlighted {
     transform: translateY(-20px) scale(1.1); /* Slightly enlarge the card */
 }
+
+.storecard.highlighted {
+    transform: scale(1.1); /* Slightly enlarge the card */
+} 
+
  
  .actionBoard {
      position: relative;
@@ -402,7 +415,7 @@
      background: url(img/action_board.png) 0 0;
      border-radius: 4px;
      margin-bottom:5px;
-     filter: drop-shadow(1px 4px 2px rgba(0,0,0,.6));
+     box-shadow: 3px 3px 3px #444;
  }
  
  .actionBoardSelectionTarget {
