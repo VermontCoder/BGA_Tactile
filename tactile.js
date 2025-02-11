@@ -415,7 +415,7 @@ function (dojo, declare) {
                     
                     case 'client_swapSelectLose':
                         for (const color of args.swappableResources) {
-                            this.addActionButton(`actionButtonSwapLose_${color}`, _(color.toUpperCase()), () => this.ttSwapSequence.selectSwapLoss.call(this,color), null, null, color);
+                            this.addActionButton(`actionButtonSwapLose_${color}`, _(color.toUpperCase()), () => this.ttSwapSequence.selectSwapLoss.call(this,color), null, null, 'grey');
                         }
                 
                 }
