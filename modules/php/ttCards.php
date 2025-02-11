@@ -93,23 +93,15 @@ class ttCards
         return $this->game->getCollectionFromDb($sql);
     }
 
-    public function isCardBuyable(array $cardData, array $player) : bool
-    {
-        $player[$cardData['resources'][0].'_resource_qty']--;
-        $player[$cardData['resources'][1].'_resource_qty']--;
-
-        return $player[$cardData['resources'][0].'_resource_qty'] >= 0 && 
-                $player[$cardData['resources'][1].'_resource_qty'] >= 0;
-    }
-
     public function getBuyableCards(array $storeCards, array $player) : array
     {
         $buyable = array();
+        $legalMoves = new ttLegalMoves($this->game);
 
         foreach($storeCards as $card)
         {
             $cardData = ttUtility::getCardDataFromType($card);
-            if($this->isCardBuyable($cardData, $player))
+            if($legalMoves->isCardBuyable($cardData, $player))
             { 
                 $buyable[$card['id']] = $card;
             }

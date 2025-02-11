@@ -112,6 +112,18 @@ class ttLegalMoves
         return $legalMoves;
     }
 
+    public function isCardBuyable(array $cardData, array $player) : bool
+    {
+        $player[$cardData['resources'][0].'_resource_qty']--;
+        $player[$cardData['resources'][1].'_resource_qty']--;
 
+        return $player[$cardData['resources'][0].'_resource_qty'] >= 0 && 
+                $player[$cardData['resources'][1].'_resource_qty'] >= 0;
+    }
+
+    public function isSwappable(string $color, array $player) : bool
+    {
+        return $player[$color.'_resource_qty'] > 0;
+    }   
     
 }

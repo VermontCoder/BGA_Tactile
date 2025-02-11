@@ -205,14 +205,13 @@ class Game extends \Table
         $players = new ttPlayers($this);
         $player = $players->deserializePlayersFromDb()[$player_id];
 
-        $cards = new ttCards($this);
-        if (!$cards->isCardBuyable($cardData,$player))
+        $legalMoves = new ttLegalMoves($this);
+        if (!$legalMoves->isCardBuyable($cardData,$player))
         {
             throw new \BgaUserException('Not enough resources to buy card');
         }
 
-        $legalActions = new ttLegalMoves($this);
-        if (!in_array('buy',$legalActions->legalActions()))
+        if (!in_array('buy',$legalMoves->legalActions()))
         {
             throw new \BgaUserException('This is not a legal action!');
         }
@@ -226,6 +225,36 @@ class Game extends \Table
             "cardID" => $card_id,
             "color" => strtoupper($cardData['color']),
             "action" => strtoupper($cardData['action']),
+        ]);
+
+        $this->endOfActionBoardState($origin);
+        $this->goToNextState();
+    }
+
+    public function actSwap(string $gainColor, string $lossColor, string $origin) : void
+    {
+        $player_id = $this->getActivePlayerId();
+        
+        $players = new ttPlayers($this);
+        $players->deserializePlayersFromDb();
+
+        $legalActions = new ttLegalMoves($this);
+        if (!in_array('swap',$legalActions->legalActions()))
+        {
+            throw new \BgaUserException('This is not a legal action!');
+        }
+
+        if (!$legalActions->isSwappable($lossColor, $players->players[$player_id]))
+        {
+            throw new \BgaUserException('Illegal swap');
+        }
+
+        $players->swapResources($player_id, $lossColor, $gainColor);
+
+        $this->notifyAllPlayers("swap", clienttranslate('${player_name} swapped a ${lossColor} resource for a ${gainColor} resource'), [
+            "player_name" => $this->getActivePlayerName(),
+            "lossColor" => strtoupper($lossColor),
+            "gainColor" => strtoupper($gainColor),
         ]);
 
         $this->endOfActionBoardState($origin);

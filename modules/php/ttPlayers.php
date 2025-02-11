@@ -111,4 +111,20 @@ class ttPlayers
             )
         );
     }
+
+    public function swapResources($player_id, $lostResource, $gainedResource) : void
+    {
+        $lostResourceCol = $lostResource . "_resource_qty";
+        $gainedResourceCol = $gainedResource . "_resource_qty";
+        $this->game->DbQuery(
+            sprintf(
+                "UPDATE player SET %s = %s - 1, %s = %s + 1 WHERE player_id = %s",
+                $lostResourceCol,
+                $lostResourceCol,
+                $gainedResourceCol,
+                $gainedResourceCol,
+                $player_id
+            )
+        );
+    }
 }

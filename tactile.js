@@ -411,7 +411,12 @@ function (dojo, declare) {
                     case 'client_reset':
                         this.addActionButton('actionButtonResetYes', _('Yes'), () => this.ttResetSequence.confirmReset.call(this,true), null, null, 'red');
                         this.addActionButton('actionButtonResetNo', _('No'), () => this.ttResetSequence.confirmReset.call(this,false), null, null, 'red');
-                        break;    
+                        break;
+                    
+                    case 'client_swapSelectLose':
+                        for (const color of args.swappableResources) {
+                            this.addActionButton(`actionButtonSwapLose_${color}`, _(color.toUpperCase()), () => this.ttSwapSequence.selectSwapLoss.call(this,color), null, null, color);
+                        }
                 
                 }
             }
@@ -513,6 +518,7 @@ function (dojo, declare) {
             dojo.subscribe('activate', this, "notif_activate");
             dojo.subscribe('gain', this, "notif_gain");
             dojo.subscribe('buy', this, "notif_buy");
+            dojo.subscribe('swap', this, "notif_swap");
             
             // TODO: here, associate your game notifications with local methods
             
@@ -559,6 +565,12 @@ function (dojo, declare) {
         {
             console.log( 'notif_buy' );
             console.log( notif );
-        }
+        },
+
+        notif_swap: function( notif )
+        {
+            console.log( 'notif_swap' );
+            console.log( notif );
+        },
    });             
 });
