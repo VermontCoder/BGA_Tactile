@@ -37,7 +37,7 @@ define([
                 return;
             } 
             
-            this.ttUtility.highlightResourceBanks(elegibleResourceColors);
+            this.ttEventHandlers.highlightResourceBanks(elegibleResourceColors);
 
             this.setClientState("client_selectResource", 
             {

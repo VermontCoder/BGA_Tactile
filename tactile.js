@@ -412,16 +412,7 @@ function (dojo, declare) {
                         this.addActionButton('actionButtonResetYes', _('Yes'), () => this.ttResetSequence.confirmReset.call(this,true), null, null, 'red');
                         this.addActionButton('actionButtonResetNo', _('No'), () => this.ttResetSequence.confirmReset.call(this,false), null, null, 'red');
                         break;    
-                //     
-                //     const playableCardsIds = args.playableCardsIds; // returned by the argPlayerTurn
-
-                //     // Add test action buttons in the action status bar, simulating a card click:
-                //     playableCardsIds.forEach(
-                //         cardId => this.addActionButton(`actPlayCard${cardId}-btn`, _('Play card with id ${card_id}').replace('${card_id}', cardId), () => this.onCardClick(cardId))
-                //     ); 
-
-                //     this.addActionButton('actPass-btn', _('Pass'), () => this.bgaPerformAction("actPass"), null, null, 'gray'); 
-                //     break;
+                
                 }
             }
         },        

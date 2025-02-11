@@ -389,6 +389,21 @@ class Game extends \Table
         $cards = new ttCards($this);
         $result['buyableCards'] = $cards->getBuyableCards($result['store'], $result['players'][$this->getActivePlayerId()]);
         
+        $result['swappableResources'] = [];
+        foreach($players->players as $player)
+        {
+            $swappableResources = [];
+            foreach(ttBoard::COLORS as $color)
+            {
+                if ($player[$color.'_resource_qty'] > 0)
+                {
+                    $swappableResources[] = $color;
+                }
+            }
+
+            $result['swappableResources'][$player['player_id']] = $swappableResources;
+        }
+        
         $result['hands'] = $this->cards->getCardsInLocation('hand');
 
         $legalActions = new ttLegalMoves($this);

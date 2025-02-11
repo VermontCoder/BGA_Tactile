@@ -43,10 +43,12 @@
  
  .addSpace { margin: 5px; }
  .addSpaceSmall { margin: 2px; }
-   
- #play_area_container {
-     background-color: #0f0f0f;
- }
+ 
+ 
+ 
+ /* #overall-content {
+    background: url(img/background.jpg) 0 0;
+ }  */
  
  /* Top container styles */
  #ttTopContainer {
@@ -269,7 +271,7 @@
      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
  }
  
- .bank.highlighted {
+ .resource.highlighted, .bank.highlighted {
     border: 2px solid var(--highlight-color); /* Highlight border color */
     box-shadow: 0 0 15px var(--highlight-color); /* Highlight glow effect */
  }

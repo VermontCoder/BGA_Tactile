@@ -118,6 +118,11 @@ define([
             {
                 this.ttGainSequence.gainResource.call(this, resource_id);
             }
+
+            if (this.gamedatas.gamestate.name == 'client_swapSelectGain')
+            {
+                this.ttSwapSequence.selectGain.call(this, resource_id);
+            }
         },
 
         onPlayerResourceBankClick: function( resource_id ) {
@@ -197,8 +202,19 @@ define([
                     break;
                 
             }
-        }
+        },
 
+        highlightResourceBanks: function(resourceColors)
+        {
+            for(i=0; i< resourceColors.length; i++)
+            {
+                const resourceBankDiv = resourceColors[i]+'Bank';
+                $(resourceBankDiv).classList.add('highlighted');
+                
+                const resourceBankChildren = document.querySelectorAll('#' + resourceBankDiv + ' .resource');
+                resourceBankChildren.forEach( (resourceBankChild => resourceBankChild.classList.add('highlighted')));
+            }
+        }
         
     });
 }); 

@@ -89,17 +89,5 @@ define([
                 action: actionData[2]
             };
         },
-
-        highlightResourceBanks: function(resourceColors)
-        {
-            for(i=0; i< resourceColors.length; i++)
-            {
-                const resourceBankDiv = resourceColors[i]+'Bank';
-                $(resourceBankDiv).classList.add('highlighted');
-                
-                const resourceBankChildren = document.querySelectorAll('#' + resourceBankDiv + ' .resource');
-                resourceBankChildren.forEach( (resourceBankChild => resourceBankChild.classList.add('highlighted')));
-            }
-        }
     });
 });
