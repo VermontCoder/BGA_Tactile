@@ -49,6 +49,8 @@ class Game extends \Table
         $this->cards = $this->getNew( "module.common.deck" );
         $this->cards->init( "card" );
         $this->cards->autoreshuffle = true;
+
+        $this->SCORE_GOAL = 0;
     }
 
     //Player Actions and supporting functions
@@ -110,7 +112,7 @@ class Game extends \Table
 
         //2 - actually move or push the piece
         $pieces = new ttPieces($this);
-        $pieces->movePiece($piece_id,$location);
+        $reachedGoal = $pieces->movePiece($piece_id,$location);
 
         $this->notifyAllPlayers("moveOrPush", clienttranslate('${player_name} ${moveOrPushText} a piece'), [
             "player_name" => $this->getActivePlayerName(),
@@ -119,6 +121,24 @@ class Game extends \Table
             "isPush" => $isPush,
             "moveOrPushText" => $isPush ? 'pushed' : 'moved',
         ]);
+
+        if ($reachedGoal)
+        {
+            $ttPlayers = new ttPlayers($this);
+            $ttPlayers->deserializePlayersFromDb();
+
+            //Equivalent to join between players and pieces to get the player who reached the goal
+            $player = $ttPlayers->players[$pieces->pieces[$piece_id]['player_id']];
+
+            $this->notifyAllPlayers("goalAchieved", clienttranslate('${player_name} has a piece in their goal!'), [
+                "player_name" => $player['player_name'],
+                "piece_id" => $piece_id,
+                "player_id" => $player['player_id'],
+                "score" => $player['player_score'],
+            ]);
+
+            $ttPlayers->scorePoint($player['player_id']);            
+        }
 
         //4 - Did we activate any cards?
         if (!$isPush)
@@ -131,7 +151,7 @@ class Game extends \Table
 
             $numActivated = 0;
 
-            //color is '' on home tiles - cannot activate cards.
+            //color is '' on home or goal tiles - cannot activate cards.
             if ($color != '')
             {
                 $numActivated = $cards->activateCardsByColor(intval($this->getActivePlayerId()), $color);
@@ -469,6 +489,7 @@ class Game extends \Table
      */
     protected function setupNewGame($players, $options = [])
     {
+        $this->SCORE_GOAL = count($players) <= 3 ? 2 : 3;
         // Set the colors of the players with HTML color code. 
         $gameinfos = $this->getGameinfos();
         $default_colors = $gameinfos['player_colors'];

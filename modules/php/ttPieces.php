@@ -29,7 +29,6 @@ class ttPieces
                 $piece['piece_id'] = 'piece_' . $player_id . '_'.strval($i);
                 $piece['player_id'] = $player_id;
                 $piece['piece_color'] = $player['color_name'];
-                $piece['finished'] = false;
                 $piece['location'] = ttBoard::COLORHOMES[$player['color_name']];
                 $this->pieces[] = $piece;
             }
@@ -41,29 +40,22 @@ class ttPieces
     private function serializePiecesToDb($pieces)
     {
         foreach ($pieces as $piece) {
-            $query_values[] = vsprintf("('%s', '%s', '%s', '%s', '%d')", [
+            $query_values[] = vsprintf("('%s', %01d, '%s', '%s')", [
                 $piece['piece_id'],
                 $piece['player_id'],
                 $piece['piece_color'],
                 $piece['location'],
-                $piece['finished'],
             ]);
         }
 
-        $query = sprintf("INSERT INTO pieces (piece_id, player_id, piece_color, location, finished) VALUES %s", implode(',', $query_values));
+        $query = sprintf("INSERT INTO pieces (piece_id, player_id, piece_color, location) VALUES %s", implode(',', $query_values));
         $this->game::DbQuery($query);
     }
 
     public function deserializePiecesFromDb() : array
     {
-        $sql = "SELECT piece_id, player_id, piece_color, location, finished FROM pieces";
+        $sql = "SELECT piece_id, player_id, piece_color, location FROM pieces";
         $this->pieces = $this->game->getCollectionFromDb($sql);
-
-        foreach ($this->pieces as $piece)
-        {
-            $this->pieces[$piece['piece_id']]['finished'] = boolval($piece['finished']);
-        }
-        //(new ttDebug($this->game))->showVariable('players', $this->$players);
 
         return $this->pieces;
     }
@@ -84,16 +76,16 @@ class ttPieces
         return $pieceLocations;
     }
 
-    public function movePiece($piece_id, $location) : void
+    
+    //** Move piece to new location, return true if piece is in goal */
+    public function movePiece($piece_id, $location) : bool
     {
-        $this->pieces[$piece_id]['location'] = $location;
         $sql = sprintf("UPDATE pieces SET location = '%s' WHERE piece_id = '%s'", $location, $piece_id); 
         $this->game::DbQuery($sql);
 
-        if (!empty($this->pieces))
-        {
-            $this->pieces[$piece_id]['location'] = $location;
-        }
+        $this->deserializePiecesFromDb();
+        
+        return $location == ttBoard::PLAYERGOALS[$this->pieces[$piece_id]['piece_color']];
     }
 
     public function getTileColorPieceIsOn($piece_id, $tiles) : ?string

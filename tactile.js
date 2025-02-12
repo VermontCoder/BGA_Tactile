@@ -292,13 +292,10 @@ function (dojo, declare) {
                     <DIV id="greenResource_${player.player_id}" class="resourceAmount"> : ${player.green_resource_qty} </DIV>
                     <DIV id="yellowResourceLabel_${player.player_id}" class="yellow resource addSpaceSmall"></DIV>
                     <DIV id="yellowResource_${player.player_id}" class="resourceAmount"> : ${player.yellow_resource_qty} </DIV>
-                </DIV>
-            `);
+                </DIV>`);
 
-            resourcePlayer = document.querySelectorAll('.resource');
-            resourcePlayer.forEach(resource => {         
-                resource.addEventListener('click', (e) => this.ttEventHandlers.onPlayerResourceBankClick.call(this,e.target.id));
-            });
+                // debugger;
+                // this.scoreCtrl[ player.player_id ].setValue( player.player_score );
         },
 
         
@@ -415,7 +412,7 @@ function (dojo, declare) {
                     
                     case 'client_swapSelectLose':
                         for (const color of args.swappableResources) {
-                            this.addActionButton(`actionButtonSwapLose_${color}`, _(color.toUpperCase()), () => this.ttSwapSequence.selectSwapLoss.call(this,color), null, null, 'grey');
+                            this.addActionButton(`actionButtonSwapLose_${color}`, _(color.toUpperCase()), () => this.ttSwapSequence.selectSwapLoss.call(this,color), null, null, 'gray');
                         }
                 
                 }

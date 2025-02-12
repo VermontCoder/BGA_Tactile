@@ -70,7 +70,6 @@ CREATE TABLE IF NOT EXISTS `pieces` (
   `piece_id` varchar(16) NOT NULL,
   `player_id` int(11) unsigned NOT NULL,
   `piece_color` varchar(10) NOT NULL, 
-  `finished` tinyint(1) NOT NULL,
   `location` varchar(3) NOT NULL,
   PRIMARY KEY (`piece_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

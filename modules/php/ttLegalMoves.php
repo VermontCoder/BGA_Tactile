@@ -84,9 +84,6 @@ class ttLegalMoves
 
         foreach($pieces->pieces as $piece)
         {
-            //if ($piece['player_id'] != $player_id) continue;
-            if ($piece['finished']) continue;
-
             $adjacentLocations = ttUtility::getAdjacentSpacesIDs($piece['location']);
 
             //home and goal spaces are always legal, remove them from the list of illegal moves even if they have pieces on them

@@ -53,8 +53,6 @@ define([
 
             //record the event origin for later use.
             this.eventOrigin = selectionDivID;
-            
-            
 
             //use call to keep the "this" context.
             this.ttEventHandlers.beginSequence.call(this,selectionData.action);
@@ -123,13 +121,6 @@ define([
             {
                 this.ttSwapSequence.selectGain.call(this, resource_id);
             }
-        },
-
-        onPlayerResourceBankClick: function( resource_id ) {
-            if(!this.isCurrentPlayerActive()) { return; }
-            console.log('onPlayerResourceBankClick', JSON.stringify(resource_id));
-
-            //TBD player resource click handling.
         },
 
         onStoreCardClick: function( cardDivID ) {

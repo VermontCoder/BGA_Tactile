@@ -75,7 +75,7 @@ class ttPlayers
 
     public function deserializePlayersFromDb() : array
     {
-        $sql = "SELECT player_id, player_color, color_name, player_canal, player_name, player_avatar, red_resource_qty,
+        $sql = "SELECT player_id, player_color, color_name, player_score, player_canal, player_name, player_avatar, red_resource_qty,
         blue_resource_qty, green_resource_qty, yellow_resource_qty FROM player";
         $this->players = $this->game->getCollectionFromDb($sql);
         //(new ttDebug($this->game))->showVariable('players', $this->players);
@@ -126,5 +126,20 @@ class ttPlayers
                 $player_id
             )
         );
+    }
+
+    public function scorePoint($player_id) : void
+    {
+        $this->game->DbQuery(
+            sprintf(
+                "UPDATE player SET player_score = player_score + 1 WHERE player_id = %s",
+                $player_id
+            )
+        );
+
+        if (empty($this->players))
+        {
+            $this->deserializePlayersFromDb();
+        }
     }
 }
