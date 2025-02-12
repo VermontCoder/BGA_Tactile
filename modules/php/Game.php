@@ -122,25 +122,7 @@ class Game extends \Table
             "moveOrPushText" => $isPush ? 'pushed' : 'moved',
         ]);
 
-        if ($reachedGoal)
-        {
-            $ttPlayers = new ttPlayers($this);
-            $ttPlayers->deserializePlayersFromDb();
-
-            //Equivalent to join between players and pieces to get the player who reached the goal
-            $player = $ttPlayers->players[$pieces->pieces[$piece_id]['player_id']];
-
-            $this->notifyAllPlayers("goalAchieved", clienttranslate('${player_name} has a piece in their goal!'), [
-                "player_name" => $player['player_name'],
-                "piece_id" => $piece_id,
-                "player_id" => $player['player_id'],
-                "score" => $player['player_score'],
-            ]);
-
-            $ttPlayers->scorePoint($player['player_id']);            
-        }
-
-        //4 - Did we activate any cards?
+        //3 - Did we activate any cards?
         if (!$isPush)
         {
             $board = new ttBoard($this);
@@ -157,11 +139,40 @@ class Game extends \Table
                 $numActivated = $cards->activateCardsByColor(intval($this->getActivePlayerId()), $color);
             }
 
-            $this->notifyAllPlayers("activate", clienttranslate('${player_name} activated ${numCardsActivated} ${color} card(s)'), [
-                "player_name" => $this->getActivePlayerName(),
-                "numCardsActivated" => $numActivated,
-                "color" => strtoupper($color),
+            if ($numActivated > 0)
+            {
+                $this->notifyAllPlayers("activate", clienttranslate('${player_name} activated ${numCardsActivated} ${color} card(s)'), [
+                    "player_name" => $this->getActivePlayerName(),
+                    "numCardsActivated" => $numActivated,
+                    "color" => strtoupper($color),
+                ]);
+            }
+        }
+
+        //4 - Did we reach the goal?
+        if ($reachedGoal)
+        {
+            $ttPlayers = new ttPlayers($this);
+            $ttPlayers->deserializePlayersFromDb();
+
+            //Equivalent to join between players and pieces to get the player who reached the goal
+            $player = $ttPlayers->players[$pieces->pieces[$piece_id]['player_id']];
+
+            $this->notifyAllPlayers("goalAchieved", clienttranslate('${player_name} has a piece in their goal!'), [
+                "player_name" => $player['player_name'],
+                "piece_id" => $piece_id,
+                "player_id" => $player['player_id'],
+                "score" => $player['player_score'],
             ]);
+
+            $ttPlayers->scorePoint($player['player_id']);
+            $pieces->deletePiece($piece_id);
+
+            if ($player['player_score'] >= $this->SCORE_GOAL)
+            {
+                $this->endOfActionBoardState($origin);
+                $this->gamestate->nextState("gameEnd");
+            }
         }
 
         $this->endOfActionBoardState($origin);
@@ -366,6 +377,13 @@ class Game extends \Table
         $this->gamestate->nextState("nextPlayer");
 
 
+    }
+
+    public function argGameEnd(): array
+    {
+        $parentResult = parent::argGameEnd();
+
+        return array_merge($parentResult, $this->getAllDatas());
     }
 
     /**

@@ -141,5 +141,9 @@ class ttPlayers
         {
             $this->deserializePlayersFromDb();
         }
+        else
+        {
+            $this->players[$player_id]['player_score']++;
+        }
     }
 }

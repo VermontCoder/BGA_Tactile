@@ -88,6 +88,12 @@ class ttPieces
         return $location == ttBoard::PLAYERGOALS[$this->pieces[$piece_id]['piece_color']];
     }
 
+    public function deletePiece($piece_id) : void
+    {
+        $sql = sprintf("DELETE FROM pieces WHERE piece_id = '%s'", $piece_id); 
+        $this->game::DbQuery($sql);
+    }
+
     public function getTileColorPieceIsOn($piece_id, $tiles) : ?string
     {
         if (empty($this->pieces))

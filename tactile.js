@@ -356,6 +356,7 @@ function (dojo, declare) {
 
             switch( stateName )
             {
+                case 'gameEnd':
                 case 'selectAction':
                     //debugger;
                     this.updateState(args.args);
@@ -520,18 +521,8 @@ function (dojo, declare) {
             dojo.subscribe('gain', this, "notif_gain");
             dojo.subscribe('buy', this, "notif_buy");
             dojo.subscribe('swap', this, "notif_swap");
-            
-            // TODO: here, associate your game notifications with local methods
-            
-            // Example 1: standard notification handling
-            // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
-            
-            // Example 2: standard notification handling + tell the user interface to wait
-            //            during 3 seconds after calling the method in order to let the players
-            //            see what is happening in the game.
-            // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
-            // this.notifqueue.setSynchronous( 'cardPlayed', 3000 );
-            // 
+            dojo.subscribe('goalAchieved', this, "notif_goalAchieved");
+            dojo.subscribe('endGame', this, "notif_endGame");
         },  
 
         notif_showVariable: function( notif )
@@ -572,6 +563,22 @@ function (dojo, declare) {
         {
             console.log( 'notif_swap' );
             console.log( notif );
+        },
+
+        notif_goalAchieved: function( notif )
+        {
+            console.log( 'notif_goalAchieved' );
+            console.log( notif );
+
+            this.scoreCtrl[notif.args.player_id].setValue(notif.args.score);
+        },
+
+        notif_endGame: function( notif )
+        {
+            console.log( 'notif_endGame' );
+            console.log( notif );
+
+            this.updateState(notif.args);
         },
    });             
 });
