@@ -177,7 +177,7 @@ define([
             {
                 case 'move':
                 case 'push':
-                    this.ttMoveSequence.beginMove.call(this);
+                    this.ttMoveSequence.beginMove.call(this, action);
                     break;
                 case 'gain':
                     this.ttGainSequence.beginGain.call(this);
@@ -201,11 +201,7 @@ define([
             {
                 const resourceBankDiv = resourceColors[i]+'Bank';
                 $(resourceBankDiv).classList.add('highlighted');
-                
-                const resourceBankChildren = document.querySelectorAll('#' + resourceBankDiv + ' .resource');
-                resourceBankChildren.forEach( (resourceBankChild => resourceBankChild.classList.add('highlighted')));
             }
         }
-        
     });
 }); 

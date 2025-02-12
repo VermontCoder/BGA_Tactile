@@ -1,3 +1,5 @@
+/* Handles both pushes and moves - pushes and moves are identical except which pieces can be selected */
+
 define([
     "dojo", "dojo/_base/declare"
 ], function( dojo, declare )
@@ -5,17 +7,27 @@ define([
 {
     return declare("bgagame.ttMoveSequence", null, 
     { 
-
         constructor: function()
         {
             this.curPiece = null;
         },
 
-        beginMove: function()
+        beginMove: function( action)
         {
             this.setClientState("client_selectPiece", 
             {
                 descriptionmyturn : _("${you} must select piece to move"),
+            });
+
+            const pieces = this.gamedatas.gamestate.args.pieces;
+            const player_id = this.getActivePlayerId();
+
+            Object.keys(pieces).forEach(function(key,index) {
+                const playerMatch = pieces[key].player_id == player_id;
+                if((action=='move' && playerMatch) || (action=='push' && !playerMatch))
+                {
+                    $(key).classList.add('highlighted');
+                }
             });
         },
 
@@ -31,6 +43,10 @@ define([
                 this.restoreServerGameState(); 
                 return; 
             }
+            
+            //highlight only this piece now.
+            document.querySelectorAll('.playingPiece').forEach(function(el) { el.classList.remove('highlighted'); });
+            document.getElementById(piece_id).classList.add('highlighted');
             
             for(i=0; i< legalMoves.length; i++)
             {

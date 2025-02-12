@@ -157,6 +157,14 @@
      background: url(img/player_pieces.png) calc(var(--tile-dim) * -3) 0 no-repeat;
  }
  
+ .playingPiece.highlighted
+ {
+    filter: drop-shadow(#dddddd 2px 2px ) 
+            drop-shadow(#dddddd -2px 2px ) 
+            drop-shadow(#dddddd 2px -2px ) 
+            drop-shadow(#dddddd -2px -2px ) !important;
+ }
+
  .tile {
     position: relative;
      width: var(--tile-dim);
