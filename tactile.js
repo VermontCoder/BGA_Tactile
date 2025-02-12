@@ -285,17 +285,20 @@ function (dojo, declare) {
             this.getPlayerPanelElement(player.player_id).insertAdjacentHTML('beforeend', `
                 <DIV id="resourceContainer_${player.player_id}" class="resourceContainer">   
                     <DIV id="redResourceLabel_${player.player_id}" class="red resource addSpaceSmall"></DIV>
-                    <DIV id="redResource_${player.player_id}" class="resourceAmount"> : ${player.red_resource_qty} </DIV>
+                    <DIV id="redResource_${player.player_id}" class="playerPanelNumber"> : ${player.red_resource_qty} </DIV>
                     <DIV id="blueResourceLabel_${player.player_id}" class="blue resource addSpaceSmall"></DIV>
-                    <DIV id="blueResource_${player.player_id}" class="resourceAmount"> : ${player.blue_resource_qty} </DIV>
+                    <DIV id="blueResource_${player.player_id}" class="playerPanelNumber"> : ${player.blue_resource_qty} </DIV>
                     <DIV id="greenResourceLabel_${player.player_id}" class="green resource addSpaceSmall"></DIV>
-                    <DIV id="greenResource_${player.player_id}" class="resourceAmount"> : ${player.green_resource_qty} </DIV>
+                    <DIV id="greenResource_${player.player_id}" class="playerPanelNumber"> : ${player.green_resource_qty} </DIV>
                     <DIV id="yellowResourceLabel_${player.player_id}" class="yellow resource addSpaceSmall"></DIV>
-                    <DIV id="yellowResource_${player.player_id}" class="resourceAmount"> : ${player.yellow_resource_qty} </DIV>
+                    <DIV id="yellowResource_${player.player_id}" class="playerPanelNumber"> : ${player.yellow_resource_qty} </DIV>
                 </DIV>`);
+            
 
-                // debugger;
-                // this.scoreCtrl[ player.player_id ].setValue( player.player_score );
+                this.scoreCtrl[player.player_id] = new ebg.counter();
+                this.scoreCtrl[player.player_id].create('player_score_'+player.player_id);
+                this.scoreCtrl[player.player_id].setValue(player.player_score);
+                $('player_score_'+player.player_id).classList.add('playerPanelNumber');
         },
 
         
@@ -446,6 +449,7 @@ function (dojo, declare) {
             for (const player_id in players) 
             {
                 const player = players[player_id];
+
                 $('resourceContainer_'+player_id).remove();
                 this.createPlayerPanel(player);
             }
