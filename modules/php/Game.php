@@ -53,42 +53,9 @@ class Game extends \Table
         $this->SCORE_GOAL = 0;
     }
 
+    //***************************************************** */
     //Player Actions and supporting functions
-    
-    //exhaust a card or check off a player action on the action board
-    public function endOfActionBoardState($origin) : void
-    {
-        $cards = new ttCards($this);
-
-        //was this action done from the Action Board or the card? Will start with card if it is from a card.
-        //3 - Set card or action board selection to correct value.
-        if (str_starts_with($origin, 'card'))
-        {
-            $cards->setCardStatus(ttCards::getCardIDFromDivID($origin), 'exhausted');
-        }
-        else
-        {
-            $actionBoardSelections = new ttActionBoardSelections($this);
-            $actionBoardSelections->setSelected($origin);
-        }
-    }
-
-    public function goToNextState() : void
-    {
-        //if no legal actions are left, move to the next player
-        //Otherwise, stay move back to selectAction
-        $nextState = (new ttLegalMoves($this))->hasLegalActions() ? "selectAction" : "nextPlayer";
-
-        if ($nextState == "nextPlayer")
-        {
-            $this->notifyAllPlayers("doneWithTurn", clienttranslate('${player_name} has finished their turn'), 
-            [
-                "player_name" => $this->getActivePlayerName(),
-            ]);
-        }
-        
-        $this->gamestate->nextState($nextState);
-    }
+    //***************************************************** */
 
     public function actMoveOrPush(string $piece_id, string $tileID, string $origin) :void
     {
@@ -141,10 +108,11 @@ class Game extends \Table
 
             if ($numActivated > 0)
             {
-                $this->notifyAllPlayers("activate", clienttranslate('${player_name} activated ${numCardsActivated} ${color} card(s)'), [
+                $this->notifyAllPlayers("activate", clienttranslate('${player_name} activated ${numCardsActivated} ${color}(${colorIcon}) card(s)'), [
                     "player_name" => $this->getActivePlayerName(),
                     "numCardsActivated" => $numActivated,
                     "color" => strtoupper($color),
+                    "colorIcon" => $this->getColorIconHTML($color),
                 ]);
             }
         }
@@ -172,6 +140,7 @@ class Game extends \Table
             {
                 $this->endOfActionBoardState($origin);
                 $this->gamestate->nextState("gameEnd");
+                return;
             }
         }
 
@@ -218,9 +187,10 @@ class Game extends \Table
         $players->gainResource($this->getActivePlayerId(), $color);
         $this->endOfActionBoardState($origin);
 
-        $this->notifyAllPlayers("gain", clienttranslate('${player_name} gained a ${color} resource'), [
+        $this->notifyAllPlayers("gain", clienttranslate('${player_name} gained a ${color}(${colorIcon}) resource'), [
             "player_name" => $this->getActivePlayerName(),
             "color" => strtoupper($color),
+            "colorIcon" => $this->getColorIconHTML($color),
         ]);
 
         $this->goToNextState();
@@ -251,11 +221,12 @@ class Game extends \Table
         $this->cards->pickCardForLocation('deck', 'store', $card_id);
         $players->spendResources($player_id, $cardData['resources'][0], $cardData['resources'][1]);
 
-        $this->notifyAllPlayers("buy", clienttranslate('${player_name} bought a ${color} ${action} card'), [
+        $this->notifyAllPlayers("buy", clienttranslate('${player_name} bought a ${color} (${colorIcon}) ${action} card'), [
             "player_name" => $this->getActivePlayerName(),
             "cardID" => $card_id,
-            "color" => strtoupper($cardData['color']),
-            "action" => strtoupper($cardData['action']),
+            "color" => '<B>'.$cardData['color'].'</B>',
+            "colorIcon" => $this->getColorIconHTML($cardData['color']),
+            "action" => '<B>'.$cardData['action'].'</B>',
         ]);
 
         $this->endOfActionBoardState($origin);
@@ -282,10 +253,12 @@ class Game extends \Table
 
         $players->swapResources($player_id, $lossColor, $gainColor);
 
-        $this->notifyAllPlayers("swap", clienttranslate('${player_name} swapped a ${lossColor} resource for a ${gainColor} resource'), [
+        $this->notifyAllPlayers("swap", clienttranslate('${player_name} swapped a ${lossColor}(${lossColorIcon}) resource for a ${gainColor}(${gainColorIcon}) resource'), [
             "player_name" => $this->getActivePlayerName(),
-            "lossColor" => strtoupper($lossColor),
-            "gainColor" => strtoupper($gainColor),
+            "lossColor" => '<B>'.$lossColor.'</B>',
+            "lossColorIcon" => $this->getColorIconHTML($lossColor),
+            "gainColor" => '<B>'.$gainColor.'</B>',
+            "gainColorIcon" => $this->getColorIconHTML($gainColor),
         ]);
 
         $this->endOfActionBoardState($origin);
@@ -318,13 +291,53 @@ class Game extends \Table
         $this->gamestate->nextState("nextPlayer");
     }
 
+    //******************************************************* */
+    // Action Support Functions
+    //******************************************************* */
+
+    //exhaust a card or check off a player action on the action board
+    public function endOfActionBoardState($origin) : void
+    {
+        $cards = new ttCards($this);
+
+        //was this action done from the Action Board or the card? Will start with card if it is from a card.
+        //3 - Set card or action board selection to correct value.
+        if (str_starts_with($origin, 'card'))
+        {
+            $cards->setCardStatus(ttCards::getCardIDFromDivID($origin), 'exhausted');
+        }
+        else
+        {
+            $actionBoardSelections = new ttActionBoardSelections($this);
+            $actionBoardSelections->setSelected($origin);
+        }
+    }
+
+    //If player has no legal actions left, move to next player. Otherwise, stay in selectAction state.
+    public function goToNextState() : void
+    {
+        //if no legal actions are left, move to the next player
+        //Otherwise, stay move back to selectAction
+        $nextState = (new ttLegalMoves($this))->hasLegalActions() ? "selectAction" : "nextPlayer";
+
+        if ($nextState == "nextPlayer")
+        {
+            $this->notifyAllPlayers("doneWithTurn", clienttranslate('${player_name} has finished their turn'), 
+            [
+                "player_name" => $this->getActivePlayerName(),
+            ]);
+        }
+        
+        $this->gamestate->nextState($nextState);
+    }
+
+    public function getColorIconHTML(string $color) : string
+    {
+        return '<span class="'.$color.' icon"></span>';
+    }
+
     /**
-     * Game state arguments, example content.
-     *
-     * This method returns some additional information that is very specific to the `playerTurn` game state.
-     *
-     * @return array
-     * @see ./states.inc.php
+     * Game state arguments.
      */
     public function argSelectAction(): array
     {

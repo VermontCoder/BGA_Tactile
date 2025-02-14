@@ -32,7 +32,8 @@
      --action-board-height: 183px;
      --action-board-selection-dim: 17px;
      --resource-dim: 25px;
-     --resource-dim-highlighted: 28px;
+     --action-icon-width: 104px; /* these get shrunk via transform, but they come in this size */
+     --action-icon-height: 128px;
 
      --highlight-color: rgba(23, 197, 66, 0.856);
      --panel-color: #eeeeee;
@@ -312,11 +313,6 @@
      background: url(img/resource_tokens_small.png) calc(var(--resource-dim) * -3) 0 no-repeat;
  }
 
- /* .resource.highlighted
- {
-     transform: scale(1.2);
- } */
-
  .resourceContainer {
      display: flex;
      justify-content: center;
@@ -325,6 +321,38 @@
      padding: 3px;
  }
 
+ .icon
+ {
+     width: var(--resource-dim);
+     height: var(--resource-dim);
+     display: inline-block;
+     vertical-align: middle;
+     transform: scale(0.5);
+     margin-left: -.4em; /* Adjust the left margin to move the icon closer to the text */
+     margin-right: -.4em; /* Adjust the right margin to move the icon closer to the text */
+     margin-bottom: .2em; /* Adjust the bottom margin to align the icon with the text */
+     
+ }
+ .icon.red
+ {
+     background: url(img/resource_tokens_small.png) 0 0 no-repeat;
+ }
+ 
+ .icon.yellow
+ {
+     background: url(img/resource_tokens_small.png) calc(var(--resource-dim) * -1) 0 no-repeat;
+ }
+ 
+ .icon.green
+ {
+     background: url(img/resource_tokens_small.png) calc(var(--resource-dim) * -2) 0 no-repeat;
+ }
+ 
+ .icon.blue
+ {
+     background: url(img/resource_tokens_small.png) calc(var(--resource-dim) * -3) 0 no-repeat;
+ }
+ 
  .playerPanelNumber {
     font-family: "DM Sans", serif;
     font-optical-sizing: auto;
