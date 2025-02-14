@@ -111,7 +111,7 @@ class Game extends \Table
                 $this->notifyAllPlayers("activate", clienttranslate('${player_name} activated ${numCardsActivated} ${color}(${colorIcon}) card(s)'), [
                     "player_name" => $this->getActivePlayerName(),
                     "numCardsActivated" => $numActivated,
-                    "color" => strtoupper($color),
+                    "color" => '<B>'.$color.'</B>',
                     "colorIcon" => $this->getColorIconHTML($color),
                 ]);
             }
@@ -189,7 +189,7 @@ class Game extends \Table
 
         $this->notifyAllPlayers("gain", clienttranslate('${player_name} gained a ${color}(${colorIcon}) resource'), [
             "player_name" => $this->getActivePlayerName(),
-            "color" => strtoupper($color),
+            "color" => '<B>'.$color.'</B>',
             "colorIcon" => $this->getColorIconHTML($color),
         ]);
 
@@ -218,18 +218,24 @@ class Game extends \Table
         }
         
         $this->cards->moveCard($card_id, 'hand', $player_id);
-        $this->cards->pickCardForLocation('deck', 'store', $card_id);
+        $newCard = $this->cards->pickCardForLocation('deck', 'store', $card_id);
+        $newCardData = ttUtility::getCardDataFromType($newCard);
         $players->spendResources($player_id, $cardData['resources'][0], $cardData['resources'][1]);
 
-        $this->notifyAllPlayers("buy", clienttranslate('${player_name} bought a ${color} (${colorIcon}) ${action} card'), [
+        $this->notifyAllPlayers("buy", clienttranslate('${player_name} bought a ${color}(${colorIcon}) ${action} card. A ${newColor}(${newColorIcon}) ${newAction} was picked for the store.'), [
             "player_name" => $this->getActivePlayerName(),
             "cardID" => $card_id,
             "color" => '<B>'.$cardData['color'].'</B>',
             "colorIcon" => $this->getColorIconHTML($cardData['color']),
             "action" => '<B>'.$cardData['action'].'</B>',
+            "newColor" => '<B>'.$newCardData['color'].'</B>',
+            "newColorIcon" => $this->getColorIconHTML($newCardData['color']),
+            "newAction" => '<B>'.$newCardData['action'].'</B>',
+            "newCardId" => $newCard['id'],
         ]);
 
         $this->endOfActionBoardState($origin);
+        $this->checkStoreReset(); 
         $this->goToNextState();
     }
 
@@ -265,16 +271,27 @@ class Game extends \Table
         $this->goToNextState();
     }
 
-    public function actReset(string $origin) : void
+    public function actReset(string $origin, bool $specialRuleReset=false) : void
     {
         $this->cards->moveAllCardsInLocation('store', 'discard');
         $this->cards->pickCardsForLocation( 6, 'deck', 'store');
 
-        $this->notifyAllPlayers("reset", clienttranslate('${player_name} reset the store'), [
-            "player_name" => $this->getActivePlayerName(),
-        ]);
+        if (!$specialRuleReset)
+        {
+            $this->notifyAllPlayers("reset", clienttranslate('${player_name} reset the store'), [
+                "player_name" => $this->getActivePlayerName(),
+            ]);
 
-        $this->endOfActionBoardState($origin);
+            $this->endOfActionBoardState($origin);
+        }
+        else
+        {
+            $this->notifyAllPlayers("reset", clienttranslate('5 cards in the store were the same color or action. The store is reset!'), [
+                "player_name" => $this->getActivePlayerName(),
+            ]);
+        }
+        
+        $this->checkStoreReset();
         $this->goToNextState();
     }
 
@@ -310,6 +327,28 @@ class Game extends \Table
         {
             $actionBoardSelections = new ttActionBoardSelections($this);
             $actionBoardSelections->setSelected($origin);
+        }
+    }
+
+    //If a player resets the store or buys a card, 
+    //then if 5 or more cards have the same color or action, we reset the store.
+    public function checkStoreReset() : void
+    {
+        $storeCards = $this->cards->getCardsInLocation('store');
+        $colorCount = ['red' => 0, 'blue' => 0, 'green' => 0, 'yellow' => 0];
+        $actionCount = ['move' => 0, 'gain' => 0, 'push' => 0];
+
+        foreach($storeCards as $card)
+        {
+            $cardData = ttUtility::getCardDataFromType($card);
+            $colorCount[$cardData['color']]++;
+            $actionCount[$cardData['action']]++;
+        }
+
+        if (max($colorCount) >= 5 || max($actionCount) >= 5)
+        {
+            //reset the store
+            $this->actReset('specialRule', true);
         }
     }
 
@@ -494,7 +533,6 @@ class Game extends \Table
             $result['legalMoves'] = $legalActions->legalMoves();
         }
 
-        
         return $result;
 
     }

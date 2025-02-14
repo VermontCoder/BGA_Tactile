@@ -356,10 +356,10 @@
  .playerPanelNumber {
     font-family: "DM Sans", serif;
     font-optical-sizing: auto;
-    font-weight: 700;
+    font-weight: 600;
     font-style: normal;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Add a subtle shadow */
-    margin-right: 5px;
+    margin-right: 2px;
     margin-top: 5px;
  }
 
