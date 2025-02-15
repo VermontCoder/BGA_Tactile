@@ -117,7 +117,8 @@ define([
                 this.ttGainSequence.gainResource.call(this, resource_id);
             }
 
-            if (this.gamedatas.gamestate.name == 'client_swapSelectGain')
+            if (this.gamedatas.gamestate.name == 'client_swapSelectGain' ||
+                this.gamedatas.gamestate.name == 'client_swapSelectLose')
             {
                 this.ttSwapSequence.selectGain.call(this, resource_id);
             }

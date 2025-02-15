@@ -89,5 +89,10 @@ define([
                 action: actionData[2]
             };
         },
+
+        getColorIconHTML(color)
+        {
+            return `<span class="${color} icon"></span>`;
+        }
     });
 });

@@ -330,7 +330,8 @@
      transform: scale(0.5);
      margin-left: -.4em; /* Adjust the left margin to move the icon closer to the text */
      margin-right: -.4em; /* Adjust the right margin to move the icon closer to the text */
-     margin-bottom: .2em; /* Adjust the bottom margin to align the icon with the text */
+     margin-bottom: -.2em; /* Adjust the bottom margin to align the icon with the text */
+     margin-top: -.4em; /* Adjust the top margin to align the icon with the text */
      
  }
  .icon.red
