@@ -22,13 +22,28 @@ define([
             const pieces = this.gamedatas.gamestate.args.pieces;
             const player_id = this.getActivePlayerId();
 
+            var doesPlayerHaveMovablePieces = false;
+            const legalMoves = this.gamedatas.gamestate.args.legalMoves;
+
+            //highlight all pieces that can be moved.
             Object.keys(pieces).forEach(function(key,index) {
                 const playerMatch = pieces[key].player_id == player_id;
                 if((action=='move' && playerMatch) || (action=='push' && !playerMatch))
                 {
                     $(key).classList.add('highlighted');
+                    if(legalMoves[key].length > 0) 
+                    { 
+                        doesPlayerHaveMovablePieces = true; 
+                    }
                 }
             });
+
+            if(!doesPlayerHaveMovablePieces) 
+            { 
+                const moveOrPush = (action=='move') ? 'moved' : 'pushed';
+                this.showMessage(_("There are no pieces that can be "+moveOrPush+"!"),'error'); 
+                this.restoreServerGameState();
+            }
         },
 
         selectPiece: function( piece_id )
