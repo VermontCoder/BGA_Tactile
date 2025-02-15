@@ -24,6 +24,51 @@ class Game extends \Table
 {
     private static array $CARD_TYPES;
 
+    //******************************************************* */
+    // GAME CONSTANTS
+    //******************************************************* */
+
+    const BOTTOMLEFT = '0_5';
+    const TOPLEFT = '0_0';
+    const TOPRIGHT = '5_0';
+    const BOTTOMRIGHT = '5_5';
+    
+    const COLORS = ['red','yellow','green','blue'];
+ 
+    // Define player homes using position constants
+    const PLAYERHOMES = [
+        self::TOPLEFT => 'yellow', 
+        self::TOPRIGHT => 'green', 
+        self::BOTTOMLEFT => 'red', 
+        self::BOTTOMRIGHT => 'blue'
+    ];
+
+    const COLORHOMES = [
+         'blue' => self::BOTTOMRIGHT, 
+         'green' => self::TOPRIGHT, 
+         'red' => self::BOTTOMLEFT, 
+         'yellow' => self::TOPLEFT
+    ];
+ 
+    // Define illegal tiles using position constants
+    const ILLEGALTILES2P4P = [
+        'blue' => [self::TOPRIGHT, self::BOTTOMLEFT],
+        'green' => [self::BOTTOMRIGHT, self::TOPLEFT],
+        'red' => [self::TOPLEFT, self::BOTTOMRIGHT],
+        'yellow' => [self::BOTTOMLEFT, self::TOPRIGHT]
+    ];
+
+     // Define player goals using position constants
+    const PLAYERGOALS2P4P = [
+         'blue' => [self::TOPLEFT], 
+         'green' => [self::BOTTOMLEFT], 
+         'red' => [self::TOPRIGHT], 
+         'yellow' => [self::BOTTOMRIGHT]
+    ];
+
+    const PLAYERGOALS3P = self::ILLEGALTILES2P4P;
+    const ILLEGALTILES3P = self::PLAYERGOALS2P4P;
+
     /**
      * Your global variables labels:
      *
@@ -49,8 +94,6 @@ class Game extends \Table
         $this->cards = $this->getNew( "module.common.deck" );
         $this->cards->init( "card" );
         $this->cards->autoreshuffle = true;
-
-        $this->SCORE_GOAL = 0;
     }
 
     //***************************************************** */
@@ -125,6 +168,10 @@ class Game extends \Table
 
             //Equivalent to join between players and pieces to get the player who reached the goal
             $player = $ttPlayers->players[$pieces->pieces[$piece_id]['player_id']];
+            $ttPlayers->scorePoint($player['player_id']);
+
+            //score point in local copy of $player
+            $player['player_score']++;
 
             $this->notifyAllPlayers("goalAchieved", clienttranslate('${player_name} has a piece in their goal!'), [
                 "player_name" => $player['player_name'],
@@ -133,11 +180,12 @@ class Game extends \Table
                 "score" => $player['player_score'],
             ]);
 
-            $ttPlayers->scorePoint($player['player_id']);
             $pieces->deletePiece($piece_id);
 
-            if ($player['player_score'] >= $this->SCORE_GOAL)
+            $scoreGoal = count($ttPlayers->players) <= 3 ? 2 : 3;
+            if ($player['player_score'] >= $scoreGoal)
             {
+                //player has won!
                 $this->endOfActionBoardState($origin);
                 $this->gamestate->nextState("gameEnd");
                 return;
@@ -375,6 +423,16 @@ class Game extends \Table
         return '<span class="'.$color.' icon"></span>';
     }
 
+    public function getPlayerGoals() : array
+    {
+        return $this->getPlayersNumber() == 3 ? self::PLAYERGOALS3P : self::PLAYERGOALS2P4P;
+    }
+
+    public function getIllegalTiles() : array
+    {
+        return $this->getPlayersNumber() == 3 ? self::ILLEGALTILES3P : self::ILLEGALTILES2P4P;
+    }
+
     /**
      * Game state arguments.
      */
@@ -502,7 +560,7 @@ class Game extends \Table
         }
 
         $result['pieces'] = $piecesData;
-        $result['playerHomes'] = $board::PLAYERHOMES;
+        $result['playerHomes'] = self::PLAYERHOMES;
         $result['store'] = $this->cards->getCardsInLocation('store');
 
         $cards = new ttCards($this);
@@ -512,7 +570,7 @@ class Game extends \Table
         foreach($players->players as $player)
         {
             $swappableResources = [];
-            foreach(ttBoard::COLORS as $color)
+            foreach(self::COLORS as $color)
             {
                 if ($player[$color.'_resource_qty'] > 0)
                 {
@@ -558,7 +616,6 @@ class Game extends \Table
      */
     protected function setupNewGame($players, $options = [])
     {
-        $this->SCORE_GOAL = count($players) <= 3 ? 2 : 3;
         // Set the colors of the players with HTML color code. 
         $gameinfos = $this->getGameinfos();
         $default_colors = $gameinfos['player_colors'];

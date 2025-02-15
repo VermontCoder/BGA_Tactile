@@ -29,7 +29,7 @@ class ttPieces
                 $piece['piece_id'] = 'piece_' . $player_id . '_'.strval($i);
                 $piece['player_id'] = $player_id;
                 $piece['piece_color'] = $player['color_name'];
-                $piece['location'] = ttBoard::COLORHOMES[$player['color_name']];
+                $piece['location'] = $this->game::COLORHOMES[$player['color_name']];
                 $this->pieces[] = $piece;
             }
         }
@@ -84,8 +84,11 @@ class ttPieces
         $this->game::DbQuery($sql);
 
         $this->deserializePiecesFromDb();
+
+        $pieceColor = $this->pieces[$piece_id]['piece_color'];
+        $playerGoals = $this->game->getPlayerGoals()[$pieceColor];
         
-        return $location == ttBoard::PLAYERGOALS[$this->pieces[$piece_id]['piece_color']];
+        return in_array($location, $playerGoals);
     }
 
     public function deletePiece($piece_id) : void

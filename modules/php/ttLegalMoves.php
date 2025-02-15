@@ -86,11 +86,14 @@ class ttLegalMoves
         {
             $adjacentLocations = ttUtility::getAdjacentSpacesIDs($piece['location']);
 
-            //home and goal spaces are always legal, remove them from the list of illegal moves even if they have pieces on them
-            $illegalLocations = array_diff($pieceLocations, 
-                [ttBoard::PLAYERGOALS[$piece['piece_color']],ttBoard::COLORHOMES[$piece['piece_color']]]);
+            $playerGoals = $this->game->getPlayerGoals()[$piece['piece_color']];
 
-            $illegalLocations = array_merge($illegalLocations, ttBoard::ILLEGALTILES[$piece['piece_color']]);
+            //All current piece locations are illegal moves *except* for the piece's home and goal spaces.
+            //Remove them from the list of illegal moves even if they have pieces on them
+            $illegalLocations = array_diff($pieceLocations, $playerGoals,[$this->game::COLORHOMES[$piece['piece_color']]]);
+
+            $illegalTiles = $this->game->getIllegalTiles()[$piece['piece_color']];
+            $illegalLocations = array_merge($illegalLocations, $illegalTiles);
 
             $possibleMoves = [];
 

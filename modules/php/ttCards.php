@@ -8,7 +8,6 @@ class ttCards
     public array $cards = array();
     
     const CARDTYPES = ['move', 'push', 'gain'];
-    const COLORS = ['red','yellow','green','blue'];
     const CARDSTATUS = ['inactive' => 0, 'active' => 1, 'exhausted'=> 2]; //index into type_arg
 
     public static function getCardIDFromDivID(string $divID) : int
@@ -31,13 +30,13 @@ class ttCards
 
         foreach(ttCards::CARDTYPES as $cardType)
         {
-            foreach(ttCards::COLORS as $color)
+            foreach($this->game::COLORS as $color)
             {
                 for($i=0; $i <= 3; $i++)
                 {
                     for($j=$i; $j <= 3; $j++)
                     {
-                        $type = $color.'_'.$cardType.'_'.ttCards::COLORS[$i].'_'.ttCards::COLORS[$j];
+                        $type = $color.'_'.$cardType.'_'.$this->game::COLORS[$i].'_'.$this->game::COLORS[$j];
                         $cards[] = array( 'type' => $type, 'type_arg'=> 0, 'card_location' => 'deck', 'nbr' => 1);
                     }
                 }

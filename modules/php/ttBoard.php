@@ -9,45 +9,7 @@ class ttBoard
     const BOARD_WIDTH = 6;
     const BOARD_HEIGHT = 6;
     
-    const BOTTOMLEFT = '0_5';
-    const TOPLEFT = '0_0';
-    const TOPRIGHT = '5_0';
-    const BOTTOMRIGHT = '5_5';
     
-    const COLORS = ['red','yellow','green','blue'];
- 
-    // Define player homes using position constants
-    const PLAYERHOMES = [
-        self::TOPLEFT => 'yellow', 
-        self::TOPRIGHT => 'green', 
-        self::BOTTOMLEFT => 'red', 
-        self::BOTTOMRIGHT => 'blue'
-    ];
-
-    const COLORHOMES = [
-         'blue' => self::BOTTOMRIGHT, 
-         'green' => self::TOPRIGHT, 
-         'red' => self::BOTTOMLEFT, 
-         'yellow' => self::TOPLEFT
-    ];
- 
-     // Define player goals using position constants
-    const PLAYERGOALS = [
-         'blue' => self::TOPLEFT, 
-         'green' => self::BOTTOMLEFT, 
-         'red' => self::TOPRIGHT, 
-         'yellow' => self::BOTTOMRIGHT
-    ];
- 
-    // Define illegal tiles using position constants
-    const ILLEGALTILES = [
-         'blue' => [self::TOPRIGHT, self::BOTTOMLEFT],
-         'green' => [self::BOTTOMRIGHT, self::TOPLEFT],
-         'red' => [self::TOPLEFT, self::BOTTOMRIGHT],
-         'yellow' => [self::BOTTOMLEFT, self::TOPRIGHT]
-     ];
- 
-     //TBD - 3 player different.
 
     public array $tiles = array();
 
@@ -60,9 +22,9 @@ class ttBoard
     {
         $tileColors = [];
 
-        for ($i = 0; $i < count(self::COLORS); $i++)
+        for ($i = 0; $i < count($this->game::COLORS); $i++)
         {
-            $tileColors = array_merge($tileColors, array_fill(0, 8, self::COLORS[$i]));
+            $tileColors = array_merge($tileColors, array_fill(0, 8, $this->game::COLORS[$i]));
         }
 
         shuffle($tileColors);
@@ -72,7 +34,7 @@ class ttBoard
             for ($j = 0; $j < self::BOARD_WIDTH; $j++)
             {
                 $tile_id = ttUtility::xy2id($i,$j);
-                if(isset(self::PLAYERHOMES[$tile_id]))
+                if(isset($this->game::PLAYERHOMES[$tile_id]))
                 {
                     $this->tiles[$tile_id] = array(
                         'tile_id' => $tile_id,
