@@ -467,7 +467,7 @@
      width: var(--action-board-selection-dim);
  }
 
- .actionBoardSelectionTarget.selected {background: url(img/cube.png) 0 0; margin: -4px; }
+ .actionBoardSelectionTarget.selected {background: url(img/cube.png) 0 0 no-repeat; margin: -5px;}
 
  @keyframes rotate {
 	100% {
