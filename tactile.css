@@ -30,7 +30,7 @@
      --store-width: calc((var(--card-width) + 5px ) * 3 + 25px);
      --action-board-width: 128px;
      --action-board-height: 183px;
-     --action-board-selection-dim: 17px;
+     --action-board-selection-dim: 25px;
      --resource-dim: 25px;
      --action-icon-width: 104px; /* these get shrunk via transform, but they come in this size */
      --action-icon-height: 128px;
@@ -467,7 +467,7 @@
      width: var(--action-board-selection-dim);
  }
 
- .actionBoardSelectionTarget.selected {background-color: red;}
+ .actionBoardSelectionTarget.selected {background: url(img/cube.png) 0 0; margin: -4px; }
 
  @keyframes rotate {
 	100% {
