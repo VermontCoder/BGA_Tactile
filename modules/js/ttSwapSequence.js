@@ -14,18 +14,16 @@ define([
         beginSwap: function() 
         {
             const swappableResources = this.gamedatas.gamestate.args.swappableResources;
-
-            //for reasons not entirely clear to me, the page "forgets" the the gamedatas.gamestate.args.swappableResources
-            //object if you come back here more than once. So we need to save the colors here.
-            this.elegibleResourceColors = swappableResources[parseInt(this.getActivePlayerId())];
+            var elegibleResourceColors = swappableResources[parseInt(this.getActivePlayerId())];
             
-            if(this.elegibleResourceColors.length == 0) 
+            if(elegibleResourceColors.length == 0) 
             {
                 this.showMessage(_("You have no resources and thus are inneligible for swap!"),'info');
                 this.clearAllPreviousHighlighting();
                 return;
             }
 
+            //need to repass the args
             this.setClientState("client_swapSelectGain", 
             {
                 descriptionmyturn : _("${you} must select the resource to gain"),
@@ -38,18 +36,19 @@ define([
         selectGain: function(resource_id)
         {         
             this.swapGainColor = resource_id.replace('Bank','');
-            //this form is required for setClientState to work.
-            const args = {
-                gainColor: this.swapGainColor.toUpperCase(),
-                swappableResources: this.elegibleResourceColors,
-                colorIconHTML: this.ttUtility.getColorIconHTML(this.swapGainColor)
-            };
+            var iconHTML = this.ttUtility.getColorIconHTML(this.swapGainColor);
+
+            //setClientState *implicitly* passes the gamestate args to the client state.
+            //In order for new values to get to the client state, they must be set in the gamestate args.
+
+            //used to display message below
+            this.gamedatas.gamestate.args.gainColor = this.swapGainColor.toUpperCase(); 
+            this.gamedatas.gamestate.args.colorIconHTML = iconHTML;
             
             this.setClientState("client_swapSelectLose", 
-                {
-                    descriptionmyturn : _("To obtain ${gainColor}(${colorIconHTML}) what resource will you swap?"),
-                    args: args,
-                });
+            {
+                descriptionmyturn : _("To obtain ${gainColor}(${colorIconHTML}) what resource will you swap?"),
+            });
         },
 
         selectSwapLoss: function(lossColor)

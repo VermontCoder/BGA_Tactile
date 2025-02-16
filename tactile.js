@@ -415,7 +415,7 @@ function (dojo, declare) {
                         break;
                     
                     case 'client_swapSelectLose':
-                        for (const curColor of args.swappableResources) {
+                        for (const curColor of args.swappableResources[parseInt(this.getActivePlayerId())]) {
                             const colorIconHTML = this.ttUtility.getColorIconHTML(curColor);
                             const btnMsg = curColor.toUpperCase()+'('+colorIconHTML+')';
                             const btnId = 'actionButtonSwapLose_'+curColor;

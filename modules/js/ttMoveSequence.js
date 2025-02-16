@@ -14,15 +14,13 @@ define([
 
         beginMove: function( action)
         {
-            this.setClientState("client_selectPiece", 
-            {
-                descriptionmyturn : _("${you} must select piece to move"),
-            });
-
             const pieces = this.gamedatas.gamestate.args.pieces;
             const player_id = this.getActivePlayerId();
 
-            var doesPlayerHaveMovablePieces = false;
+            //as a convenience, if only one piece can be moved, select it automatically.
+            var pieceCount = 0;
+            var selectablePieceID = null;
+
             const legalMoves = this.gamedatas.gamestate.args.legalMoves;
 
             //highlight all pieces that can be moved.
@@ -30,20 +28,34 @@ define([
                 const playerMatch = pieces[key].player_id == player_id;
                 if((action=='move' && playerMatch) || (action=='push' && !playerMatch))
                 {
-                    $(key).classList.add('highlighted');
+                    
                     if(legalMoves[key].length > 0) 
                     { 
-                        doesPlayerHaveMovablePieces = true; 
+                        $(key).classList.add('highlighted');
+                        pieceCount++;
+                        selectablePieceID = key; 
                     }
                 }
             });
 
-            if(!doesPlayerHaveMovablePieces) 
+            if(selectablePieceID == null) 
             { 
                 const moveOrPush = (action=='move') ? 'moved' : 'pushed';
                 this.showMessage(_("There are no pieces that can be "+moveOrPush+"!"),'error'); 
                 this.restoreServerGameState();
+                return;
             }
+
+            if(pieceCount == 1)
+            {
+                this.ttMoveSequence.selectPiece.call(this,selectablePieceID);
+                return;
+            }
+
+            this.setClientState("client_selectPiece", 
+            {
+                descriptionmyturn : _("${you} must select piece to move"),
+            });
         },
 
         selectPiece: function( piece_id )
