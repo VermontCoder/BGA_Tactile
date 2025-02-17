@@ -252,24 +252,37 @@ function (dojo, declare) {
         },
 
         createActionBoardSelections: function(player_id, actionBoardSelections) {
+            var numSelections = 0;
             for (let selectionDivID in actionBoardSelections) 
             {
                 //only manipulate the action board of this player
                 if (actionBoardSelections[selectionDivID]['player_id'] != player_id) continue;
 
                 if (actionBoardSelections[selectionDivID]['selected'] == true) {
-                    $(selectionDivID).classList.add('selected');
-                }
-                else {
-                    $(selectionDivID).classList.remove('selected');
+                    $(selectionDivID).prepend($('actionCube_'+player_id+'_'+numSelections));
+                    numSelections++;
                 }
             }
+
+            // //if there is a cube on the action board, there should be no cube in parking.
+            // for(i=0;i<numSelections;i++) 
+            // {
+            //     $('actionCube_'+player_id+'_'+i).classList.add('unselected');
+            // }
         },
 
         createPlayerTableau: function(player, hands, actionBoardSelections) {
             document.getElementById('tableauContainer').insertAdjacentHTML('afterbegin', `
             <DIV id="tableau_${player.player_id}" class = "tableau">
-                <SPAN id="tableauLabel_${player.player_id}" class="tableauLabel ${player.color_name}">${player.player_name}</SPAN>
+                <DIV id="tableauTopRowContainer_${player.player_id}" class="cardRow tableauTopRowContainer">
+                    <SPAN id="tableauLabel_${player.player_id}" class="tableauLabel ${player.color_name}">${player.player_name}</SPAN>
+                    <DIV id="actionCubeContainer_${player.player_id}_0" class="actionCubeContainer">
+                        <DIV id="actionCube_${player.player_id}_0" class="actionCube"></DIV>
+                    </DIV>
+                    <DIV id="actionCubeContainer_${player.player_id}_1" class="actionCubeContainer">
+                        <DIV id="actionCube_${player.player_id}_1" class="actionCube"></DIV>
+                    </DIV>
+                </DIV>
                 <DIV id="tableauCardContainer_${player.player_id}" class="cardRow tableauCardContainer"></DIV>
             </DIV>`);
 

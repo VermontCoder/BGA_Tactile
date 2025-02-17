@@ -41,8 +41,9 @@ define([
             if(selectablePieceID == null) 
             { 
                 const moveOrPush = (action=='move') ? 'moved' : 'pushed';
-                this.showMessage(_("There are no pieces that can be "+moveOrPush+"!"),'error'); 
-                this.restoreServerGameState();
+                this.showMessage(_("There are no pieces that can be "+moveOrPush+"!"),'error');
+                this.ttUtility.errorUIHandling.call(this); 
+                //this.restoreServerGameState();
                 return;
             }
 

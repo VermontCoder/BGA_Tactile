@@ -19,7 +19,7 @@ define([
             if(elegibleResourceColors.length == 0) 
             {
                 this.showMessage(_("You have no resources and thus are inneligible for swap!"),'info');
-                this.clearAllPreviousHighlighting();
+                this.ttUtility.errorUIHandling.call(this);
                 return;
             }
 

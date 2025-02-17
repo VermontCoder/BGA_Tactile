@@ -33,7 +33,7 @@ define([
             if(elegibleResourceColors.length == 0) 
             {
                 this.showMessage(_("You have no pieces on the board that can gain resources!"),'info');
-                this.clearAllPreviousHighlighting();
+                this.ttUtility.errorUIHandling.call(this);
                 return;
             } 
             

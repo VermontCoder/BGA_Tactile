@@ -18,7 +18,7 @@ define([
             if(Object.keys(buyableCards).length == 0)
             {
                 this.showMessage(_("You cannot afford to buy any cards!"),'error');
-                this.clearAllPreviousHighlighting();
+                this.ttUtility.errorUIHandling.call(this);
                 return;
             }
 

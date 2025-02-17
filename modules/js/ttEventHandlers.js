@@ -41,19 +41,20 @@ define([
 
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
 
+            //record the event origin for later use.
+            this.eventOrigin = selectionDivID;
+
             //check if this is actually an uncheck
-            if ($(selectionDivID).classList.contains('selected')) {
-                $(selectionDivID).classList.remove('selected');
+            //The selectionDiv will contain the cube div if it is selected
+            if ($(selectionDivID).hasChildNodes())
+            {
+                this.ttAnimations.moveActionCube.call(this,selectionDivID, true);
                 this.restoreServerGameState();
                 return;
             }
             this.clearAllPreviousHighlighting();
 
-            $(selectionDivID).classList.add('selected');
-
-            //record the event origin for later use.
-            this.eventOrigin = selectionDivID;
-
+            this.ttAnimations.moveActionCube.call(this,selectionDivID, false);
             //use call to keep the "this" context.
             this.ttEventHandlers.beginSequence.call(this,selectionData.action);
         },
