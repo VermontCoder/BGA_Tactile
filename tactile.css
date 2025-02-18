@@ -277,9 +277,11 @@
      flex-direction: column;
      margin-top: 10px;
      border-radius: 10px;
+     border: 0px solid var(--highlight-color);
      padding: 2px;
      background-color: #CCCCCC; /* Light golden color to represent money */
      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+     transition: transform 1s, box-shadow 0.3s, border 0.3s; /* Add transition for smooth effect */
  }
  
  .resource.highlighted, .bank.highlighted {

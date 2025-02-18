@@ -150,11 +150,11 @@ class Game extends \Table
 
             if (count($activatedCards) > 0)
             {
-                $this->notifyAllPlayers("activate", clienttranslate('${player_name} activated ${numCardsActivated} ${color}(${colorIcon}) card(s)'), [
+                $this->notifyAllPlayers("activate", clienttranslate('${player_name} activated ${numCardsActivated} <B>${color}</B>(${colorIcon}) card(s)'), [
                     "player_name" => $this->getActivePlayerName(),
                     "activatedCards" => $activatedCards,
                     "numCardsActivated" => count($activatedCards),
-                    "color" => '<B>'.$color.'</B>',
+                    "color" => $color,
                     "colorIcon" => $this->getColorIconHTML($color),
                 ]);
             }
@@ -235,9 +235,9 @@ class Game extends \Table
         $players->gainResource($this->getActivePlayerId(), $color);
         $this->endOfActionBoardState($origin);
 
-        $this->notifyAllPlayers("gain", clienttranslate('${player_name} gained a ${color}(${colorIcon}) resource'), [
+        $this->notifyAllPlayers("gain", clienttranslate('${player_name} gained a <B>${color}</B>(${colorIcon}) resource'), [
             "player_name" => $this->getActivePlayerName(),
-            "color" => '<B>'.$color.'</B>',
+            "color" => $color,
             "colorIcon" => $this->getColorIconHTML($color),
             "origin" => $origin,
         ]);
@@ -271,15 +271,15 @@ class Game extends \Table
         $newCardData = ttUtility::getCardDataFromType($newCard);
         $players->spendResources($player_id, $cardData['resources'][0], $cardData['resources'][1]);
 
-        $this->notifyAllPlayers("buy", clienttranslate('${player_name} bought a ${color}(${colorIcon}) ${action} card. A ${newColor}(${newColorIcon}) ${newAction} was picked for the store.'), [
+        $this->notifyAllPlayers("buy", clienttranslate('${player_name} bought a <B>${color}</B>(${colorIcon}) <B>${action}</B> card. A <B>${newColor}</B>(${newColorIcon}) <B>${newAction}</B> was picked for the store.'), [
             "player_name" => $this->getActivePlayerName(),
             "cardID" => $card_id,
-            "color" => '<B>'.$cardData['color'].'</B>',
+            "color" => $cardData['color'],
             "colorIcon" => $this->getColorIconHTML($cardData['color']),
-            "action" => '<B>'.$cardData['action'].'</B>',
-            "newColor" => '<B>'.$newCardData['color'].'</B>',
+            "action" => $cardData['action'],
+            "newColor" => $newCardData['color'],
             "newColorIcon" => $this->getColorIconHTML($newCardData['color']),
-            "newAction" => '<B>'.$newCardData['action'].'</B>',
+            "newAction" => $newCardData['action'],
             "newCardId" => $newCard['id'],
         ]);
 
@@ -308,11 +308,11 @@ class Game extends \Table
 
         $players->swapResources($player_id, $lossColor, $gainColor);
 
-        $this->notifyAllPlayers("swap", clienttranslate('${player_name} swapped a ${lossColor}(${lossColorIcon}) resource for a ${gainColor}(${gainColorIcon}) resource'), [
+        $this->notifyAllPlayers("swap", clienttranslate('${player_name} swapped a <B>${lossColor}</B>(${lossColorIcon}) resource for a <B>${gainColor}</B>(${gainColorIcon}) resource'), [
             "player_name" => $this->getActivePlayerName(),
-            "lossColor" => '<B>'.$lossColor.'</B>',
+            "lossColor" => $lossColor,
             "lossColorIcon" => $this->getColorIconHTML($lossColor),
-            "gainColor" => '<B>'.$gainColor.'</B>',
+            "gainColor" => $gainColor,
             "gainColorIcon" => $this->getColorIconHTML($gainColor),
         ]);
 

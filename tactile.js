@@ -428,8 +428,6 @@ function (dojo, declare) {
                         break;
                     
                     case 'client_swapSelectLose':
-                        this.addActionButton('actionBtnDoneWithTurn', _('Done with turn'), () => this.bgaPerformAction("actDoneWithTurn"), null, null, 'red'); 
-                        
                         for (const curColor of args.swappableResources[parseInt(this.getActivePlayerId())]) {
                             const colorIconHTML = this.ttUtility.getColorIconHTML(curColor);
                             const btnMsg = curColor.toUpperCase()+'('+colorIconHTML+')';

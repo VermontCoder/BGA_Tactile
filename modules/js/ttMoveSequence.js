@@ -18,27 +18,24 @@ define([
             const player_id = this.getActivePlayerId();
 
             //as a convenience, if only one piece can be moved, select it automatically.
-            var pieceCount = 0;
-            var selectablePieceID = null;
+            var selectablePieceIDs = [];
 
             const legalMoves = this.gamedatas.gamestate.args.legalMoves;
 
-            //highlight all pieces that can be moved.
+            //find all pieces that can be moved.
             Object.keys(pieces).forEach(function(key,index) {
                 const playerMatch = pieces[key].player_id == player_id;
                 if((action=='move' && playerMatch) || (action=='push' && !playerMatch))
                 {
-                    
                     if(legalMoves[key].length > 0) 
                     { 
                         $(key).classList.add('highlighted');
-                        pieceCount++;
-                        selectablePieceID = key; 
+                        selectablePieceIDs.push(key); 
                     }
                 }
             });
 
-            if(selectablePieceID == null) 
+            if(selectablePieceIDs.length == 0) 
             { 
                 const moveOrPush = (action=='move') ? 'moved' : 'pushed';
                 this.showMessage(_("There are no pieces that can be "+moveOrPush+"!"),'error');
@@ -52,7 +49,12 @@ define([
                 $(this.eventOrigin).classList.add('highlighted');
             }
 
-            if(pieceCount == 1)
+            for (const pieceID of selectablePieceIDs)
+            {
+                $(pieceID).classList.add('highlighted');
+            }
+
+            if(selectablePieceIDs.length == 1)
             {
                 this.ttMoveSequence.selectPiece.call(this,selectablePieceID);
                 return true;
