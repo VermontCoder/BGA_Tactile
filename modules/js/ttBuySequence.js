@@ -18,10 +18,10 @@ define([
             if(Object.keys(buyableCards).length == 0)
             {
                 this.showMessage(_("You cannot afford to buy any cards!"),'error');
-                this.ttUtility.errorUIHandling.call(this);
-                return;
+                return false;
             }
 
+            this.clearAllPreviousHighlighting();
             Object.keys(buyableCards).forEach(function(card_id,index) {
                 const cardDiv = document.getElementById('storecard_'+card_id);
                 cardDiv.classList.add('highlighted');
@@ -31,6 +31,8 @@ define([
             {
                 descriptionmyturn : _("${you} must select card to buy"),
             });
+
+            return true;
         },
 
         buyCard: function(card_id)

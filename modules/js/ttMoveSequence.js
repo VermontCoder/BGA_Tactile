@@ -42,21 +42,21 @@ define([
             { 
                 const moveOrPush = (action=='move') ? 'moved' : 'pushed';
                 this.showMessage(_("There are no pieces that can be "+moveOrPush+"!"),'error');
-                this.ttUtility.errorUIHandling.call(this); 
-                //this.restoreServerGameState();
-                return;
+                return false;
             }
 
             if(pieceCount == 1)
             {
                 this.ttMoveSequence.selectPiece.call(this,selectablePieceID);
-                return;
+                return true;
             }
 
             this.setClientState("client_selectPiece", 
             {
                 descriptionmyturn : _("${you} must select piece to move"),
             });
+
+            return true;
         },
 
         selectPiece: function( piece_id )
@@ -68,11 +68,12 @@ define([
             if (legalMoves.length == 0) 
             {
                 this.showMessage(_("This piece has no legal moves!"),'error');
-                this.restoreServerGameState(); 
-                return; 
+                return false; 
             }
             
             //highlight only this piece now.
+            
+            this.clearTileHighlighting();
             document.querySelectorAll('.playingPiece').forEach(function(el) { el.classList.remove('highlighted'); });
             document.getElementById(piece_id).classList.add('highlighted');
             
@@ -89,6 +90,8 @@ define([
             {
                 descriptionmyturn : _("${you} must select tile to move piece to"),  
             });
+
+            return true;
         },
 
         movePiece: function( tileID )

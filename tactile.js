@@ -234,11 +234,11 @@ function (dojo, declare) {
         createPlayerActionBoard: function(player, actionBoardSelections) {
             document.getElementById('tableauCardContainer_' + player.player_id).insertAdjacentHTML('beforeend', `
             <DIV id="actionBoard_${player.player_id}" class="actionBoard">
-                <DIV id="action_${player.player_id}_move" class="actionBoardSelectionTarget" style="top:39px; left:16px;"></DIV>
-                <DIV id="action_${player.player_id}_gain" class="actionBoardSelectionTarget" style="top:67px; left:16px;"></DIV>
-                <DIV id="action_${player.player_id}_buy" class="actionBoardSelectionTarget" style="top:95px; left:16px;"></DIV>
-                <DIV id="action_${player.player_id}_swap" class="actionBoardSelectionTarget" style="top:123px; left:16px;"></DIV>
-                <DIV id="action_${player.player_id}_reset" class="actionBoardSelectionTarget" style="top:151px; left:16px;"></DIV>
+                <DIV id="action_${player.player_id}_move" class="actionBoardSelectionTarget" style="top:34px; left:11px;"></DIV>
+                <DIV id="action_${player.player_id}_gain" class="actionBoardSelectionTarget" style="top:62px; left:11px;"></DIV>
+                <DIV id="action_${player.player_id}_buy" class="actionBoardSelectionTarget" style="top:90px; left:11px;"></DIV>
+                <DIV id="action_${player.player_id}_swap" class="actionBoardSelectionTarget" style="top:118px; left:11px;"></DIV>
+                <DIV id="action_${player.player_id}_reset" class="actionBoardSelectionTarget" style="top:146px; left:11px;"></DIV>
             </DIV>`);
 
             //click handlers

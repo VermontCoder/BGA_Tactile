@@ -41,22 +41,24 @@ define([
 
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
 
-            //record the event origin for later use.
-            this.eventOrigin = selectionDivID;
-
             //check if this is actually an uncheck
             //The selectionDiv will contain the cube div if it is selected
             if ($(selectionDivID).hasChildNodes())
-            {
-                this.ttAnimations.moveActionCube.call(this,selectionDivID, true);
-                this.restoreServerGameState();
-                return;
-            }
-            this.clearAllPreviousHighlighting();
-
-            this.ttAnimations.moveActionCube.call(this,selectionDivID, false);
+                {
+                    this.ttAnimations.moveActionCube.call(this,selectionDivID, true);
+                    setTimeout(()=>this.restoreServerGameState,1000);
+                    return;
+                }
+            
             //use call to keep the "this" context.
-            this.ttEventHandlers.beginSequence.call(this,selectionData.action);
+            //returns true if the sequence can begun.
+            if( this.ttEventHandlers.beginSequence.call(this,selectionData.action))
+            {
+                //record the event origin for later use.
+                this.eventOrigin = selectionDivID;
+                this.ttAnimations.moveActionCube.call(this,selectionDivID, false);
+            }
+           
         },
 
         onTileClick: function( tileID ) {
@@ -103,9 +105,8 @@ define([
 
             console.log('onPieceClick', JSON.stringify(pieceData));
 
-            this.clearTileHighlighting();
-            this.ttMoveSequence.selectPiece.call(this, piece_id); 
-           
+            this.ttMoveSequence.selectPiece.call(this, piece_id);
+            
         },
 
         onResourceBankClick: function( resource_id ) {
@@ -179,21 +180,15 @@ define([
             {
                 case 'move':
                 case 'push':
-                    this.ttMoveSequence.beginMove.call(this, action);
-                    break;
+                    return this.ttMoveSequence.beginMove.call(this, action);
                 case 'gain':
-                    this.ttGainSequence.beginGain.call(this);
-                    break;
+                    return this.ttGainSequence.beginGain.call(this);
                 case 'buy':
-                    this.ttBuySequence.beginBuy.call(this);
-                    break;
+                    return this.ttBuySequence.beginBuy.call(this);
                 case 'swap':
-                    this.ttSwapSequence.beginSwap.call(this);
-                    break;
+                    return this.ttSwapSequence.beginSwap.call(this);
                 case 'reset':
-                    this.ttResetSequence.beginReset.call(this);
-                    break;
-                
+                    return this.ttResetSequence.beginReset.call(this);
             }
         },
 

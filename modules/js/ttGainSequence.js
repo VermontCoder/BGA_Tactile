@@ -33,17 +33,18 @@ define([
             if(elegibleResourceColors.length == 0) 
             {
                 this.showMessage(_("You have no pieces on the board that can gain resources!"),'info');
-                this.ttUtility.errorUIHandling.call(this);
-                
-                return;
+                return false;
             } 
             
+            this.clearAllPreviousHighlighting();
             this.ttEventHandlers.highlightResourceBanks(elegibleResourceColors);
 
             this.setClientState("client_selectResource", 
             {
                 descriptionmyturn : _("${you} must select resource to gain"),
             });
+
+            return true;
         },
         
         gainResource: function(resource_id)

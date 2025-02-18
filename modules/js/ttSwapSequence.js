@@ -18,9 +18,8 @@ define([
             
             if(elegibleResourceColors.length == 0) 
             {
-                this.showMessage(_("You have no resources and thus are inneligible for swap!"),'info');
-                this.ttUtility.errorUIHandling.call(this);
-                return;
+                this.showMessage(_("You have no resources and thus are inneligible for swap!"),'info');                
+                return false;
             }
 
             //need to repass the args
@@ -29,8 +28,11 @@ define([
                 descriptionmyturn : _("${you} must select the resource to gain"),
             });
 
+            this.clearAllPreviousHighlighting();
             //oddly enough, this is the only place where the list of colors is needed on the client side.
             this.ttEventHandlers.highlightResourceBanks(['red','yellow','green','blue']);
+
+            return true;
         },
 
         selectGain: function(resource_id)

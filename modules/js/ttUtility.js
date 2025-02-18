@@ -94,23 +94,5 @@ define([
         {
             return `<span class="${color} icon"></span>`;
         },
-
-        errorUIHandling: function()
-        {
-            if (this.eventOrigin.startsWith('card_')) 
-            { 
-                this.restoreServerGameState(); 
-            }
-            else
-            {
-                //show cube moving back
-                this.ttAnimations.moveActionCube.call(this,this.eventOrigin, true);
-                setTimeout(() => {
-                    this.restoreServerGameState(); 
-                }, 1000);
-            }
-
-            this.clearAllPreviousHighlighting();
-        }
     });
 });

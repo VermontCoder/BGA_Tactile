@@ -13,12 +13,14 @@ define([
 
         beginReset: function() 
         {
+            this.clearAllPreviousHighlighting();
             this.setClientState("client_reset", 
             {
                 descriptionmyturn : _("This will choose new cards for the store. Confirm?"),
             });
             
             //logic handled in updateActionButtons
+            return true;
         },
 
         confirmReset: function(doReset)
