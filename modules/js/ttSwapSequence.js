@@ -25,7 +25,7 @@ define([
             //need to repass the args
             this.setClientState("client_swapSelectGain", 
             {
-                descriptionmyturn : _("${you} must select the resource to gain"),
+                descriptionmyturn : _("${you} must select the resource to gain<BR>"),
             });
 
             this.clearAllPreviousHighlighting();
@@ -49,7 +49,7 @@ define([
             
             this.setClientState("client_swapSelectLose", 
             {
-                descriptionmyturn : _("To obtain ${gainColor}(${colorIconHTML}) what resource will you swap?"),
+                descriptionmyturn : _("To obtain ${gainColor}(${colorIconHTML}) what resource will you swap?<BR>"),
             });
         },
 

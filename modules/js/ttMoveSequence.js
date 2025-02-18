@@ -45,6 +45,13 @@ define([
                 return false;
             }
 
+            //if this came from a card, highlight the card.
+            if (this.eventOrigin.startsWith('card_'))
+            {
+                this.clearAllPreviousHighlighting();
+                $(this.eventOrigin).classList.add('highlighted');
+            }
+
             if(pieceCount == 1)
             {
                 this.ttMoveSequence.selectPiece.call(this,selectablePieceID);
@@ -53,7 +60,7 @@ define([
 
             this.setClientState("client_selectPiece", 
             {
-                descriptionmyturn : _("${you} must select piece to move"),
+                descriptionmyturn : _("${you} must select piece to move<BR>"),
             });
 
             return true;
@@ -88,7 +95,7 @@ define([
 
             this.setClientState("client_selectTile", 
             {
-                descriptionmyturn : _("${you} must select tile to move piece to"),  
+                descriptionmyturn : _("${you} must select tile to move piece to<BR>"),  
             });
 
             return true;

@@ -29,7 +29,7 @@ define([
 
             this.setClientState("client_buyCard", 
             {
-                descriptionmyturn : _("${you} must select card to buy"),
+                descriptionmyturn : _("${you} must select card to buy<BR>"),
             });
 
             return true;

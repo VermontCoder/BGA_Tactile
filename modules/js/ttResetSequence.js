@@ -16,7 +16,7 @@ define([
             this.clearAllPreviousHighlighting();
             this.setClientState("client_reset", 
             {
-                descriptionmyturn : _("This will choose new cards for the store. Confirm?"),
+                descriptionmyturn : _("This will choose new cards for the store. Confirm?<BR>"),
             });
             
             //logic handled in updateActionButtons

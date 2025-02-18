@@ -32,16 +32,23 @@ define([
             //if all the player's pieces are at home or goal tiles, there are no resources to gain.
             if(elegibleResourceColors.length == 0) 
             {
-                this.showMessage(_("You have no pieces on the board that can gain resources!"),'info');
+                this.showMessage(_("You have no pieces on the board that can gain resources!"),'error');
                 return false;
             } 
             
             this.clearAllPreviousHighlighting();
+
+            //if this is a card event, we need to add back the highlighting since the above removes all highlighting.
+            if (this.eventOrigin.startsWith('card_'))
+            {
+                $(this.eventOrigin).classList.add('highlighted');
+            }
+            
             this.ttEventHandlers.highlightResourceBanks(elegibleResourceColors);
 
             this.setClientState("client_selectResource", 
             {
-                descriptionmyturn : _("${you} must select resource to gain"),
+                descriptionmyturn : _("${you} must select resource to gain<BR>"),
             });
 
             return true;

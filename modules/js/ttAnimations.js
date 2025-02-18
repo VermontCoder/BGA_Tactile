@@ -7,7 +7,7 @@ define([
     { 
         constructor: function()
         {
-        
+            this.animationDuration = 1000;
         },
 
         moveActionCube: async function( actionCardDiv, isCancel ) 
@@ -19,7 +19,7 @@ define([
                 const cubeDiv = $(actionCardDiv).firstChild;
                 const spotID = cubeDiv.id.split('_')[2];
                 const cubeContainerDiv = $('actionCubeContainer_' + playerID+'_'+spotID);
-                const anim = this.slideToObject( cubeDiv, cubeContainerDiv, 1000, 0 );
+                const anim = this.slideToObject( cubeDiv, cubeContainerDiv, this.ttAnimations.animationDuration, 0 );
 
                 await this.bgaPlayDojoAnimation( anim ).then(()=>
                     {
@@ -33,7 +33,7 @@ define([
                 const cubeNum = $('actionCubeContainer_' + playerID+'_0').hasChildNodes() ? 1 : 0;
                 const cubeDiv = $('actionCube_' + playerID+'_'+cubeNum);
 
-                const anim = this.slideToObject( cubeDiv, actionCardDiv, 1000, 0 );
+                const anim = this.slideToObject( cubeDiv, actionCardDiv, this.ttAnimations.animationDuration, 0 );
                 await this.bgaPlayDojoAnimation( anim ).then(()=>
                     {
                         $(actionCardDiv).prepend(cubeDiv);
@@ -45,7 +45,7 @@ define([
 
         movePiece: async function( pieceDivID, targetDivID )
         {
-            const anim = this.slideToObject( pieceDivID, targetDivID, 1000, 0 );
+            const anim = this.slideToObject( pieceDivID, targetDivID, this.ttAnimations.animationDuration, 0 );
             await this.bgaPlayDojoAnimation( anim );
         }
 

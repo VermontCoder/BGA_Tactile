@@ -46,17 +46,24 @@ define([
             if ($(selectionDivID).hasChildNodes())
                 {
                     this.ttAnimations.moveActionCube.call(this,selectionDivID, true);
-                    setTimeout(()=>this.restoreServerGameState,1000);
+                    setTimeout(()=>this.restoreServerGameState,this.ttAnimations.animationDuration);
                     return;
                 }
             
+            //save a copy of the origin if the sequence fails.
+            const oldEventOrigin = this.eventOrigin;
+            this.eventOrigin = selectionDivID;
+            
             //use call to keep the "this" context.
-            //returns true if the sequence can begun.
+            //returns true if the sequence has successfuly begun.
             if( this.ttEventHandlers.beginSequence.call(this,selectionData.action))
             {
                 //record the event origin for later use.
-                this.eventOrigin = selectionDivID;
                 this.ttAnimations.moveActionCube.call(this,selectionDivID, false);
+            }
+            else
+            {
+                this.eventOrigin = oldEventOrigin;
             }
            
         },
@@ -153,17 +160,25 @@ define([
             
             if ($(cardDivID).classList.contains('active'))
             {
-                //do selection
-                this.clearAllPreviousHighlighting();
-                $(cardDivID).classList.add('highlighted');
-
                 console.log( 'onCardClick', cardDivID);
-
                 //record the event origin for later use.
+                const oldEventOrigin = this.eventOrigin;
                 this.eventOrigin = cardDivID;
-
                 //use call to keep the "this" context.
-                this.ttEventHandlers.beginSequence.call(this,cardTypeData.action);
+                //if the player cannot do the action, this will return false, and the card will not be highlighted and the sequence not started.
+                if(this.ttEventHandlers.beginSequence.call(this,cardTypeData.action))
+                {
+                    //do selection
+                    if(oldEventOrigin.startsWith('action_'))
+                    {
+                        //remove the action cube from the action board.
+                        this.ttAnimations.moveActionCube.call(this,oldEventOrigin, true);
+                    }
+                }
+                else
+                {
+                    this.eventOrigin = oldEventOrigin;
+                }
             }
 
             // this.bgaPerformAction("actPlayCard", { 

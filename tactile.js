@@ -276,11 +276,15 @@ function (dojo, declare) {
             <DIV id="tableau_${player.player_id}" class = "tableau">
                 <DIV id="tableauTopRowContainer_${player.player_id}" class="cardRow tableauTopRowContainer">
                     <SPAN id="tableauLabel_${player.player_id}" class="tableauLabel ${player.color_name}">${player.player_name}</SPAN>
-                    <DIV id="actionCubeContainer_${player.player_id}_0" class="actionCubeContainer">
-                        <DIV id="actionCube_${player.player_id}_0" class="actionCube"></DIV>
+                    <DIV id="actionCubeBorder_${player.player_id}_0" class="actionCubeBorder">
+                        <DIV id="actionCubeContainer_${player.player_id}_0" class="actionCubeContainer">
+                            <DIV id="actionCube_${player.player_id}_0" class="actionCube"></DIV>
+                        </DIV>
                     </DIV>
-                    <DIV id="actionCubeContainer_${player.player_id}_1" class="actionCubeContainer">
-                        <DIV id="actionCube_${player.player_id}_1" class="actionCube"></DIV>
+                    <DIV id="actionCubeBorder_${player.player_id}_1" class="actionCubeBorder">
+                        <DIV id="actionCubeContainer_${player.player_id}_1" class="actionCubeContainer">
+                            <DIV id="actionCube_${player.player_id}_1" class="actionCube"></DIV>
+                        </DIV>
                     </DIV>
                 </DIV>
                 <DIV id="tableauCardContainer_${player.player_id}" class="cardRow tableauCardContainer"></DIV>
@@ -373,8 +377,8 @@ function (dojo, declare) {
                 case 'selectAction':
                     //debugger;
                     this.clearAllPreviousHighlighting();
-                    const paramArgs = args.args;
-                    setTimeout(()=>this.updateState(paramArgs), 1000);
+                    this.eventOrigin = '';
+                    setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration);
                     break;
            
                 case 'dummy':
@@ -419,6 +423,10 @@ function (dojo, declare) {
             {            
                 switch( stateName )
                 {
+                    case 'client_selectResource':
+                    case 'client_selectTile':
+                    case 'client_selectGain':
+                    case 'client_selectPiece':
                     case 'selectAction':
                         this.addActionButton('actionBtnDoneWithTurn', _('Done with turn'), () => this.bgaPerformAction("actDoneWithTurn"), null, null, 'red'); 
                         break;
@@ -429,6 +437,8 @@ function (dojo, declare) {
                         break;
                     
                     case 'client_swapSelectLose':
+                        this.addActionButton('actionBtnDoneWithTurn', _('Done with turn'), () => this.bgaPerformAction("actDoneWithTurn"), null, null, 'red'); 
+                        
                         for (const curColor of args.swappableResources[parseInt(this.getActivePlayerId())]) {
                             const colorIconHTML = this.ttUtility.getColorIconHTML(curColor);
                             const btnMsg = curColor.toUpperCase()+'('+colorIconHTML+')';

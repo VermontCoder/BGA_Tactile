@@ -640,8 +640,8 @@ class Game extends \Table
         $this->cards->pickCardsForLocation( 6, 'deck', 'store');
 
         //test data
-        // $this->cards->pickCardsForLocation( 10, 'deck', 'hand', 2383264);
-        // $this->cards->pickCardsForLocation( 4, 'deck', 'hand', 2383265);
+        $this->cards->pickCardsForLocation( 10, 'deck', 'hand', 2383264);
+        $this->cards->pickCardsForLocation( 4, 'deck', 'hand', 2383265);
 
         // Init global values with their initial values.
 

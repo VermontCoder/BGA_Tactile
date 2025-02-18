@@ -382,7 +382,7 @@
      min-width: calc(var(--store-width) + var(--board-dim) + 12px); 
  }
 
- .actionCubeContainer {
+ .actionCubeBorder {
      margin-right: 10px;
      height: var(--action-board-selection-dim);
      width: var(--action-board-selection-dim);
@@ -390,12 +390,17 @@
      border-style: inset;
  }
 
+ .actionCubeContainer {
+     margin: -5px;
+     height: var(--action-board-selection-dim);
+     width: var(--action-board-selection-dim);
+ }
+
  .actionCube {
     position: absolute;
      height: var(--action-board-selection-dim);
      width: var(--action-board-selection-dim);
      background: url(img/cube.png) 0 0 no-repeat;
-     
      pointer-events: none;
      z-index: var(--z-index-piece);
  }
