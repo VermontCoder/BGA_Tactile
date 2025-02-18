@@ -46,7 +46,7 @@ define([
             if ($(selectionDivID).hasChildNodes())
                 {
                     this.ttAnimations.moveActionCube.call(this,selectionDivID, true);
-                    setTimeout(()=>this.restoreServerGameState,this.ttAnimations.animationDuration);
+                    setTimeout(() => this.restoreServerGameState(),this.ttAnimations.animationDuration);
                     return;
                 }
             
@@ -58,7 +58,6 @@ define([
             //returns true if the sequence has successfuly begun.
             if( this.ttEventHandlers.beginSequence.call(this,selectionData.action))
             {
-                //record the event origin for later use.
                 this.ttAnimations.moveActionCube.call(this,selectionDivID, false);
             }
             else
@@ -165,7 +164,7 @@ define([
                 //record the event origin for later use.
                 const oldEventOrigin = this.eventOrigin;
                 this.eventOrigin = cardDivID;
-                
+
                 //use call to keep the "this" context.
                 //if the player cannot do the action, this will return false, and the card will not be highlighted and the sequence not started.
                 if(this.ttEventHandlers.beginSequence.call(this,cardTypeData.action))

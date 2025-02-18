@@ -328,16 +328,7 @@ function (dojo, declare) {
             let count =0;
 
             //use custom sort function to sort by card type - first by color, then by action
-            Object.values(hand).sort((a, b) => {
-                //debugger;
-                const cardDataA = this.ttUtility.getCardDataFromType(a);
-                const cardDataB = this.ttUtility.getCardDataFromType(b);
-                
-                if (cardDataA.color === cardDataB.color) {
-                    return cardDataA.action.localeCompare(cardDataB.action);
-                }
-                return cardDataA.color.localeCompare(cardDataB.color);
-            }).forEach(card => {
+            Object.values(hand).sort((a, b) => this.ttUtility.cardSortFunction(a,b)).forEach(card => {
                 document.getElementById('tableauCardContainer_' + player.player_id).insertAdjacentHTML('beforeend', `
                     <div id="cardTarget_${player.player_id}_${count}" class="cardTarget addSpace">
                         <div id="card_${card.id}" class="card" style="background-position-x: ${-80 * card.id}px;"></div>
