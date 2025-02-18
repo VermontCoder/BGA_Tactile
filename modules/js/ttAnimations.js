@@ -10,7 +10,7 @@ define([
         
         },
 
-        moveActionCube: function( actionCardDiv, isCancel ) 
+        moveActionCube: async function( actionCardDiv, isCancel ) 
         {
             const playerID = this.getActivePlayerId();
             if (isCancel) 
@@ -18,17 +18,36 @@ define([
                 //move cube back to parking spot. 
                 const cubeDiv = $(actionCardDiv).firstChild;
                 const spotID = cubeDiv.id.split('_')[2];
-                $('actionCubeContainer_' + playerID+'_'+spotID).prepend(cubeDiv);
+                const cubeContainerDiv = $('actionCubeContainer_' + playerID+'_'+spotID);
+                const anim = this.slideToObject( cubeDiv, cubeContainerDiv, 1000, 0 );
+
+                await this.bgaPlayDojoAnimation( anim ).then(()=>
+                    {
+                        cubeDiv.removeAttribute('style'); //the slideToObject function adds a style attribute to the div. This removes it.
+                        $(cubeContainerDiv).prepend(cubeDiv);
+                    });
             }
             else
             {
                 //move cube to action card. Which cube is available?
                 const cubeNum = $('actionCubeContainer_' + playerID+'_0').hasChildNodes() ? 1 : 0;
                 const cubeDiv = $('actionCube_' + playerID+'_'+cubeNum);
-                $(actionCardDiv).prepend(cubeDiv);
+
+                const anim = this.slideToObject( cubeDiv, actionCardDiv, 1000, 0 );
+                await this.bgaPlayDojoAnimation( anim ).then(()=>
+                    {
+                        $(actionCardDiv).prepend(cubeDiv);
+                        cubeDiv.removeAttribute('style'); //the slideToObject function adds a style attribute to the div. This removes it.
+                    });
             }
 
         },
+
+        movePiece: async function( pieceDivID, targetDivID )
+        {
+            const anim = this.slideToObject( pieceDivID, targetDivID, 1000, 0 );
+            await this.bgaPlayDojoAnimation( anim );
+        }
 
         // moveActionCube: function( actionCubeDivID, targetDivID, callback ) {
 

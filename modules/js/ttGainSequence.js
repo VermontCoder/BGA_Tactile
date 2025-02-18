@@ -34,6 +34,7 @@ define([
             {
                 this.showMessage(_("You have no pieces on the board that can gain resources!"),'info');
                 this.ttUtility.errorUIHandling.call(this);
+                
                 return;
             } 
             

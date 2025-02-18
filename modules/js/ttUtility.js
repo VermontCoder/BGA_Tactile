@@ -105,6 +105,9 @@ define([
             {
                 //show cube moving back
                 this.ttAnimations.moveActionCube.call(this,this.eventOrigin, true);
+                setTimeout(() => {
+                    this.restoreServerGameState(); 
+                }, 1000);
             }
 
             this.clearAllPreviousHighlighting();

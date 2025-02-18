@@ -372,8 +372,9 @@ function (dojo, declare) {
                 case 'gameEnd':
                 case 'selectAction':
                     //debugger;
-                    this.updateState(args.args);
                     this.clearAllPreviousHighlighting();
+                    const paramArgs = args.args;
+                    setTimeout(()=>this.updateState(paramArgs), 1000);
                     break;
            
                 case 'dummy':
@@ -562,7 +563,7 @@ function (dojo, declare) {
             console.log( 'notif_moveOrPush' );
             console.log( notif );
            
-            
+            this.ttAnimations.movePiece.call(this, notif.args.piece_id, notif.args.tileID);
             //animation code?
             
             // Note: notif.args contains the arguments specified during you "notifyAllPlayers" / "notifyPlayer" PHP call    
