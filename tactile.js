@@ -563,6 +563,7 @@ function (dojo, declare) {
             dojo.subscribe('endGame', this, "notif_endGame");
         },  
 
+        // Note: notif.args contains the arguments specified during you "notifyAllPlayers" / "notifyPlayer" PHP call    
         notif_showVariable: function( notif )
         {
             console.log( notif );
@@ -574,21 +575,35 @@ function (dojo, declare) {
             console.log( notif );
            
             this.ttAnimations.movePiece.call(this, notif.args.piece_id, notif.args.tileID);
-            //animation code?
+
+            //exhaust card if it was used.
+            if (notif.args.origin.startsWith('card_'))
+            {
+                $(notif.args.origin).classList.add('exhausted');
+            }
             
-            // Note: notif.args contains the arguments specified during you "notifyAllPlayers" / "notifyPlayer" PHP call    
         },
 
         notif_activate: function( notif )
         {
             console.log( 'notif_activate' );
             console.log( notif );
+
+            Object.keys(notif.args.activatedCards).forEach(cardID => {
+                $('card_'+cardID).classList.add('active');
+            });
         },
 
         notif_gain: function( notif )
         {
             console.log( 'notif_gain' );
             console.log( notif );
+
+            //exhaust card if it was used.
+            if (notif.args.origin.startsWith('card_'))
+            {
+                $(notif.args.origin).classList.add('exhausted');
+            }
         },
 
         notif_buy: function( notif )

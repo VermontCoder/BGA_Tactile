@@ -161,9 +161,11 @@ define([
             if ($(cardDivID).classList.contains('active'))
             {
                 console.log( 'onCardClick', cardDivID);
+
                 //record the event origin for later use.
                 const oldEventOrigin = this.eventOrigin;
                 this.eventOrigin = cardDivID;
+                
                 //use call to keep the "this" context.
                 //if the player cannot do the action, this will return false, and the card will not be highlighted and the sequence not started.
                 if(this.ttEventHandlers.beginSequence.call(this,cardTypeData.action))

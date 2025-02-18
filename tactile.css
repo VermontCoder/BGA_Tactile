@@ -451,7 +451,7 @@
      border-radius: 4px;
      filter: drop-shadow(3px 3px 3px #444);
      z-index: var(--z-index-card);
-     transition: transform 1s, box-shadow 0.3s, border 0.3s; /* Add transition for smooth effect */
+     transition: transform 1s, filter 1s, box-shadow 0.3s, border 0.3s; /* Add transition for smooth effect */
 }
 
  .card.active {
@@ -460,6 +460,7 @@
 
  .card.exhausted {
     filter: brightness(70%);
+    transform: translateY(0px);
  }
 
  .storecard.highlighted, .card.highlighted {

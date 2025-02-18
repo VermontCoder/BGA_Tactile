@@ -130,6 +130,7 @@ class Game extends \Table
             "tileID" => $tileID,
             "isPush" => $isPush,
             "moveOrPushText" => $isPush ? 'pushed' : 'moved',
+            "origin" => $origin,
         ]);
 
         //3 - Did we activate any cards?
@@ -141,19 +142,18 @@ class Game extends \Table
             $color = $board->tiles[$location]['color'];
             $cards = new ttCards($this);
 
-            $numActivated = 0;
-
             //color is '' on home or goal tiles - cannot activate cards.
             if ($color != '')
             {
-                $numActivated = $cards->activateCardsByColor(intval($this->getActivePlayerId()), $color);
+                $activatedCards = $cards->activateCardsByColor(intval($this->getActivePlayerId()), $color);
             }
 
-            if ($numActivated > 0)
+            if (count($activatedCards) > 0)
             {
                 $this->notifyAllPlayers("activate", clienttranslate('${player_name} activated ${numCardsActivated} ${color}(${colorIcon}) card(s)'), [
                     "player_name" => $this->getActivePlayerName(),
-                    "numCardsActivated" => $numActivated,
+                    "activatedCards" => $activatedCards,
+                    "numCardsActivated" => count($activatedCards),
                     "color" => '<B>'.$color.'</B>',
                     "colorIcon" => $this->getColorIconHTML($color),
                 ]);
@@ -239,6 +239,7 @@ class Game extends \Table
             "player_name" => $this->getActivePlayerName(),
             "color" => '<B>'.$color.'</B>',
             "colorIcon" => $this->getColorIconHTML($color),
+            "origin" => $origin,
         ]);
 
         $this->goToNextState();
