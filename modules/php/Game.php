@@ -232,10 +232,11 @@ class Game extends \Table
         }
                 
         $players = new ttPlayers($this);
-        $players->gainResource($this->getActivePlayerId(), $color);
+        $players->gainResource($player_id, $color);
         $this->endOfActionBoardState($origin);
 
         $this->notifyAllPlayers("gain", clienttranslate('${player_name} gained a <B>${color}</B>(${colorIcon}) resource'), [
+            "player_id" => $player_id,
             "player_name" => $this->getActivePlayerName(),
             "color" => $color,
             "colorIcon" => $this->getColorIconHTML($color),

@@ -47,6 +47,21 @@ define([
         {
             const anim = this.slideToObject( pieceDivID, targetDivID, this.ttAnimations.animationDuration, 0 );
             await this.bgaPlayDojoAnimation( anim );
+        },
+
+        moveResource: async function( color, player_id, toPlayer) 
+        {
+            const bankDiv = $(color+'Bank');
+            const playerDiv = $(color+'Resource_'+player_id);
+            const resourceDiv = `<div id="resourceAnim" style="position: absolute;" class="${color} resource"></div>`;
+
+            const destination = toPlayer ? playerDiv : bankDiv;
+            const source = toPlayer ? bankDiv : playerDiv;
+            source.insertAdjacentHTML('beforeend', resourceDiv);
+
+            anim = this.slideToObjectAndDestroy( 'resourceAnim', destination, this.ttAnimations.animationDuration, 0 );
+            
+            await this.bgaPlayDojoAnimation(anim);
         }
 
         // moveActionCube: function( actionCubeDivID, targetDivID, callback ) {

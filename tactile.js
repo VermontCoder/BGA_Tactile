@@ -593,6 +593,18 @@ function (dojo, declare) {
             {
                 $(notif.args.origin).classList.add('exhausted');
             }
+
+            this.ttAnimations.moveResource.call(this, notif.args.color, notif.args.player_id, true);
+            const resourceQtyDivID = notif.args.color+'Resource_'+notif.args.player_id;
+            
+            const newQty = parseInt($(resourceQtyDivID).innerHTML.trimEnd().slice(-1))+1;
+            setTimeout(()=> {
+                $(resourceQtyDivID).classList.add('red');
+                $(resourceQtyDivID).innerHTML = ' : ' + newQty;
+            }, this.ttAnimations.animationDuration);
+            setTimeout(()=> $(resourceQtyDivID).classList.remove('red'), this.ttAnimations.animationDuration * 2);
+            this.ttAnimations.animationDuration *= 3;
+            setTimeout(()=>  {this.ttAnimations.animationDuration = this.ttAnimations.animationDuration/3;}, this.ttAnimations.animationDuration);
         },
 
         notif_buy: function( notif )
