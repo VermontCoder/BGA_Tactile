@@ -430,7 +430,7 @@ function (dojo, declare) {
                     case 'client_swapSelectLose':
                         for (const curColor of args.swappableResources[parseInt(this.getActivePlayerId())]) {
                             const colorIconHTML = this.ttUtility.getColorIconHTML(curColor);
-                            const btnMsg = curColor.toUpperCase()+'('+colorIconHTML+')';
+                            const btnMsg = _(curColor.toUpperCase())+'('+colorIconHTML+')';
                             const btnId = 'actionButtonSwapLose_'+curColor;
                             this.statusBar.addActionButton(btnMsg, 
                                 () => this.ttSwapSequence.selectSwapLoss.call(this,curColor),
@@ -440,7 +440,7 @@ function (dojo, declare) {
                                 });
                         }
                         this.statusBar.addActionButton( _('Cancel'), 
-                            () => this.restoreServerGameState(),
+                            () => this.ttEventHandlers.cancelActionBoardAction.call(this),
                             {
                                 color:'alert',
                                 id: 'actionButtonSwapCancel',

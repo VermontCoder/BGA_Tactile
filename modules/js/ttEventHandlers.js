@@ -39,19 +39,18 @@ define([
 
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
 
-            //check if this is actually an uncheck
-            //The selectionDiv will contain the cube div if it is selected
-            const isCancel = document.querySelector('#'+selectionDivID +' > .actionCube') != null;
-            if (isCancel)
-                {
-                    this.ttAnimations.moveActionCube.call(this,selectionDivID, true);
-                    setTimeout(() => this.restoreServerGameState(),this.ttAnimations.animationDuration);
-                    return;
-                }
-            
             //save a copy of the origin if the sequence fails.
             const oldEventOrigin = this.eventOrigin;
             this.eventOrigin = selectionDivID;
+
+            //check if this is actually an uncheck
+            //The selectionDiv will contain the cube div if it is selected
+            const isCancel = document.querySelector('#'+selectionDivID +' > .actionCube') != null;
+            if (isCancel) 
+            { 
+                this.ttEventHandlers.cancelActionBoardAction.call(this); 
+                return; 
+            }
             
             //use call to keep the "this" context.
             //returns true if the sequence has successfuly begun.
@@ -214,6 +213,13 @@ define([
                 const resourceBankDiv = resourceColors[i]+'Bank';
                 $(resourceBankDiv).classList.add('highlighted');
             }
+        },
+
+        cancelActionBoardAction: function()
+        {
+            this.ttAnimations.moveActionCube.call(this,this.eventOrigin, true);
+            setTimeout(() => this.restoreServerGameState(),this.ttAnimations.animationDuration);
+            this.eventOrigin = null;
         }
     });
 }); 

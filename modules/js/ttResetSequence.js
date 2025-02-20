@@ -26,7 +26,7 @@ define([
         confirmReset: function(doReset)
         {
             if (!doReset) {
-                this.restoreServerGameState();
+                this.ttEventHandlers.cancelActionBoardAction.call(this);
                 return;
             }
 
