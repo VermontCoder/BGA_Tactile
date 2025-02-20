@@ -10,7 +10,7 @@ define([
 
         constructor: function()
         {
-        
+           
         },
 
         //In all click handlers, "this" refers to the game object 
@@ -35,15 +35,14 @@ define([
             if(selectionData['player_id'] != this.getActivePlayerId()) { return; }
 
             //Do not respond if two actions have already been selected.
-            const activePlayerBoardVals = this.ttUtility.pickByNestedProperty(gg.args.actionBoardSelections, 'player_id', this.getActivePlayerId());
-            const selections = this.ttUtility.pickByNestedProperty(activePlayerBoardVals, 'selected', true);
-            if (Object.keys(selections).length >= 2) { return; }
+            if (this.ttUtility.getNumActionBoardActionsSelected.call(this) >= 2) { return; }
 
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
 
             //check if this is actually an uncheck
             //The selectionDiv will contain the cube div if it is selected
-            if ($(selectionDivID).hasChildNodes())
+            const isCancel = document.querySelector('#'+selectionDivID +' > .actionCube') != null;
+            if (isCancel)
                 {
                     this.ttAnimations.moveActionCube.call(this,selectionDivID, true);
                     setTimeout(() => this.restoreServerGameState(),this.ttAnimations.animationDuration);

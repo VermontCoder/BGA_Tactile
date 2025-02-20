@@ -40,6 +40,11 @@ define([
             this.swapGainColor = resource_id.replace('Bank','');
             var iconHTML = this.ttUtility.getColorIconHTML(this.swapGainColor);
 
+            //remove highlighting from banks
+            document.querySelectorAll('.bank').forEach((bank) => {
+                if(bank.id !== resource_id) bank.classList.remove('highlighted');
+            });
+
             //setClientState *implicitly* passes the gamestate args to the client state.
             //In order for new values to get to the client state, they must be set in the gamestate args.
 

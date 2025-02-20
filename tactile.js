@@ -594,17 +594,9 @@ function (dojo, declare) {
                 $(notif.args.origin).classList.add('exhausted');
             }
 
+            const resourceDivQtyID = notif.args.color+'Resource_'+notif.args.player_id;
             this.ttAnimations.moveResource.call(this, notif.args.color, notif.args.player_id, true);
-            const resourceQtyDivID = notif.args.color+'Resource_'+notif.args.player_id;
-            
-            const newQty = parseInt($(resourceQtyDivID).innerHTML.trimEnd().slice(-1))+1;
-            setTimeout(()=> {
-                $(resourceQtyDivID).classList.add('red');
-                $(resourceQtyDivID).innerHTML = ' : ' + newQty;
-            }, this.ttAnimations.animationDuration);
-            setTimeout(()=> $(resourceQtyDivID).classList.remove('red'), this.ttAnimations.animationDuration * 2);
-            this.ttAnimations.animationDuration *= 3;
-            setTimeout(()=>  {this.ttAnimations.animationDuration = this.ttAnimations.animationDuration/3;}, this.ttAnimations.animationDuration);
+            this.ttAnimations.qtyChangeAnimation.call(this, resourceDivQtyID, 1, this.ttAnimations.animationDuration);
         },
 
         notif_buy: function( notif )
@@ -617,6 +609,13 @@ function (dojo, declare) {
         {
             console.log( 'notif_swap' );
             console.log( notif );
+
+            const resourceDivQtyGainID = notif.args.gainColor+'Resource_'+notif.args.player_id;
+            const resourceDivQtyLossID = notif.args.lossColor+'Resource_'+notif.args.player_id;
+            this.ttAnimations.moveResource.call(this, notif.args.gainColor, notif.args.player_id, true);
+            this.ttAnimations.moveResource.call(this, notif.args.lossColor, notif.args.player_id, false);
+            this.ttAnimations.qtyChangeAnimation.call(this, resourceDivQtyGainID, 1, this.ttAnimations.animationDuration);
+            this.ttAnimations.qtyChangeAnimation.call(this, resourceDivQtyLossID, -1, this.ttAnimations.animationDuration);
         },
 
         notif_goalAchieved: function( notif )

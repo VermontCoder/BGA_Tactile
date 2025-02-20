@@ -105,6 +105,15 @@ define([
                 return cardDataA.action.localeCompare(cardDataB.action);
             }
             return cardDataA.color.localeCompare(cardDataB.color);
-    }
+        },
+
+        //use "call" to keep the "game" context.
+        getNumActionBoardActionsSelected()
+        {
+            const gg = this.gamedatas.gamestate;
+            const activePlayerBoardVals = this.ttUtility.pickByNestedProperty(gg.args.actionBoardSelections, 'player_id', this.getActivePlayerId());
+            const selections = this.ttUtility.pickByNestedProperty(activePlayerBoardVals, 'selected', true);
+            return Object.keys(selections).length;
+        }
     });
 });

@@ -30,8 +30,7 @@ define([
             else
             {
                 //move cube to action card. Which cube is available?
-                const cubeNum = $('actionCubeContainer_' + playerID+'_0').hasChildNodes() ? 1 : 0;
-                const cubeDiv = $('actionCube_' + playerID+'_'+cubeNum);
+                const cubeDiv = $('actionCube_' + playerID+'_'+this.ttUtility.getNumActionBoardActionsSelected.call(this));
 
                 const anim = this.slideToObject( cubeDiv, actionCardDiv, this.ttAnimations.animationDuration, 0 );
                 await this.bgaPlayDojoAnimation( anim ).then(()=>
@@ -52,16 +51,28 @@ define([
         moveResource: async function( color, player_id, toPlayer) 
         {
             const bankDiv = $(color+'Bank');
-            const playerDiv = $(color+'Resource_'+player_id);
-            const resourceDiv = `<div id="resourceAnim" style="position: absolute;" class="${color} resource"></div>`;
+            const playerDiv = $(color+'ResourceLabel_'+player_id);
+            const resourceDiv = `<div id="resourceAnim${color}" style="position: absolute;" class="${color} resource"></div>`;
 
             const destination = toPlayer ? playerDiv : bankDiv;
             const source = toPlayer ? bankDiv : playerDiv;
             source.insertAdjacentHTML('beforeend', resourceDiv);
 
-            anim = this.slideToObjectAndDestroy( 'resourceAnim', destination, this.ttAnimations.animationDuration, 0 );
+            anim = this.slideToObjectAndDestroy( 'resourceAnim'+color, destination, this.ttAnimations.animationDuration, 0 );
             
             await this.bgaPlayDojoAnimation(anim);
+        },
+
+        //starts the number changing to red after the move animation is complete.
+        qtyChangeAnimation: async function( qtyDivID, qtyDelta, delay )
+        {
+            console.log($(qtyDivID).innerHTML+';;;');
+            const newQty = parseInt($(qtyDivID).innerHTML.trimEnd().slice(-1)) + qtyDelta;
+            setTimeout(()=> {
+                $(qtyDivID).classList.add('red');
+                $(qtyDivID).innerHTML = ' : ' + newQty;
+            }, delay+100);
+            setTimeout(()=> $(qtyDivID).classList.remove('red'), delay+this.ttAnimations.animationDuration);
         }
 
         // moveActionCube: function( actionCubeDivID, targetDivID, callback ) {

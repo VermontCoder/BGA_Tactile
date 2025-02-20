@@ -273,6 +273,7 @@ class Game extends \Table
         $players->spendResources($player_id, $cardData['resources'][0], $cardData['resources'][1]);
 
         $this->notifyAllPlayers("buy", clienttranslate('${player_name} bought a <B>${color}</B>(${colorIcon}) <B>${action}</B> card. A <B>${newColor}</B>(${newColorIcon}) <B>${newAction}</B> was picked for the store.'), [
+            "player_id" => $player_id,
             "player_name" => $this->getActivePlayerName(),
             "cardID" => $card_id,
             "color" => $cardData['color'],
@@ -291,6 +292,11 @@ class Game extends \Table
 
     public function actSwap(string $gainColor, string $lossColor, string $origin) : void
     {
+        if ($gainColor == $lossColor)
+        {
+            throw new \BgaUserException('Cannot swap the same color!');
+        }
+
         $player_id = $this->getActivePlayerId();
         
         $players = new ttPlayers($this);
@@ -310,6 +316,7 @@ class Game extends \Table
         $players->swapResources($player_id, $lossColor, $gainColor);
 
         $this->notifyAllPlayers("swap", clienttranslate('${player_name} swapped a <B>${lossColor}</B>(${lossColorIcon}) resource for a <B>${gainColor}</B>(${gainColorIcon}) resource'), [
+            "player_id" => $player_id,
             "player_name" => $this->getActivePlayerName(),
             "lossColor" => $lossColor,
             "lossColorIcon" => $this->getColorIconHTML($lossColor),
