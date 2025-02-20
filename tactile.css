@@ -460,9 +460,14 @@
      border-radius: 4px;
      filter: drop-shadow(3px 3px 3px #444);
      z-index: var(--z-index-card);
+     backface-visibility: hidden;
      transition: transform 1s, filter 1s, box-shadow 0.3s, border 0.3s; /* Add transition for smooth effect */
 }
 
+.storecard {
+    position:absolute;
+    transform-style: preserve-3d;
+}
  .card.active {
     transform: translateY(-20px);
  }
@@ -471,6 +476,22 @@
     filter: brightness(70%);
     transform: translateY(0px);
  }
+
+ .storecard.back {
+    background: url(img/card_back_small.png) 0 0 no-repeat;
+    transform: rotateY(180deg);
+    backface-visibility: visible;
+    /* z-index: calc(var(--z-index-card) + 1); */
+ }
+
+ .storecard.flip, .storecard.back.flip {
+	transform: perspective(200px) rotateY(180deg);
+}
+
+.storecard.back.flip {
+    transform: perspective(200px) rotateY(360deg);
+    transition-duration: 1s;
+}
 
  .storecard.highlighted, .card.highlighted {
     height: calc(var(--card-height) + 4px);

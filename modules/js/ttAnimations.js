@@ -73,6 +73,24 @@ define([
                 $(qtyDivID).innerHTML = ' : ' + newQty;
             }, delay+100);
             setTimeout(()=> $(qtyDivID).classList.remove('red'), delay+this.ttAnimations.animationDuration);
+        },
+
+        resetAnim: async function( )
+        {
+            //this.ttAnimations.animationDuration = 2100; //delay for the reset animation
+
+            const storeCards = this.gamedatas.gamestate.args.store
+            Object.keys(storeCards).forEach(cardID => {
+                $('storecard_'+cardID).classList.add('flip');
+                $('storecard_back_'+cardID).classList.add('flip');
+
+                //flipping takes 1s.  Start the movement to "discard" 1s later - to the bga icon logo works.
+                this.slideToObjectAndDestroy( 'storecard_back_'+cardID, 'logoiconimg', 1000, 0 );
+                this.slideToObjectAndDestroy( 'storecard_'+cardID, 'logoiconimg', 1000, 0 );
+            });
+
+            //restore the old animation duration
+            //setTimeout(()=> this.ttAnimations.animationDuration = 1000, this.ttAnimations.animationDuration);
         }
 
         // moveActionCube: function( actionCubeDivID, targetDivID, callback ) {

@@ -124,6 +124,7 @@ function (dojo, declare) {
             
                 document.getElementById(`storeRow${rowCount-1}`).insertAdjacentHTML('beforeend',
                             `<DIV id="store_${count}" class="cardTarget addSpace">
+                                <DIV id="storecard_back_${card.id}" class="storecard back"></DIV>
                                 <DIV id="storecard_${card.id}" class="storecard" style="background-position-x: ${-80 * card.id}px;"></DIV>
                             </DIV>`);
                 
@@ -548,6 +549,7 @@ function (dojo, declare) {
             dojo.subscribe('gain', this, "notif_gain");
             dojo.subscribe('buy', this, "notif_buy");
             dojo.subscribe('swap', this, "notif_swap");
+            dojo.subscribe('reset', this, "notif_reset");
             dojo.subscribe('goalAchieved', this, "notif_goalAchieved");
             dojo.subscribe('endGame', this, "notif_endGame");
         },  
@@ -616,6 +618,14 @@ function (dojo, declare) {
             this.ttAnimations.moveResource.call(this, notif.args.lossColor, notif.args.player_id, false);
             this.ttAnimations.qtyChangeAnimation.call(this, resourceDivQtyGainID, 1, this.ttAnimations.animationDuration);
             this.ttAnimations.qtyChangeAnimation.call(this, resourceDivQtyLossID, -1, this.ttAnimations.animationDuration);
+        },
+
+        notif_reset: function( notif )
+        {
+            console.log( 'notif_reset' );
+            console.log( notif );
+
+            this.ttAnimations.resetAnim.call(this);
         },
 
         notif_goalAchieved: function( notif )
