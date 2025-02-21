@@ -109,6 +109,15 @@ define([
             }
         },
 
+        buyCardAnim: async function( cardID, newCardID, playerID )
+        {
+            const cardDiv = $('storecard_'+cardID);
+            const destinationDiv = $('cardTarget_'+playerID+'_0');
+
+            const anim = this.slideToObject( cardDiv, destinationDiv, this.ttAnimations.animationDuration, 0 );
+            await this.bgaPlayDojoAnimation( anim );
+        },
+
         // moveActionCube: function( actionCubeDivID, targetDivID, callback ) {
 
         //     const actionCubeDiv = $(actionCubeDivID);

@@ -606,6 +606,8 @@ function (dojo, declare) {
         {
             console.log( 'notif_buy' );
             console.log( notif );
+
+            this.ttAnimations.buyCardAnim.call(this, notif.args.cardID+'', notif.args.newCardID, notif.args.player_id);
         },
 
         notif_swap: function( notif )

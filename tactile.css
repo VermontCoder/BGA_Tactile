@@ -481,11 +481,13 @@
     background: url(img/card_back_small.png) 0 0 no-repeat;
     transform: rotateY(180deg);
     backface-visibility: visible;
+    display: none; /* Hide the back of the card */
     /* z-index: calc(var(--z-index-card) + 1); */
  }
 
  .storecard.flip, .storecard.back.flip {
 	transform: perspective(200px) rotateY(180deg);
+    display: inherit; /* Show the back of the card */
 }
 
 .storecard.back.flip {
