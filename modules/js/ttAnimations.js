@@ -75,23 +75,39 @@ define([
             setTimeout(()=> $(qtyDivID).classList.remove('red'), delay+this.ttAnimations.animationDuration);
         },
 
-        resetAnim: async function( )
+        resetAnim: async function(newCards )
         {
             //this.ttAnimations.animationDuration = 2100; //delay for the reset animation
 
+            //flip the cards and move them to discard.
             const storeCards = this.gamedatas.gamestate.args.store
             Object.keys(storeCards).forEach(cardID => {
                 $('storecard_'+cardID).classList.add('flip');
                 $('storecard_back_'+cardID).classList.add('flip');
 
                 //flipping takes 1s.  Start the movement to "discard" 1s later - to the bga icon logo works.
-                this.slideToObjectAndDestroy( 'storecard_back_'+cardID, 'logoiconimg', 1000, 0 );
-                this.slideToObjectAndDestroy( 'storecard_'+cardID, 'logoiconimg', 1000, 0 );
+                this.slideToObjectAndDestroy( 'storecard_back_'+cardID, 'logoiconimg', this.ttAnimations.animationDuration, 0 );
+                this.slideToObjectAndDestroy( 'storecard_'+cardID, 'logoiconimg', this.ttAnimations.animationDuration, 0 );
             });
 
-            //restore the old animation duration
-            //setTimeout(()=> this.ttAnimations.animationDuration = 1000, this.ttAnimations.animationDuration);
-        }
+            //simultaneously, move the new cards to the store.
+            //tried to reuse the flip animation, but it didn't work.  So, I'm just going to slide them in.
+
+            const cardWidth = 80;
+
+            for(i=0; i<newCards.length; i++)
+            {
+                const cardID = newCards[i].id;
+                
+                const xOffset = -1* (parseInt(cardID) * cardWidth);
+                const newCardDiv = `<div id="storecard_${cardID}" class="storecard" style="background-position-x: ${xOffset}px;"></div>`;
+                
+                $('deck').insertAdjacentHTML('beforeend', newCardDiv);
+                
+                const anim = this.slideToObject( 'storecard_'+cardID, 'store_'+i, this.ttAnimations.animationDuration, 0 );
+                this.bgaPlayDojoAnimation( anim );
+            }
+        },
 
         // moveActionCube: function( actionCubeDivID, targetDivID, callback ) {
 

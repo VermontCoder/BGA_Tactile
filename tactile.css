@@ -107,7 +107,7 @@
      left: -6px;
      z-index: calc(var(--z-index-deck) - 2);
  }
- 
+    
  .cardRow {
      width: 100%;
      display: flex;

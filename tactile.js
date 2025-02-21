@@ -111,8 +111,9 @@ function (dojo, declare) {
         //************************************* */
         createStoreCards: function(storeData)
         {
-            count =0;
-            rowCount = 0;
+            var count =0;
+            var rowCount = 0;
+
             Object.values(storeData).forEach(card => 
             {
                 if (count % 3 == 0) 
@@ -370,7 +371,7 @@ function (dojo, declare) {
                     //debugger;
                     this.clearAllPreviousHighlighting();
                     this.eventOrigin = '';
-                    setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration);
+                    setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration+50);
                     break;
            
                 case 'dummy':
@@ -625,7 +626,7 @@ function (dojo, declare) {
             console.log( 'notif_reset' );
             console.log( notif );
 
-            this.ttAnimations.resetAnim.call(this);
+            this.ttAnimations.resetAnim.call(this, notif.args.newCards);
         },
 
         notif_goalAchieved: function( notif )

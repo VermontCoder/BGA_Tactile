@@ -331,11 +331,12 @@ class Game extends \Table
     public function actReset(string $origin, bool $specialRuleReset=false) : void
     {
         $this->cards->moveAllCardsInLocation('store', 'discard');
-        $this->cards->pickCardsForLocation( 6, 'deck', 'store');
+        $newCards = $this->cards->pickCardsForLocation( 6, 'deck', 'store');
 
         if (!$specialRuleReset)
         {
             $this->notifyAllPlayers("reset", clienttranslate('${player_name} reset the store'), [
+                "newCards" => $newCards,
                 "player_name" => $this->getActivePlayerName(),
             ]);
 
@@ -344,6 +345,7 @@ class Game extends \Table
         else
         {
             $this->notifyAllPlayers("reset", clienttranslate('5 cards in the store were the same color or action. The store is reset!'), [
+                "newCards" => $newCards,
                 "player_name" => $this->getActivePlayerName(),
             ]);
         }

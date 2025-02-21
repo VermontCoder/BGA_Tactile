@@ -107,6 +107,12 @@ define([
             return cardDataA.color.localeCompare(cardDataB.color);
         },
 
+        sortById(arr) {
+            return arr.sort((a, b) => {
+                return parseInt(a.id) - parseInt(b.id);
+            });
+        },
+
         //use "call" to keep the "game" context.
         getNumActionBoardActionsSelected()
         {
@@ -114,6 +120,10 @@ define([
             const activePlayerBoardVals = this.ttUtility.pickByNestedProperty(gg.args.actionBoardSelections, 'player_id', this.getActivePlayerId());
             const selections = this.ttUtility.pickByNestedProperty(activePlayerBoardVals, 'selected', true);
             return Object.keys(selections).length;
+        },
+
+        getCSSVariable: function(v) {
+            return document.querySelector(':root').style.getPropertyValue('--' + v);
         }
     });
 });
