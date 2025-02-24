@@ -272,6 +272,16 @@ class Game extends \Table
         $newCardData = ttUtility::getCardDataFromType($newCard);
         $players->spendResources($player_id, $cardData['resources'][0], $cardData['resources'][1]);
 
+        $isStoreReset = $this->checkStoreReset();
+        $this->endOfActionBoardState($origin);
+
+        //check for store reset; if so send down the new cards
+        $newCards = [];
+        if ($isStoreReset)
+        {
+            $newCards = $this->actReset($origin, true);
+        }
+
         $this->notifyAllPlayers("buy", clienttranslate('${player_name} bought a <B>${color}</B>(${colorIcon}) <B>${action}</B> card. A <B>${newColor}</B>(${newColorIcon}) <B>${newAction}</B> was picked for the store.'), [
             "player_id" => $player_id,
             "player_name" => $this->getActivePlayerName(),
@@ -283,11 +293,11 @@ class Game extends \Table
             "newColorIcon" => $this->getColorIconHTML($newCardData['color']),
             "newAction" => $newCardData['action'],
             "newCard" => $newCard,
+            "isStoreReset" => $isStoreReset,
+            "newCards" => $newCards,
         ]);
 
-        $this->endOfActionBoardState($origin);
-        $this->checkStoreReset(); 
-        $this->goToNextState();
+        $this->goToNextState();        
     }
 
     public function actSwap(string $gainColor, string $lossColor, string $origin) : void
@@ -328,16 +338,27 @@ class Game extends \Table
         $this->goToNextState();
     }
 
-    public function actReset(string $origin, bool $specialRuleReset=false) : void
+    //This function can also be called from actBuy if the buy results in a store reset.
+    //In this case, it will return the new cards that were picked for the store.
+    //Otherwise it behaves as a normal reset and returns null.
+    public function actReset(string $origin, bool $specialRuleReset=false) 
     {
         $this->cards->moveAllCardsInLocation('store', 'discard');
         $newCards = $this->cards->pickCardsForLocation( 6, 'deck', 'store');
+
+        if ($this->checkStoreReset())
+        {
+            //This reset resulted in another set of cards that need to be reset
+            //This reset will be invisible to the users.
+            $this->actReset($origin, $specialRuleReset);
+        }
 
         if (!$specialRuleReset)
         {
             $this->notifyAllPlayers("reset", clienttranslate('${player_name} reset the store'), [
                 "newCards" => $newCards,
                 "player_name" => $this->getActivePlayerName(),
+                "specialRuleReset" => $specialRuleReset,
             ]);
 
             $this->endOfActionBoardState($origin);
@@ -347,10 +368,12 @@ class Game extends \Table
             $this->notifyAllPlayers("reset", clienttranslate('5 cards in the store were the same color or action. The store is reset!'), [
                 "newCards" => $newCards,
                 "player_name" => $this->getActivePlayerName(),
+                "specialRuleReset" => $specialRuleReset,
             ]);
+
+            return $newCards;
         }
         
-        $this->checkStoreReset();
         $this->goToNextState();
     }
 
@@ -391,7 +414,7 @@ class Game extends \Table
 
     //If a player resets the store or buys a card, 
     //then if 5 or more cards have the same color or action, we reset the store.
-    public function checkStoreReset() : void
+    public function checkStoreReset() : bool
     {
         $storeCards = $this->cards->getCardsInLocation('store');
         $colorCount = ['red' => 0, 'blue' => 0, 'green' => 0, 'yellow' => 0];
@@ -404,11 +427,7 @@ class Game extends \Table
             $actionCount[$cardData['action']]++;
         }
 
-        if (max($colorCount) >= 5 || max($actionCount) >= 5)
-        {
-            //reset the store
-            $this->actReset('specialRule', true);
-        }
+        return (max($colorCount) >= 5 || max($actionCount) >= 5);
     }
 
     //If player has no legal actions left, move to next player. Otherwise, stay in selectAction state.
@@ -496,8 +515,6 @@ class Game extends \Table
         // Go to another gamestate
         // Here, we would detect if the game is over, and in this case use "endGame" transition instead 
         $this->gamestate->nextState("nextPlayer");
-
-
     }
 
     public function argGameEnd(): array
@@ -653,11 +670,6 @@ class Game extends \Table
         //test data
         $this->cards->pickCardsForLocation( 10, 'deck', 'hand', 2383264);
         $this->cards->pickCardsForLocation( 4, 'deck', 'hand', 2383265);
-
-        // Init global values with their initial values.
-
-        // Dummy content.
-        //$this->setGameStateInitialValue("my_first_global_variable", 0);
 
         // Init game statistics.
         //

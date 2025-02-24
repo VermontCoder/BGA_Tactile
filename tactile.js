@@ -374,7 +374,7 @@ function (dojo, declare) {
                     //debugger;
                     this.clearAllPreviousHighlighting();
                     this.eventOrigin = '';
-                    setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration+50);
+                    setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration+5);
                     break;
            
                 case 'dummy':
@@ -610,7 +610,14 @@ function (dojo, declare) {
             console.log( 'notif_buy' );
             console.log( notif );
 
-            this.ttAnimations.buyCardAnim.call(this, notif.args.card, notif.args.newCard, notif.args.player_id);
+            if (!notif.args.isStoreReset)
+            {
+                this.ttAnimations.buyCardAnim.call(this, notif.args.card, notif.args.newCard, notif.args.player_id);
+            }
+            else
+            {
+                console.log('Reset new cards:', notif.args.newCards);
+            }
         },
 
         notif_swap: function( notif )
@@ -631,7 +638,12 @@ function (dojo, declare) {
             console.log( 'notif_reset' );
             console.log( notif );
 
-            this.ttAnimations.resetAnim.call(this, notif.args.newCards);
+            //special rule reset on a buy is handled in the buy animation.
+            if (!notif.args.specialRuleReset)
+            {
+                this.ttAnimations.resetAnim.call(this, notif.args.newCards);
+            }
+                
         },
 
         notif_goalAchieved: function( notif )

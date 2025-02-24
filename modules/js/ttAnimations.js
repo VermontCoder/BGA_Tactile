@@ -80,11 +80,14 @@ define([
 
             //flip the cards and move them to discard.
             const storeCards = this.gamedatas.gamestate.args.store
+            
+            //sort the new cards so they look like they are moving to the right spot
+            newCards = this.ttUtility.sortCards(Object.values(newCards));
+
             Object.keys(storeCards).forEach(cardID => {
                 $('storecard_'+cardID).classList.add('flip');
                 $('storecard_back_'+cardID).classList.add('flip');
 
-                //flipping takes 1s.  Start the movement to "discard" 1s later - to the bga icon logo works.
                 this.slideToObjectAndDestroy( 'storecard_back_'+cardID, 'logoiconimg', this.ttAnimations.animationDuration, 0 );
                 this.slideToObjectAndDestroy( 'storecard_'+cardID, 'logoiconimg', this.ttAnimations.animationDuration, 0 );
             });
@@ -96,7 +99,7 @@ define([
             {
                 this.ttAnimations.setNewCardDivForStore(newCards[i]);
              
-                const anim = this.slideToObject( 'storecard_'+cardID, 'store_'+i, this.ttAnimations.animationDuration, 0 );
+                const anim = this.slideToObjectAndDestroy( 'storecard_'+newCards[i].id, 'store_'+i, this.ttAnimations.animationDuration, 0 );
                 this.bgaPlayDojoAnimation( anim );
             }
         },
