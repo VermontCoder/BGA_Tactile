@@ -113,10 +113,23 @@ define([
         buyCardAnim: async function( card, newCard, playerID )
         {
             //animation from deck to store
+
+            //get the new card div from the deck
             this.ttAnimations.setNewCardDivForStore(newCard);
 
+            //get the new tableau & store positions
+            const tableauMoves = this.ttAnimations.getCardMovementsTableau.call(this, card, playerID);
             const storeMoves = this.ttAnimations.getCardMovementsStore.call(this,card, newCard);
+            
+            //add new Target div to the player's tableau
+            const newTargetDiv = `<div id="cardTarget_${playerID}_${tableauMoves.length-1}" class="cardTarget addSpace">
+                </div>`;
+            $('tableauCardContainer_'+playerID).insertAdjacentHTML('beforeend', newTargetDiv);
 
+            console.log('newTargetDiv: '+newTargetDiv);
+
+
+            //animate store cards
             for (var i=0; i<storeMoves.length; i++)
             {
                 const cardDiv = 'storecard_'+storeMoves[i].id;
@@ -126,20 +139,18 @@ define([
                 this.bgaPlayDojoAnimation( anim );
             }
 
-            //animation from store to player tableau
-            //get the needed moves
-
-            const tableauMoves = this.ttAnimations.getCardMovementsTableau.call(this, newCard, playerID);
-            
-            // //add Target div to the player's tableau
-            $('tableauCardContainer_'+playerID).insertAdjacentHTML('beforeend', `
-                <div id="cardTarget_${playerID}_${tableauMoves.length-1}" class="cardTarget addSpace">
-                </div>`);
-            
+            //animate tableau cards
             for (var i=0; i<tableauMoves.length; i++)
             {
-                const cardDiv = 'card_'+tableauMoves[i].id;
+                //The card coming from the store is included in this array. It has "storecard_" prepended to the id
+                // instead of "card_".
+                //check for this and modify it accordingly.
+
+                const cardPrefix = tableauMoves[i].id != card.id ? 'card_' : 'storecard_';
+                const cardDiv = cardPrefix+tableauMoves[i].id;
                 const destinationDiv = 'cardTarget_'+playerID+'_'+i;
+
+                console.log('cardDiv: '+cardDiv+'; destinationDiv: '+destinationDiv);
 
                 const anim = this.slideToObject( cardDiv, destinationDiv, this.ttAnimations.animationDuration, 0 );
                 this.bgaPlayDojoAnimation( anim );
