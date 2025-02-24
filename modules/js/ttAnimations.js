@@ -77,7 +77,6 @@ define([
 
         resetAnim: async function(newCards )
         {
-            //this.ttAnimations.animationDuration = 2100; //delay for the reset animation
 
             //flip the cards and move them to discard.
             const storeCards = this.gamedatas.gamestate.args.store
@@ -118,11 +117,11 @@ define([
             this.ttAnimations.setNewCardDivForStore(newCard);
 
             //get the new tableau & store positions
-            const tableauMoves = this.ttAnimations.getCardMovementsTableau.call(this, card, playerID);
-            const storeMoves = this.ttAnimations.getCardMovementsStore.call(this,card, newCard);
+            const newTableau = this.ttAnimations.getNewTableau.call(this, card, playerID);
+            const newStore = this.ttAnimations.getNewStore.call(this,card, newCard);
             
             //add new Target div to the player's tableau
-            const newTargetDiv = `<div id="cardTarget_${playerID}_${tableauMoves.length-1}" class="cardTarget addSpace">
+            const newTargetDiv = `<div id="cardTarget_${playerID}_${newTableau.length-1}" class="cardTarget addSpace">
                 </div>`;
             $('tableauCardContainer_'+playerID).insertAdjacentHTML('beforeend', newTargetDiv);
 
@@ -130,9 +129,9 @@ define([
 
 
             //animate store cards
-            for (var i=0; i<storeMoves.length; i++)
+            for (var i=0; i<newStore.length; i++)
             {
-                const cardDiv = 'storecard_'+storeMoves[i].id;
+                const cardDiv = 'storecard_'+newStore[i].id;
                 const destinationDiv = 'store_'+i;
 
                 const anim = this.slideToObject( cardDiv, destinationDiv, this.ttAnimations.animationDuration, 0 );
@@ -140,14 +139,14 @@ define([
             }
 
             //animate tableau cards
-            for (var i=0; i<tableauMoves.length; i++)
+            for (var i=0; i<newTableau.length; i++)
             {
                 //The card coming from the store is included in this array. It has "storecard_" prepended to the id
                 // instead of "card_".
                 //check for this and modify it accordingly.
 
-                const cardPrefix = tableauMoves[i].id != card.id ? 'card_' : 'storecard_';
-                const cardDiv = cardPrefix+tableauMoves[i].id;
+                const cardPrefix = newTableau[i].id != card.id ? 'card_' : 'storecard_';
+                const cardDiv = cardPrefix+newTableau[i].id;
                 const destinationDiv = 'cardTarget_'+playerID+'_'+i;
 
                 console.log('cardDiv: '+cardDiv+'; destinationDiv: '+destinationDiv);
@@ -158,7 +157,7 @@ define([
         },
 
         //returns a dictionary of card id to target div index in the store array.
-        getCardMovementsStore: function( cardData, newCardData )
+        getNewStore: function( cardData, newCardData )
         {
             //create an array of the store cards without the card that was just bought.
             var storeCards =Object.values(this.gamedatas.gamestate.args.store);
@@ -190,7 +189,7 @@ define([
             // return mappings;
         },
 
-        getCardMovementsTableau: function(cardData,playerID)
+        getNewTableau: function(cardData,playerID)
         {
             //get player's tableau
             const hand = this.ttUtility.getPlayerHand(playerID, this.gamedatas.gamestate.args.hands);
