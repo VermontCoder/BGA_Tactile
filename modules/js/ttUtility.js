@@ -95,16 +95,19 @@ define([
             return `<span class="${color} icon"></span>`;
         },
 
-        cardSortFunction(a, b)
+        sortCards(cards)
         {
-            const cardDataA = this.getCardDataFromType(a);
-            const cardDataB = this.getCardDataFromType(b);
-                
-            if (cardDataA.color === cardDataB.color) 
+            return cards.toSorted((a, b) => 
             {
-                return cardDataA.action.localeCompare(cardDataB.action);
-            }
-            return cardDataA.color.localeCompare(cardDataB.color);
+                const cardDataA = this.getCardDataFromType(a);
+                const cardDataB = this.getCardDataFromType(b);
+                
+                if (cardDataA.color === cardDataB.color) 
+                {
+                    return cardDataA.action.localeCompare(cardDataB.action);
+                }
+                return cardDataA.color.localeCompare(cardDataB.color);
+            });
         },
 
         sortById(arr) {

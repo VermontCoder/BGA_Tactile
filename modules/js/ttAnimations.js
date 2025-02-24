@@ -93,60 +93,114 @@ define([
             //simultaneously, move the new cards to the store.
             //tried to reuse the flip animation, but it didn't work.  So, I'm just going to slide them in.
 
-            const cardWidth = 80;
-
             for(i=0; i<newCards.length; i++)
             {
-                const cardID = newCards[i].id;
-                
-                const xOffset = -1* (parseInt(cardID) * cardWidth);
-                const newCardDiv = `<div id="storecard_${cardID}" class="storecard" style="background-position-x: ${xOffset}px;"></div>`;
-                
-                $('deck').insertAdjacentHTML('beforeend', newCardDiv);
-                
+                this.ttAnimations.setNewCardDivForStore(newCards[i]);
+             
                 const anim = this.slideToObject( 'storecard_'+cardID, 'store_'+i, this.ttAnimations.animationDuration, 0 );
                 this.bgaPlayDojoAnimation( anim );
             }
         },
 
-        buyCardAnim: async function( cardID, newCardID, playerID )
+        setNewCardDivForStore: function( card )
         {
-            const cardDiv = $('storecard_'+cardID);
-            const destinationDiv = $('cardTarget_'+playerID+'_0');
-
-            const anim = this.slideToObject( cardDiv, destinationDiv, this.ttAnimations.animationDuration, 0 );
-            await this.bgaPlayDojoAnimation( anim );
+            const cardWidth = 80;
+            const xOffset = -1* (parseInt(card.id) * cardWidth);
+            const newCardDiv = `<div id="storecard_${card.id}" class="storecard" style="background-position-x: ${xOffset}px;"></div>`;
+            $('deck').insertAdjacentHTML('beforeend', newCardDiv);
         },
 
-        // moveActionCube: function( actionCubeDivID, targetDivID, callback ) {
+        buyCardAnim: async function( card, newCard, playerID )
+        {
+            //animation from deck to store
+            this.ttAnimations.setNewCardDivForStore(newCard);
 
-        //     const actionCubeDiv = $(actionCubeDivID);
-        //     const targetDiv = $(targetDivID);
+            const storeMoves = this.ttAnimations.getCardMovementsStore.call(this,card, newCard);
 
-        //     const actionCubePos = actionCubeDiv.getBoundingClientRect();
-        //     const targetPos = targetDiv.getBoundingClientRect();
+            for (var i=0; i<storeMoves.length; i++)
+            {
+                const cardDiv = 'storecard_'+storeMoves[i].id;
+                const destinationDiv = 'store_'+i;
 
-        //     const xOffset = targetPos.left - actionCubePos.left;
-        //     const yOffset = targetPos.top - actionCubePos.top;
+                const anim = this.slideToObject( cardDiv, destinationDiv, this.ttAnimations.animationDuration, 0 );
+                this.bgaPlayDojoAnimation( anim );
+            }
 
-        //     const animationDuration = 1000;
+            //animation from store to player tableau
+            //get the needed moves
 
-        //     // Set the initial position of the action cube
-        //     actionCubeDiv.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+            const tableauMoves = this.ttAnimations.getCardMovementsTableau.call(this, newCard, playerID);
+            
+            // //add Target div to the player's tableau
+            $('tableauCardContainer_'+playerID).insertAdjacentHTML('beforeend', `
+                <div id="cardTarget_${playerID}_${tableauMoves.length-1}" class="cardTarget addSpace">
+                </div>`);
+            
+            for (var i=0; i<tableauMoves.length; i++)
+            {
+                const cardDiv = 'card_'+tableauMoves[i].id;
+                const destinationDiv = 'cardTarget_'+playerID+'_'+i;
 
-        //     // Add a class to trigger the CSS transition
-        //     actionCubeDiv.classList.add('move-animation');
+                const anim = this.slideToObject( cardDiv, destinationDiv, this.ttAnimations.animationDuration, 0 );
+                this.bgaPlayDojoAnimation( anim );
+            }
+        },
 
-        //     // Wait for the animation to complete before calling the callback
-        //     setTimeout(() => {
-        //         // Remove the class to reset the state
-        //         actionCubeDiv.classList.remove('move-animation');
+        //returns a dictionary of card id to target div index in the store array.
+        getCardMovementsStore: function( cardData, newCardData )
+        {
+            //create an array of the store cards without the card that was just bought.
+            var storeCards =Object.values(this.gamedatas.gamestate.args.store);
+            for(i=0; i<storeCards.length; i++)
+            {
+                if(storeCards[i].id == cardData.id)
+                {
+                    storeCards.splice(i,1);    
+                }
+            }
+            
+            //sort this array
+            storeCards = this.ttUtility.sortCards(storeCards);
 
-        //         // Call the callback function if provided
-        //         if (callback) {
-        //             callback();
-        //         }
-        //     }, animationDuration);
-        // }
+            //add the new card to a copy of the array
+            var newStoreCards = structuredClone(storeCards);
+            newStoreCards.push(newCardData);
+
+            //sort & return the new array
+            return this.ttUtility.sortCards(newStoreCards);
+
+            // //create a dictionary of mappings of card id to index in the sorted array.
+            // var mappings = {};
+            // for(i=0; i<newStoreCards.length; i++)
+            // {
+            //     mappings[newStoreCards[i].id] = i;
+            // }
+            
+            // return mappings;
+        },
+
+        getCardMovementsTableau: function(cardData,playerID)
+        {
+            //get player's tableau
+            const hand = this.ttUtility.getPlayerHand(playerID, this.gamedatas.gamestate.args.hands);
+            
+            //convert to array
+            var handCards = Object.values(hand);
+            
+            //add the new card to a copy of the array
+            handCards.push(cardData);
+
+            //sort the new array & return it
+            return this.ttUtility.sortCards(handCards);
+
+            //create a dictionary of mappings of card id to index in the sorted array.
+            // var mappings = {};
+            // for(i=0; i<newHandCards.length; i++)
+            // {
+            //     mappings[newHandCards[i].id] = i;
+            // }
+            
+            // return mappings;
+        }
     });
 });

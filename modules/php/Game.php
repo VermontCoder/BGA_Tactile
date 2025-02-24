@@ -275,14 +275,14 @@ class Game extends \Table
         $this->notifyAllPlayers("buy", clienttranslate('${player_name} bought a <B>${color}</B>(${colorIcon}) <B>${action}</B> card. A <B>${newColor}</B>(${newColorIcon}) <B>${newAction}</B> was picked for the store.'), [
             "player_id" => $player_id,
             "player_name" => $this->getActivePlayerName(),
-            "cardID" => $card_id,
+            "card" => $card,
             "color" => $cardData['color'],
             "colorIcon" => $this->getColorIconHTML($cardData['color']),
             "action" => $cardData['action'],
             "newColor" => $newCardData['color'],
             "newColorIcon" => $this->getColorIconHTML($newCardData['color']),
             "newAction" => $newCardData['action'],
-            "newCardId" => $newCard['id'],
+            "newCard" => $newCard,
         ]);
 
         $this->endOfActionBoardState($origin);

@@ -461,13 +461,14 @@
      filter: drop-shadow(3px 3px 3px #444);
      z-index: var(--z-index-card);
      backface-visibility: hidden;
+     position:absolute;
+     transform-style: preserve-3d;
      transition: transform 1s, filter 1s, box-shadow 0.3s, border 0.3s; /* Add transition for smooth effect */
 }
 
-.storecard {
-    position:absolute;
-    transform-style: preserve-3d;
-}
+/* .storecard {
+    
+} */
  .card.active {
     transform: translateY(-20px);
  }

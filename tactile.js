@@ -114,6 +114,8 @@ function (dojo, declare) {
             var count =0;
             var rowCount = 0;
 
+            storeData = this.ttUtility.sortCards(Object.values(storeData));
+
             Object.values(storeData).forEach(card => 
             {
                 if (count % 3 == 0) 
@@ -330,7 +332,8 @@ function (dojo, declare) {
             let count =0;
 
             //use custom sort function to sort by card type - first by color, then by action
-            Object.values(hand).sort((a, b) => this.ttUtility.cardSortFunction(a,b)).forEach(card => {
+            const sortedCards = this.ttUtility.sortCards(Object.values(hand));
+            sortedCards.forEach(card => {
                 document.getElementById('tableauCardContainer_' + player.player_id).insertAdjacentHTML('beforeend', `
                     <div id="cardTarget_${player.player_id}_${count}" class="cardTarget addSpace">
                         <div id="card_${card.id}" class="card" style="background-position-x: ${-80 * card.id}px;"></div>
@@ -607,7 +610,7 @@ function (dojo, declare) {
             console.log( 'notif_buy' );
             console.log( notif );
 
-            this.ttAnimations.buyCardAnim.call(this, notif.args.cardID+'', notif.args.newCardID, notif.args.player_id);
+            this.ttAnimations.buyCardAnim.call(this, notif.args.card, notif.args.newCard, notif.args.player_id);
         },
 
         notif_swap: function( notif )
