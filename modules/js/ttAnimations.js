@@ -137,7 +137,7 @@ define([
                 const cardDiv = 'storecard_'+newStore[i].id;
                 const destinationDiv = 'store_'+i;
 
-                const anim = this.slideToObject( cardDiv, destinationDiv, this.ttAnimations.animationDuration, 0 );
+                const anim = this.slideToObjectAndDestroy( cardDiv, destinationDiv, this.ttAnimations.animationDuration, 0 );
                 this.bgaPlayDojoAnimation( anim );
             }
 
@@ -154,7 +154,7 @@ define([
 
                 console.log('cardDiv: '+cardDiv+'; destinationDiv: '+destinationDiv);
 
-                const anim = this.slideToObject( cardDiv, destinationDiv, this.ttAnimations.animationDuration, 0 );
+                const anim = this.slideToObjectAndDestroy( cardDiv, destinationDiv, this.ttAnimations.animationDuration, 0 );
                 this.bgaPlayDojoAnimation( anim );
             }
         },

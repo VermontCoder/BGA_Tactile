@@ -367,7 +367,6 @@ class Game extends \Table
         {
             $this->notifyAllPlayers("reset", clienttranslate('5 cards in the store were the same color or action. The store is reset!'), [
                 "newCards" => $newCards,
-                "player_name" => $this->getActivePlayerName(),
                 "specialRuleReset" => $specialRuleReset,
             ]);
 
@@ -562,7 +561,7 @@ class Game extends \Table
      * - when the game starts
      * - when a player refreshes the game page (F5)
      */
-    protected function getAllDatas()
+    protected function getAllDatas() :array
     {
         $result = [];
 
@@ -665,11 +664,22 @@ class Game extends \Table
         
         $this->cards->shuffle('deck');
 
+        //testing reset - only two colors
+        self::DbQuery(sprintf("UPDATE card SET card_location='discard' where card_type LIKE '%s_%%' or card_type LIKE '%s_%%'", 'red','blue'));
+
+
         $this->cards->pickCardsForLocation( 6, 'deck', 'store');
+        if ($this->checkStoreReset())
+        {
+            $this->actReset('specialRule', true);
+        }
 
         //test data
         $this->cards->pickCardsForLocation( 10, 'deck', 'hand', 2383264);
         $this->cards->pickCardsForLocation( 4, 'deck', 'hand', 2383265);
+
+        //testing buy - issue plenty of resources
+        self::DbQuery("UPDATE player SET red_resource_qty=20, blue_resource_qty=20, green_resource_qty=20, yellow_resource_qty=20");
 
         // Init game statistics.
         //

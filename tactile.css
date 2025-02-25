@@ -483,6 +483,7 @@
     transform: rotateY(180deg);
     backface-visibility: visible;
     display: none; /* Hide the back of the card */
+    pointer-events: none;
     /* z-index: calc(var(--z-index-card) + 1); */
  }
 

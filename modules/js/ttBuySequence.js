@@ -37,6 +37,7 @@ define([
 
         buyCard: function(card_id)
         {
+            console.log('buyCard: '+card_id);
             this.bgaPerformAction("actBuy", { 
                 card_id: card_id,
                 origin: this.eventOrigin

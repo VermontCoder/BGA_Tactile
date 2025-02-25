@@ -52,8 +52,6 @@ class ttCards
         $this->game::DbQuery("UPDATE card SET card_id=card_location_arg+500");
         $this->game::DbQuery("UPDATE card SET card_id=card_id-501");
 
-        //testing reset - only two colors
-       //$this->game::DbQuery("UPDATE card SET card_location='discard' where card_type LIKE 'red%' or card_type LIKE 'blue%'");
     }
 
     /**
