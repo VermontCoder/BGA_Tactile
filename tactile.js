@@ -616,7 +616,8 @@ function (dojo, declare) {
             }
             else
             {
-                console.log('Reset new cards:', notif.args.newCards);
+                //console.log('Reset new cards:', notif.args.newCards);
+                this.ttAnimations.buyAndResetAnim.call(this, notif.args.card, notif.args.newCard, notif.args.player_id, notif.args.newCards);
             }
         },
 

@@ -184,6 +184,12 @@ define([
 
             //sort the new array & return it
             return this.ttUtility.sortCards(handCards);
+        },
+
+        buyAndResetAnim(card, newCard, player_id, newCards)
+        {
+            this.ttAnimations.buyCardAnim.call(this, card, newCard, player_id);
+            this.ttAnimations.resetAnim.call(this, newCards, card.id);
         }
     });
 });
