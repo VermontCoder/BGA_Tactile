@@ -110,11 +110,12 @@ define([
             });
         },
 
-        sortById(arr) {
-            return arr.sort((a, b) => {
-                return parseInt(a.id) - parseInt(b.id);
-            });
-        },
+        //not used
+        // sortById(arr) {
+        //     return arr.sort((a, b) => {
+        //         return parseInt(a.id) - parseInt(b.id);
+        //     });
+        // },
 
         //use "call" to keep the "game" context.
         getNumActionBoardActionsSelected()
@@ -125,8 +126,9 @@ define([
             return Object.keys(selections).length;
         },
 
-        getCSSVariable: function(v) {
-            return document.querySelector(':root').style.getPropertyValue('--' + v);
-        }
+        //not working?
+        // getCSSVariable: function(v) {
+        //     return document.querySelector(':root').style.getPropertyValue('--' + v);
+        // }
     });
 });

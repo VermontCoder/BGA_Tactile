@@ -374,9 +374,23 @@ function (dojo, declare) {
                     //debugger;
                     this.clearAllPreviousHighlighting();
                     this.eventOrigin = '';
+
+                    //if its the start of turn (no action cubes placed) 
+                    if (this.ttUtility.getNumActionBoardActionsSelected.call(this) == 0)
+                    {
+                        //reset the action board.
+                        this.ttAnimations.doActionCubeReset.call(this);
+
+                        //to facilitate a clean animation, remove these classes here.
+                        const elements = $('tableauCardContainer_'+this.getActivePlayerId()).querySelectorAll('.active, .exhausted');
+
+                        // Iterate over the selected elements and remove the classes
+                        elements.forEach(element => { element.classList.remove('active', 'exhausted'); });
+                    }
+
                     setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration);
                     break;
-           
+                case 'nextPlayer':
                 case 'dummy':
                     break;
             }
@@ -391,7 +405,7 @@ function (dojo, declare) {
             
             switch( stateName )
             {
-            
+                
             /* Example:
             
             case 'myGameState':

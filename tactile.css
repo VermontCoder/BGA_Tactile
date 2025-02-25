@@ -42,6 +42,7 @@
      --z-index-deck: 3 ;
      --z-index-piece: 1;
      --z-index-card: 2;
+     --z-index-action-cube: 3;
  }
  
  .addSpace { margin: 5px; }
@@ -411,7 +412,7 @@
      width: var(--action-board-selection-dim);
      background: url(img/cube.png) 0 0 no-repeat;
      pointer-events: none;
-     z-index: var(--z-index-piece);
+     z-index: var(--z-index-action-cube);
  }
 
  /* selected for this actually means the cube is gone

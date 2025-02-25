@@ -12,7 +12,7 @@ define([
 
         moveActionCube: async function( actionCardDiv, isCancel ) 
         {
-            const playerID = this.getActivePlayerId();
+            playerID = this.getActivePlayerId();
             if (isCancel) 
             {
                 //move cube back to parking spot. 
@@ -40,6 +40,20 @@ define([
                     });
             }
 
+        },
+
+        doActionCubeReset: async function()
+        {
+            const playerID = this.getActivePlayerId();
+            for(i=0; i<2; i++)
+            {
+                const cubeDivParentID = $('actionCube_'+playerID+'_'+i).parentNode.id;
+                if (cubeDivParentID.startsWith('action_')) 
+                {
+                    //if the cube is on an action card, move it back to the parking spot.
+                    this.ttAnimations.moveActionCube.call(this, cubeDivParentID, true, playerID);
+                }
+            }
         },
 
         movePiece: async function( pieceDivID, targetDivID )
