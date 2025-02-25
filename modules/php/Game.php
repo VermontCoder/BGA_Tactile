@@ -272,12 +272,12 @@ class Game extends \Table
         $newCardData = ttUtility::getCardDataFromType($newCard);
         $players->spendResources($player_id, $cardData['resources'][0], $cardData['resources'][1]);
 
-        $isStoreReset = $this->checkStoreReset();
+        $storeRequiresReset = $this->checkStoreReset();
         $this->endOfActionBoardState($origin);
 
         //check for store reset; if so send down the new cards
         $newCards = [];
-        if ($isStoreReset)
+        if ($storeRequiresReset)
         {
             $newCards = $this->actReset($origin, true);
         }
@@ -293,7 +293,7 @@ class Game extends \Table
             "newColorIcon" => $this->getColorIconHTML($newCardData['color']),
             "newAction" => $newCardData['action'],
             "newCard" => $newCard,
-            "isStoreReset" => $isStoreReset,
+            "isStoreReset" => $storeRequiresReset,
             "newCards" => $newCards,
         ]);
 
@@ -349,8 +349,10 @@ class Game extends \Table
         if ($this->checkStoreReset())
         {
             //This reset resulted in another set of cards that need to be reset
-            //This reset will be invisible to the users.
             $this->actReset($origin, $specialRuleReset);
+            
+            //Probably ok if users see the store reset multiple times in a row. If not, uncomment the return below.
+            //return;
         }
 
         if (!$specialRuleReset)

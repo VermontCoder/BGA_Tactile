@@ -374,7 +374,7 @@ function (dojo, declare) {
                     //debugger;
                     this.clearAllPreviousHighlighting();
                     this.eventOrigin = '';
-                    setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration+5);
+                    setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration);
                     break;
            
                 case 'dummy':
