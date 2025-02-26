@@ -369,7 +369,6 @@ function (dojo, declare) {
 
             switch( stateName )
             {
-                case 'gameEnd':
                 case 'selectAction':
                     //debugger;
                     this.clearAllPreviousHighlighting();
@@ -388,6 +387,10 @@ function (dojo, declare) {
                         elements.forEach(element => { element.classList.remove('active', 'exhausted'); });
                     }
 
+                    setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration);
+                    break;
+                case 'gameEnd':
+                    this.clearAllPreviousHighlighting();
                     setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration);
                     break;
                 case 'nextPlayer':
@@ -667,6 +670,7 @@ function (dojo, declare) {
             console.log( notif );
 
             this.scoreCtrl[notif.args.player_id].setValue(notif.args.score);
+            $(notif.args.piece_id).classList.add('scoring');
         },
 
         notif_endGame: function( notif )

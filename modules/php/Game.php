@@ -142,6 +142,8 @@ class Game extends \Table
             $color = $board->tiles[$location]['color'];
             $cards = new ttCards($this);
 
+            $activatedCards = [];
+
             //color is '' on home or goal tiles - cannot activate cards.
             if ($color != '')
             {

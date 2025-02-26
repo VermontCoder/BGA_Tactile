@@ -167,8 +167,54 @@
             drop-shadow(3px -3px 2px rgba(255,255,255,1))
             drop-shadow(-3px -3px 2px rgba(255,255,255,1));
  }
- 
 
+.playingPiece.scoring
+{
+    animation-name: blinking;
+    animation-duration: 1100ms;
+    animation-iteration-count: 1;
+    
+}
+
+@keyframes blinking {
+    0% {
+         filter: drop-shadow(3px 3px 2px red)
+         drop-shadow(-3px 3px 2px red)
+         drop-shadow(3px -3px 2px red)
+         drop-shadow(-3px -3px 2px red)
+         opacity(100%);
+    }
+
+    25% {
+         filter: drop-shadow(3px 3px 2px yellow)
+         drop-shadow(-3px 3px 2px yellow)
+         drop-shadow(3px -3px 2px yellow)
+         drop-shadow(-3px -3px 2px yellow)
+         opacity(75%);
+    }
+
+    50% {
+         filter: drop-shadow(3px 3px 2px green)
+         drop-shadow(-3px 3px 2px green)
+         drop-shadow(3px -3px 2px green)
+         drop-shadow(-3px -3px 2px green)
+         opacity(50%);
+    }
+    
+    75% {
+         filter: drop-shadow(3px 3px 2px blue)
+         drop-shadow(-3px 3px 2px blue)
+         drop-shadow(3px -3px 2px blue)
+         drop-shadow(-3px -3px 2px blue)
+         opacity(25%);
+    }
+
+    100% {
+         filter: 
+         opacity(0%);
+    }
+
+}   
  .tile {
     position: relative;
      width: var(--tile-dim);

@@ -29,7 +29,6 @@ define([
                 {
                     if(legalMoves[key].length > 0) 
                     { 
-                        $(key).classList.add('highlighted');
                         selectablePieceIDs.push(key); 
                     }
                 }
@@ -56,7 +55,7 @@ define([
 
             if(selectablePieceIDs.length == 1)
             {
-                this.ttMoveSequence.selectPiece.call(this,selectablePieceID);
+                this.ttMoveSequence.selectPiece.call(this,selectablePieceIDs[0]);
                 return true;
             }
 
