@@ -19,10 +19,9 @@ define([
         //this.gamedatas.gamestate.args.variable is variable from state args - I think.
         //this.gamedatas.gamestate.name is the name of the client state.
 
-        onActionBoardClick: function( selectionDivID ) {
-
+        onActionBoardClick: function( selectionDivID ) 
+        {
             const gg = this.gamedatas.gamestate;
-
             const selectionData = this.ttUtility.getActionBoardActionData(selectionDivID);
 
             //Do not respond if not current player 
@@ -36,6 +35,15 @@ define([
 
             //Do not respond if two actions have already been selected.
             if (this.ttUtility.getNumActionBoardActionsSelected.call(this) >= 2) { return; }
+
+            //Do not respond if picking an action during overdrive.
+            if (gg.name == 'client_selectOverdriveAction') { return; }
+
+            if (gg.name == 'client_overdrive')
+            { 
+                this.ttEventHandlers.overdriveClickProcessing.call(this, selectionDivID);
+                return;
+            }
 
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
 
@@ -62,7 +70,6 @@ define([
             {
                 this.eventOrigin = oldEventOrigin;
             }
-           
         },
 
         onTileClick: function( tileID ) {
@@ -77,7 +84,6 @@ define([
             if(!this.isCurrentPlayerActive()) { return; }
 
             const gg = this.gamedatas.gamestate;
-
             const pieceData = this.ttUtility.parsePieceID(piece_id);
 
             //check if piece is selectable
@@ -144,7 +150,12 @@ define([
 
         onCardClick: function( cardDivID )
         {
+            const gg = this.gamedatas.gamestate;
+
             if(!this.isCurrentPlayerActive()) { return; }
+
+            //Do not respond if picking an action during overdrive.
+            if (gg.name == 'client_selectOverdriveAction') { return; }
 
             const cardID = this.ttUtility.getCardIDFromDivID(cardDivID);
 
@@ -158,6 +169,11 @@ define([
             if ($(cardDivID).classList.contains('active'))
             {
                 console.log( 'onCardClick', cardDivID);
+                if (gg.name == 'client_overdrive')
+                { 
+                    this.ttEventHandlers.overdriveClickProcessing.call(this, cardDivID);
+                    return;
+                }
 
                 //record the event origin for later use.
                 const oldEventOrigin = this.eventOrigin;
@@ -186,6 +202,72 @@ define([
             //     // What to do after the server call if it succeeded
             //     // (most of the time, nothing, as the game will react to notifs / change of state instead)
             // });        
+        },
+
+        overdriveClickProcessing: function(selectionDivID)
+        {
+            debugger;
+
+            if (selectionDivID.startsWith('action_'))
+            {
+                //check to see if this is a previously selected action during this overdrive.
+                //Previous processing won't allow a click on an already selected action.
+                if(selectionDivID == this.overdriveOrigin) 
+                {
+                    //this is a cancel action
+                    this.ttAnimations.moveActionCube.call(this,selectionDivID, true);
+                    this.overdriveOrigin ='';
+                    return; 
+                }
+
+                if (this.overdriveOrigin.startsWith('action_') && this.ttUtility.getNumActionBoardActionsSelected.call(this) == 1)
+                {
+                    //This is a click on the action board when there are two other actions selected.
+                    //Do not respond
+                    return;
+                }
+                //Move the cube if it is on the action board.
+
+
+                //special case - if we are moving two cubes we need to specify to use the 2nd cube.
+                //the moveActionCube function looks at the gamestate to determine if it should use the 2nd cube.
+                //gamestate would be unaffected by the first move, so we need to specify the 2nd cube.
+                if (this.overdriveOrigin.startsWith('action_'))
+                {
+                    cubeDiv = $('actionCube_' + playerID+'_1');
+                    this.ttAnimations.animateActionCubeMove.call(this,cubeDiv,selectionDivID);
+                }
+                else
+                {
+                    this.ttAnimations.moveActionCube.call(this,selectionDivID, false);
+                }
+                
+            }
+            else if (selectionDivID.startsWith('card_'))
+            {
+                if ($(selectionDivID).classList.contains('highlighted'))
+                {
+                    //this is a cancel.
+                    $(selectionDivID).classList.remove('highlighted');
+                    this.overdriveOrigin = '';
+                    return;
+                }
+               
+                $(selectionDivID).classList.add('highlighted');
+            }
+
+            if (this.overdriveOrigin.length == 0)
+            {
+                this.overdriveOrigin = selectionDivID;
+            }
+            else
+            {
+                this.overdriveOrigin += ','+selectionDivID;
+
+                //if two actions have been selected, move back through the overdrive sequence.
+                this.ttOverdrive.beginSelectingAction.call(this);
+            }
+
         },
 
         beginSequence: function(action)

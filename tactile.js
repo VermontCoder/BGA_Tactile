@@ -26,7 +26,8 @@ define([
     g_gamethemeurl + "modules/js/ttGainSequence.js",
     g_gamethemeurl + "modules/js/ttBuySequence.js",
     g_gamethemeurl + "modules/js/ttSwapSequence.js",
-    g_gamethemeurl + "modules/js/ttResetSequence.js"
+    g_gamethemeurl + "modules/js/ttResetSequence.js",
+    g_gamethemeurl + "modules/js/ttOverdrive.js",
 ],
 
 function (dojo, declare) {
@@ -42,6 +43,7 @@ function (dojo, declare) {
             this.ttSwapSequence = new bgagame.ttSwapSequence();
             this.ttResetSequence = new bgagame.ttResetSequence();
             this.ttAnimations = new bgagame.ttAnimations();
+            this.ttOverdrive = new bgagame.ttOverdrive();
 
             this.cardStatuses = { 0: 'inactive', 1: 'active', 2: 'exhausted' };
 
@@ -373,6 +375,7 @@ function (dojo, declare) {
                     //debugger;
                     this.clearAllPreviousHighlighting();
                     this.eventOrigin = '';
+                    this.overdriveOrigin ='';
 
                     //if its the start of turn (no action cubes placed) 
                     if (this.ttUtility.getNumActionBoardActionsSelected.call(this) == 0)
@@ -383,7 +386,7 @@ function (dojo, declare) {
                         //to facilitate a clean animation, remove these classes here.
                         const elements = $('tableauCardContainer_'+this.getActivePlayerId()).querySelectorAll('.active, .exhausted');
 
-                        // Iterate over the selected elements and remove the classes
+                        // Iterate over the all the cards and remove the classes
                         elements.forEach(element => { element.classList.remove('active', 'exhausted'); });
                     }
 
@@ -441,6 +444,7 @@ function (dojo, declare) {
                     case 'client_selectGain':
                     case 'client_selectPiece':
                     case 'selectAction':
+                        this.addActionButton('actionBtnOverdrive', _('Overdrive'), () => this.ttOverdrive.beginOverdrive.call(this), null, null, 'red');
                         this.addActionButton('actionBtnDoneWithTurn', _('Done with turn'), () => this.bgaPerformAction("actDoneWithTurn"), null, null, 'red'); 
                         break;
                         
@@ -468,6 +472,20 @@ function (dojo, declare) {
                                 id: 'actionButtonSwapCancel',
                             });
                         break;
+                    
+                        case 'client_overdrive':
+                            this.addActionButton('actionBtnCancelOverdrive', _('Cancel'), () => this.restoreServerGameState(), null, null, 'red'); 
+                            break;
+
+                        case 'client_selectOverdriveAction':
+                            this.addActionButton('actionBtnOverdriveMove', _('Move'), () => this.restoreServerGameState(), null, null, null);
+                            this.addActionButton('actionBtnOverdrivePush', _('Push'), () => this.restoreServerGameState(), null, null, null);
+                            this.addActionButton('actionBtnOverdriveGain', _('Gain'), () => this.restoreServerGameState(), null, null, null);
+                            this.addActionButton('actionBtnOverdriveBuy', _('Buy'), () => this.restoreServerGameState(), null, null, null);
+                            this.addActionButton('actionBtnOverdriveSwap', _('Swap'), () => this.restoreServerGameState(), null, null, null);
+                            this.addActionButton('actionBtnOverdriveReset', _('Reset'),() => this.restoreServerGameState(), null, null, null);
+                            this.addActionButton('actionBtnCancelOverdrive', _('Cancel'), () => this.restoreServerGameState(), null, null, 'red'); 
+                            break;
                 }
             }
         },        

@@ -41,10 +41,10 @@ define([
                 return false;
             }
 
+            this.clearAllPreviousHighlighting();
             //if this came from a card, highlight the card.
             if (this.eventOrigin.startsWith('card_'))
             {
-                this.clearAllPreviousHighlighting();
                 $(this.eventOrigin).classList.add('highlighted');
             }
 

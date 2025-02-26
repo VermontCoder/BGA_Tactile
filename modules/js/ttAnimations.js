@@ -13,33 +13,34 @@ define([
         moveActionCube: async function( actionCardDiv, isCancel ) 
         {
             playerID = this.getActivePlayerId();
+
+            var cubeDiv = ''; //changes on cancel
+            var targetDiv = actionCardDiv;
+
             if (isCancel) 
             {
                 //move cube back to parking spot. 
-                const cubeDiv = $(actionCardDiv).firstChild;
+                cubeDiv = $(actionCardDiv).firstChild;
                 const spotID = cubeDiv.id.split('_')[2];
-                const cubeContainerDiv = $('actionCubeContainer_' + playerID+'_'+spotID);
-                const anim = this.slideToObject( cubeDiv, cubeContainerDiv, this.ttAnimations.animationDuration, 0 );
-
-                await this.bgaPlayDojoAnimation( anim ).then(()=>
-                    {
-                        cubeDiv.removeAttribute('style'); //the slideToObject function adds a style attribute to the div. This removes it.
-                        $(cubeContainerDiv).prepend(cubeDiv);
-                    });
+                targetDiv = $('actionCubeContainer_' + playerID+'_'+spotID);
             }
             else
             {
-                //move cube to action card. Which cube is available?
-                const cubeDiv = $('actionCube_' + playerID+'_'+this.ttUtility.getNumActionBoardActionsSelected.call(this));
-
-                const anim = this.slideToObject( cubeDiv, actionCardDiv, this.ttAnimations.animationDuration, 0 );
-                await this.bgaPlayDojoAnimation( anim ).then(()=>
-                    {
-                        $(actionCardDiv).prepend(cubeDiv);
-                        cubeDiv.removeAttribute('style'); //the slideToObject function adds a style attribute to the div. This removes it.
-                    });
+                //Which cube is available?
+                cubeDiv = $('actionCube_' + playerID+'_'+this.ttUtility.getNumActionBoardActionsSelected.call(this));
             }
+            this.ttAnimations.animateActionCubeMove.call(this, cubeDiv, targetDiv);
+        },
 
+        //The actual moving of the action cube is broken out into a separate function so it can be called from other functions.
+        animateActionCubeMove: async function( cubeDiv, targetDiv )
+        {
+            const anim = this.slideToObject( cubeDiv, targetDiv, this.ttAnimations.animationDuration, 0 );
+            await this.bgaPlayDojoAnimation( anim ).then(()=>
+            {
+                $(targetDiv).prepend(cubeDiv);
+                cubeDiv.removeAttribute('style'); //the slideToObject function adds a style attribute to the div. This removes it.
+            });
         },
 
         doActionCubeReset: async function()
