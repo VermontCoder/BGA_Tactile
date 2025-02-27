@@ -105,6 +105,7 @@ class Game extends \Table
         $legalActions = new ttLegalMoves($this);
         $legalMoves = $legalActions->legalMoves();
         $location = ttUtility::tileID2location($tileID);
+        
 
         //1 - check for destination legality
         if (!in_array($location,$legalMoves[$piece_id]))
@@ -112,10 +113,7 @@ class Game extends \Table
             throw new \BgaUserException('Invalid move choice');
         }
 
-        if (!in_array('move', $legalActions->legalActions()))
-        {
-            throw new \BgaUserException('This is not a legal action!');
-        }
+        $this->checkActionLegality('move', $origin);
 
         //2 - actually move the piece
         $pieces = new ttPieces($this);
@@ -153,10 +151,7 @@ class Game extends \Table
             throw new \BgaUserException('Invalid move choice');
         }
 
-        if (!in_array('push', $legalActions->legalActions()))
-        {
-            throw new \BgaUserException('This is not a legal action!');
-        }
+        $this->checkActionLegality('push', $origin);
 
         //2 - actually move the piece
         $pieces = new ttPieces($this);
@@ -269,11 +264,7 @@ class Game extends \Table
             throw new \BgaUserException('Not a legal color to gain');
         }
 
-        $legalActions = new ttLegalMoves($this);
-        if (!in_array('gain',$legalActions->legalActions()))
-        {
-            throw new \BgaUserException('This is not a legal action!');
-        }
+        $this->checkActionLegality('gain', $origin);
                 
         $players = new ttPlayers($this);
         $players->gainResource($player_id, $color);
@@ -306,10 +297,7 @@ class Game extends \Table
             throw new \BgaUserException('Not enough resources to buy card');
         }
 
-        if (!in_array('buy',$legalMoves->legalActions()))
-        {
-            throw new \BgaUserException('This is not a legal action!');
-        }
+        $this->checkActionLegality('buy', $origin);
         
         $this->cards->moveCard($card_id, 'hand', $player_id);
         $newCard = $this->cards->pickCardForLocation('deck', 'store', $card_id);
@@ -339,6 +327,7 @@ class Game extends \Table
             "newCard" => $newCard,
             "isStoreReset" => $storeRequiresReset,
             "newCards" => $newCards,
+            "origin" => $origin,
         ]);
 
         $this->goToNextState();        
@@ -357,10 +346,7 @@ class Game extends \Table
         $players->deserializePlayersFromDb();
 
         $legalActions = new ttLegalMoves($this);
-        if (!in_array('swap',$legalActions->legalActions()))
-        {
-            throw new \BgaUserException('This is not a legal action!');
-        }
+        $this->checkActionLegality('swap', $origin);
 
         if (!$legalActions->isSwappable($lossColor, $players->players[$player_id]))
         {
@@ -376,6 +362,7 @@ class Game extends \Table
             "lossColorIcon" => $this->getColorIconHTML($lossColor),
             "gainColor" => $gainColor,
             "gainColorIcon" => $this->getColorIconHTML($gainColor),
+            "origin" => $origin,
         ]);
 
         $this->endOfActionBoardState($origin);
@@ -387,6 +374,11 @@ class Game extends \Table
     //Otherwise it behaves as a normal reset and returns null.
     public function actReset(string $origin, bool $specialRuleReset=false) 
     {
+        if (!$specialRuleReset)
+        {
+            $this->checkActionLegality('reset', $origin);
+        }
+
         $this->cards->moveAllCardsInLocation('store', 'discard');
         $newCards = $this->cards->pickCardsForLocation( 6, 'deck', 'store');
 
@@ -405,6 +397,7 @@ class Game extends \Table
                 "newCards" => $newCards,
                 "player_name" => $this->getActivePlayerName(),
                 "specialRuleReset" => $specialRuleReset,
+                "origin" => $origin,
             ]);
 
             $this->endOfActionBoardState($origin);
@@ -414,6 +407,7 @@ class Game extends \Table
             $this->notifyAllPlayers("reset", clienttranslate('5 cards in the store were the same color or action. The store is reset!'), [
                 "newCards" => $newCards,
                 "specialRuleReset" => $specialRuleReset,
+                "origin" => $origin,
             ]);
 
             return $newCards;
@@ -440,12 +434,26 @@ class Game extends \Table
     //******************************************************* */
 
     //exhaust a card or check off a player action on the action board
-    public function endOfActionBoardState($origin) : void
+    public function endOfActionBoardState(string $origin) : void
+    {
+        //if this was from overdrive, we need to check for multiple origins
+        if (str_contains($origin,','))
+        {
+            $origins = explode(',',$origin);
+            foreach($origins as $o)
+            {
+                $this->exhaustCardOrMoveCube($o);
+            }
+        }
+        else
+        {
+            $this->exhaustCardOrMoveCube($origin);
+        }
+    }
+
+    private function exhaustCardOrMoveCube(string $origin) : void
     {
         $cards = new ttCards($this);
-
-        //was this action done from the Action Board or the card? Will start with card if it is from a card.
-        //3 - Set card or action board selection to correct value.
         if (str_starts_with($origin, 'card'))
         {
             $cards->setCardStatus(ttCards::getCardIDFromDivID($origin), 'exhausted');
@@ -491,6 +499,17 @@ class Game extends \Table
         }
         
         $this->gamestate->nextState($nextState);
+    }
+
+    private function checkActionLegality(string $action, string $origin) : void
+    {
+        $legalActions = new ttLegalMoves($this);
+        $isOverDriveOrigin = str_contains($origin, ',');
+
+        if (!$isOverDriveOrigin && !in_array($action, $legalActions->legalActions()))
+        {
+            throw new \BgaUserException('This is not a legal action!');
+        }
     }
 
     public function getColorIconHTML(string $color) : string

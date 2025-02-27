@@ -21,7 +21,9 @@ define([
                 return false;
             }
 
-            this.clearAllPreviousHighlighting();
+            const isFromOverdrive = this.eventOrigin.includes(',');
+            if (!isFromOverdrive) this.clearAllPreviousHighlighting();
+            
             Object.keys(buyableCards).forEach(function(card_id,index) {
                 const cardDiv = document.getElementById('storecard_'+card_id);
                 cardDiv.classList.add('highlighted');

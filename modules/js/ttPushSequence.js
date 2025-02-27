@@ -37,13 +37,15 @@ define([
                 return false;
             }
 
-            this.clearAllPreviousHighlighting();
-            //if this came from a card, highlight the card.
-            //TBD overdrive push
-
-            if (this.eventOrigin.startsWith('card_'))
-            {
-                $(this.eventOrigin).classList.add('highlighted');
+            const isFromOverdrive = this.eventOrigin.includes(',');
+            if (!isFromOverdrive)
+            {   
+                this.clearAllPreviousHighlighting();
+                //if this came from a card, highlight the card.
+                if (this.eventOrigin.startsWith('card_'))
+                {
+                    $(this.eventOrigin).classList.add('highlighted');
+                }
             }
 
             for (const pieceID of selectablePieceIDs)

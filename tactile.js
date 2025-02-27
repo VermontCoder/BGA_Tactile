@@ -610,12 +610,9 @@ function (dojo, declare) {
            
             this.ttAnimations.movePiece.call(this, notif.args.piece_id, notif.args.tileID);
 
-            //exhaust card if it was used.
-            if (notif.args.origin.startsWith('card_'))
-            {
-                $(notif.args.origin).classList.add('exhausted');
-            }
-            
+            //if overdrive, there will be multiple origins
+            const origins = notif.args.origin.split(',');
+            origins.forEach(origin => this.ttUtility.notifCardExhaustionCheck( origin) );
         },
 
         notif_push: function( notif )
@@ -625,11 +622,9 @@ function (dojo, declare) {
            
             this.ttAnimations.movePiece.call(this, notif.args.piece_id, notif.args.tileID);
 
-            //exhaust card if it was used.
-            if (notif.args.origin.startsWith('card_'))
-            {
-                $(notif.args.origin).classList.add('exhausted');
-            }
+            //if overdrive, there will be multiple origins
+            const origins = notif.args.origin.split(',');
+            origins.forEach(origin => this.ttUtility.notifCardExhaustionCheck( origin) );
         },
 
         notif_activate: function( notif )
@@ -647,11 +642,9 @@ function (dojo, declare) {
             console.log( 'notif_gain' );
             console.log( notif );
 
-            //exhaust card if it was used.
-            if (notif.args.origin.startsWith('card_'))
-            {
-                $(notif.args.origin).classList.add('exhausted');
-            }
+            //if overdrive, there will be multiple origins
+            const origins = notif.args.origin.split(',');
+            origins.forEach(origin => this.ttUtility.notifCardExhaustionCheck( origin) );
 
             const resourceDivQtyID = notif.args.color+'Resource_'+notif.args.player_id;
             this.ttAnimations.moveResource.call(this, notif.args.color, notif.args.player_id, true);
@@ -662,6 +655,10 @@ function (dojo, declare) {
         {
             console.log( 'notif_buy' );
             console.log( notif );
+
+            //if overdrive, there will be multiple origins
+            const origins = notif.args.origin.split(',');
+            origins.forEach(origin => this.ttUtility.notifCardExhaustionCheck( origin) );
 
             if (!notif.args.isStoreReset)
             {
@@ -679,6 +676,10 @@ function (dojo, declare) {
             console.log( 'notif_swap' );
             console.log( notif );
 
+            //if overdrive, there will be multiple origins
+            const origins = notif.args.origin.split(',');
+            origins.forEach(origin => this.ttUtility.notifCardExhaustionCheck( origin) );
+
             const resourceDivQtyGainID = notif.args.gainColor+'Resource_'+notif.args.player_id;
             const resourceDivQtyLossID = notif.args.lossColor+'Resource_'+notif.args.player_id;
             this.ttAnimations.moveResource.call(this, notif.args.gainColor, notif.args.player_id, true);
@@ -692,6 +693,10 @@ function (dojo, declare) {
             console.log( 'notif_reset' );
             console.log( notif );
 
+            //if overdrive, there will be multiple origins
+            const origins = notif.args.origin.split(',');
+            origins.forEach(origin => this.ttUtility.notifCardExhaustionCheck( origin) );
+            
             //special rule reset on a buy is handled in the buy animation.
             if (!notif.args.specialRuleReset)
             {

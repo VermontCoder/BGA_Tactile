@@ -38,11 +38,15 @@ define([
                 return false;
             }
 
-            this.clearAllPreviousHighlighting();
-            //if this came from a card, highlight the card.
-            if (this.eventOrigin.startsWith('card_'))
+            const isFromOverdrive = this.eventOrigin.includes(',');
+            if (!isFromOverdrive)
             {
-                $(this.eventOrigin).classList.add('highlighted');
+                this.clearAllPreviousHighlighting();
+                //if this came from a card, highlight the card.
+                if (this.eventOrigin.startsWith('card_'))
+                {
+                    $(this.eventOrigin).classList.add('highlighted');
+                }
             }
 
             for (const pieceID of selectablePieceIDs)

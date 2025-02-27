@@ -32,7 +32,6 @@ define([
 
         beginSelectingAction: function()
         {
-            //this.clearAllPreviousHighlighting();
             this.setClientState("client_selectOverdriveAction", 
             {
                 descriptionmyturn : _("Please select an action."),

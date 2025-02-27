@@ -126,6 +126,15 @@ define([
             return Object.keys(selections).length;
         },
 
+        notifCardExhaustionCheck(origin)
+        {
+            //exhaust card if it was used.
+            if (origin.startsWith('card_'))
+            {
+                $(origin).classList.add('exhausted');
+            }
+        },
+
         //not working?
         // getCSSVariable: function(v) {
         //     return document.querySelector(':root').style.getPropertyValue('--' + v);

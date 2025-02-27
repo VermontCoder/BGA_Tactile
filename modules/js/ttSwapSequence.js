@@ -28,7 +28,9 @@ define([
                 descriptionmyturn : _("${you} must select the resource to gain<BR>"),
             });
 
-            this.clearAllPreviousHighlighting();
+            const isFromOverdrive = this.eventOrigin.includes(',');
+            if (!isFromOverdrive) this.clearAllPreviousHighlighting();
+            
             //oddly enough, this is the only place where the list of colors is needed on the client side.
             this.ttEventHandlers.highlightResourceBanks(['red','yellow','green','blue']);
 

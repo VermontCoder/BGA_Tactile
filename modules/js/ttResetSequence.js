@@ -13,7 +13,9 @@ define([
 
         beginReset: function() 
         {
-            this.clearAllPreviousHighlighting();
+            const isFromOverdrive = this.eventOrigin.includes(',');
+            if (!isFromOverdrive) this.clearAllPreviousHighlighting();
+            
             this.setClientState("client_reset", 
             {
                 descriptionmyturn : _("This will choose new cards for the store. Confirm?<BR>"),
