@@ -5,14 +5,14 @@ define([
 ], function( dojo, declare )
 
 {
-    return declare("bgagame.ttMoveSequence", null, 
+    return declare("bgagame.ttPushSequence", null, 
     { 
         constructor: function()
         {
             this.curPiece = null;
         },
 
-        beginMove: function()
+        beginPush: function()
         {
             const pieces = this.gamedatas.gamestate.args.pieces;
             const player_id = this.getActivePlayerId();
@@ -25,7 +25,7 @@ define([
             //find all pieces that can be moved.
             Object.keys(pieces).forEach(function(key,index) {
                 const playerMatch = pieces[key].player_id == player_id;
-                if( playerMatch && legalMoves[key].length > 0) 
+                if( !playerMatch && legalMoves[key].length > 0) 
                 {
                     selectablePieceIDs.push(key); 
                 }
@@ -33,13 +33,14 @@ define([
 
             if(selectablePieceIDs.length == 0) 
             { 
-                const moveOrPush = (action=='move') ? 'moved' : 'pushed';
-                this.showMessage(_("There are no pieces that can be "+moveOrPush+"!"),'error');
+                this.showMessage(_("There are no pieces that can be pushed!"),'error');
                 return false;
             }
 
             this.clearAllPreviousHighlighting();
             //if this came from a card, highlight the card.
+            //TBD overdrive push
+
             if (this.eventOrigin.startsWith('card_'))
             {
                 $(this.eventOrigin).classList.add('highlighted');
@@ -52,11 +53,11 @@ define([
 
             if(selectablePieceIDs.length == 1)
             {
-                this.ttMoveSequence.selectPiece.call(this,selectablePieceIDs[0]);
+                this.ttPushSequence.selectPiece.call(this,selectablePieceIDs[0]);
                 return true;
             }
 
-            this.setClientState("client_selectPiece", 
+            this.setClientState("client_selectPiecePush", 
             {
                 descriptionmyturn : _("${you} must select piece to move<BR>"),
             });
@@ -91,19 +92,19 @@ define([
 
             this.curPiece = piece_id;
 
-            this.setClientState("client_selectTileMove", 
+            this.setClientState("client_selectTilePush", 
             {
-                descriptionmyturn : _("${you} must select tile to move piece to<BR>"),  
+                descriptionmyturn : _("${you} must select tile to push piece to<BR>"),  
             });
 
             return true;
         },
 
-        movePiece: function( tileID )
+        pushPiece: function( tileID )
         {
-            console.log("movePiece: " + tileID);
+            console.log("pushPiece: " + tileID);
 
-            this.bgaPerformAction("actMove", { 
+            this.bgaPerformAction("actPush", { 
                 piece_id: this.curPiece,
                 tileID: tileID,
                 origin: this.eventOrigin
@@ -112,14 +113,6 @@ define([
                 // What to do after the server call if it succeeded
                 // (most of the time, nothing, as the game will react to notifs / change of state instead)
            // });       
-
-            // this.ajaxcall("/tt/tt/movePiece.html", { 
-            //     piece_id: this.curPiece,
-            //     tileID: tileID,
-            //     lock: true
-            // }, this, function(result) {
-            //     // What to do after the server call
-            // });
         }
     }); 
 });

@@ -100,7 +100,7 @@ class Game extends \Table
     //Player Actions and supporting functions
     //***************************************************** */
 
-    public function actMoveOrPush(string $piece_id, string $tileID, string $origin) :void
+    public function actMove(string $piece_id, string $tileID, string $origin) :void
     {
         $legalActions = new ttLegalMoves($this);
         $legalMoves = $legalActions->legalMoves();
@@ -112,90 +112,132 @@ class Game extends \Table
             throw new \BgaUserException('Invalid move choice');
         }
 
-        //if the piece owner is not the active player, this is a push
-        $isPush = ttPieces::parsePieceDivData($piece_id)['player_id'] != $this->getActivePlayerId();
-
-        if (!in_array($isPush ? 'push' : 'move',$legalActions->legalActions()))
+        if (!in_array('move', $legalActions->legalActions()))
         {
             throw new \BgaUserException('This is not a legal action!');
         }
 
-        //2 - actually move or push the piece
+        //2 - actually move the piece
         $pieces = new ttPieces($this);
         $reachedGoal = $pieces->movePiece($piece_id,$location);
 
-        $this->notifyAllPlayers("moveOrPush", clienttranslate('${player_name} ${moveOrPushText} a piece'), [
+        $this->notifyAllPlayers("move", clienttranslate('${player_name} moved a piece'), [
             "player_name" => $this->getActivePlayerName(),
             "piece_id" => $piece_id,
             "tileID" => $tileID,
-            "isPush" => $isPush,
-            "moveOrPushText" => $isPush ? 'pushed' : 'moved',
             "origin" => $origin,
         ]);
 
         //3 - Did we activate any cards?
-        if (!$isPush)
-        {
-            $board = new ttBoard($this);
-            $board->deserializeBoardFromDb();
-            
-            $color = $board->tiles[$location]['color'];
-            $cards = new ttCards($this);
-
-            $activatedCards = [];
-
-            //color is '' on home or goal tiles - cannot activate cards.
-            if ($color != '')
-            {
-                $activatedCards = $cards->activateCardsByColor(intval($this->getActivePlayerId()), $color);
-            }
-
-            if (count($activatedCards) > 0)
-            {
-                $this->notifyAllPlayers("activate", clienttranslate('${player_name} activated ${numCardsActivated} <B>${color}</B>(${colorIcon}) card(s)'), [
-                    "player_name" => $this->getActivePlayerName(),
-                    "activatedCards" => $activatedCards,
-                    "numCardsActivated" => count($activatedCards),
-                    "color" => $color,
-                    "colorIcon" => $this->getColorIconHTML($color),
-                ]);
-            }
-        }
-
+        $this->activateCards($location);
+        
         //4 - Did we reach the goal?
-        if ($reachedGoal)
-        {
-            $ttPlayers = new ttPlayers($this);
-            $ttPlayers->deserializePlayersFromDb();
-
-            //Equivalent to join between players and pieces to get the player who reached the goal
-            $player = $ttPlayers->players[$pieces->pieces[$piece_id]['player_id']];
-            $ttPlayers->scorePoint($player['player_id']);
-
-            //score point in local copy of $player
-            $player['player_score']++;
-
-            $this->notifyAllPlayers("goalAchieved", clienttranslate('${player_name} has a piece in their goal!'), [
-                "player_name" => $player['player_name'],
-                "piece_id" => $piece_id,
-                "player_id" => $player['player_id'],
-                "score" => $player['player_score'],
-            ]);
-
-            $pieces->deletePiece($piece_id);
-
-            $scoreGoal = count($ttPlayers->players) <= 3 ? 2 : 3;
-            if ($player['player_score'] >= $scoreGoal)
-            {
-                //player has won!
-                $this->endOfActionBoardState($origin);
-                $this->gamestate->nextState("gameEnd");
-                return;
-            }
+        if ($reachedGoal) {
+            $hasWon = $this->scorePiece($piece_id, $pieces, $origin);
+            if ($hasWon) { return; }
         }
-
+        
         $this->endOfActionBoardState($origin);
         $this->goToNextState();        
+    }
+
+    public function actPush(string $piece_id, string $tileID, string $origin) :void
+    {
+        $legalActions = new ttLegalMoves($this);
+        $legalMoves = $legalActions->legalMoves();
+        $location = ttUtility::tileID2location($tileID);
+
+        //1 - check for destination legality
+        if (!in_array($location,$legalMoves[$piece_id]))
+        {
+            throw new \BgaUserException('Invalid move choice');
+        }
+
+        if (!in_array('push', $legalActions->legalActions()))
+        {
+            throw new \BgaUserException('This is not a legal action!');
+        }
+
+        //2 - actually move the piece
+        $pieces = new ttPieces($this);
+        $reachedGoal = $pieces->movePiece($piece_id,$location);
+
+        $this->notifyAllPlayers("push", clienttranslate('${player_name} pushed a piece'), [
+            "player_name" => $this->getActivePlayerName(),
+            "piece_id" => $piece_id,
+            "tileID" => $tileID,
+            "origin" => $origin,
+        ]);
+        
+        //3 - Did we reach the goal?
+        if ($reachedGoal) {
+            $hasWon = $this->scorePiece($piece_id, $pieces, $origin);
+            if ($hasWon) { return; }
+        }
+        
+        $this->endOfActionBoardState($origin);
+        $this->goToNextState();        
+    }
+
+    //returns true if player won by this move
+    private function scorePiece(string $piece_id, ttPieces $pieces, $origin) : true
+    {
+        $ttPlayers = new ttPlayers($this);
+        $ttPlayers->deserializePlayersFromDb();
+
+        //Equivalent to join between players and pieces to get the player who reached the goal
+        $player = $ttPlayers->players[$pieces->pieces[$piece_id]['player_id']];
+        $ttPlayers->scorePoint($player['player_id']);
+
+        //score point in local copy of $player
+        $player['player_score']++;
+
+        $this->notifyAllPlayers("goalAchieved", clienttranslate('${player_name} has a piece in their goal!'), [
+            "player_name" => $player['player_name'],
+            "piece_id" => $piece_id,
+            "player_id" => $player['player_id'],
+            "score" => $player['player_score'],
+        ]);
+
+        $pieces->deletePiece($piece_id);
+
+        $scoreGoal = count($ttPlayers->players) <= 3 ? 2 : 3;
+        if ($player['player_score'] >= $scoreGoal)
+        {
+            //player has won!
+            $this->endOfActionBoardState($origin);
+            $this->gamestate->nextState("gameEnd");
+            return true;
+        }
+        return false;
+    }
+
+    private function activateCards(string $location) : void
+    {
+        $board = new ttBoard($this);
+        $board->deserializeBoardFromDb();
+        
+        $color = $board->tiles[$location]['color'];
+        $cards = new ttCards($this);
+
+        $activatedCards = [];
+
+        //color is '' on home or goal tiles - cannot activate cards.
+        if ($color != '')
+        {
+            $activatedCards = $cards->activateCardsByColor(intval($this->getActivePlayerId()), $color);
+        }
+
+        if (count($activatedCards) > 0)
+        {
+            $this->notifyAllPlayers("activate", clienttranslate('${player_name} activated ${numCardsActivated} <B>${color}</B>(${colorIcon}) card(s)'), [
+                "player_name" => $this->getActivePlayerName(),
+                "activatedCards" => $activatedCards,
+                "numCardsActivated" => count($activatedCards),
+                "color" => $color,
+                "colorIcon" => $this->getColorIconHTML($color),
+            ]);
+        }
     }
 
     public function actGain(string $color, string $origin) : void

@@ -23,6 +23,7 @@ define([
     g_gamethemeurl + "modules/js/ttUtility.js",
     g_gamethemeurl + "modules/js/ttEventHandlers.js",
     g_gamethemeurl + "modules/js/ttMoveSequence.js",
+    g_gamethemeurl + "modules/js/ttPushSequence.js",
     g_gamethemeurl + "modules/js/ttGainSequence.js",
     g_gamethemeurl + "modules/js/ttBuySequence.js",
     g_gamethemeurl + "modules/js/ttSwapSequence.js",
@@ -38,6 +39,7 @@ function (dojo, declare) {
             this.ttUtility = new bgagame.ttUtility();
             this.ttEventHandlers = new bgagame.ttEventHandlers();
             this.ttMoveSequence = new bgagame.ttMoveSequence();
+            this.ttPushSequence = new bgagame.ttPushSequence();
             this.ttGainSequence = new bgagame.ttGainSequence();
             this.ttBuySequence = new bgagame.ttBuySequence();
             this.ttSwapSequence = new bgagame.ttSwapSequence();
@@ -439,9 +441,11 @@ function (dojo, declare) {
                 switch( stateName )
                 {
                     case 'client_selectResource':
-                    case 'client_selectTile':
+                    case 'client_selectTileMove':
+                    case 'client_selectTilePush':
                     case 'client_selectGain':
-                    case 'client_selectPiece':
+                    case 'client_selectPieceMove':
+                    case 'client_selectPiecePush':
                     case 'selectAction':
                         this.addActionButton('actionBtnDoneWithTurn', _('Done with turn'), () => this.bgaPerformAction("actDoneWithTurn"), null, null, 'red'); 
                         this.addActionButton('actionBtnOverdrive', _('Overdrive'), () => this.ttOverdrive.beginOverdrive.call(this), null, null, 'red');
@@ -477,8 +481,8 @@ function (dojo, declare) {
                             break;
 
                         case 'client_selectOverdriveAction':
-                            this.addActionButton('actionBtnOverdriveMove', _('Move'), () => this.ttMoveSequence.beginMove.call(this,'move'), null, null, null);
-                            this.addActionButton('actionBtnOverdrivePush', _('Push'), () => this.ttMoveSequence.beginMove.call(this,'move'), null, null, null);
+                            this.addActionButton('actionBtnOverdriveMove', _('Move'), () => this.ttMoveSequence.beginMove.call(this), null, null, null);
+                            this.addActionButton('actionBtnOverdrivePush', _('Push'), () => this.ttPushSequence.beginPush.call(this), null, null, null);
                             this.addActionButton('actionBtnOverdriveGain', _('Gain'), () => this.ttGainSequence.beginGain.call(this), null, null, null);
                             this.addActionButton('actionBtnOverdriveBuy', _('Buy'), () => this.ttBuySequence.beginBuy.call(this), null, null, null);
                             this.addActionButton('actionBtnOverdriveSwap', _('Swap'), () => this.ttSwapSequence.beginSwap.call(this), null, null, null);
@@ -582,7 +586,8 @@ function (dojo, declare) {
         {
             console.log( 'notifications subscriptions setup' );
             dojo.subscribe( 'showVariable', this, "notif_showVariable" );
-            dojo.subscribe('moveOrPush', this, "notif_moveOrPush");
+            dojo.subscribe('move', this, "notif_move");
+            dojo.subscribe('push', this, "notif_push");
             dojo.subscribe('activate', this, "notif_activate");
             dojo.subscribe('gain', this, "notif_gain");
             dojo.subscribe('buy', this, "notif_buy");
@@ -598,9 +603,9 @@ function (dojo, declare) {
             console.log( notif );
         },
         
-        notif_moveOrPush: function( notif )
+        notif_move: function( notif )
         {
-            console.log( 'notif_moveOrPush' );
+            console.log( 'notif_move' );
             console.log( notif );
            
             this.ttAnimations.movePiece.call(this, notif.args.piece_id, notif.args.tileID);
@@ -611,6 +616,20 @@ function (dojo, declare) {
                 $(notif.args.origin).classList.add('exhausted');
             }
             
+        },
+
+        notif_push: function( notif )
+        {
+            console.log( 'notif_push' );
+            console.log( notif );
+           
+            this.ttAnimations.movePiece.call(this, notif.args.piece_id, notif.args.tileID);
+
+            //exhaust card if it was used.
+            if (notif.args.origin.startsWith('card_'))
+            {
+                $(notif.args.origin).classList.add('exhausted');
+            }
         },
 
         notif_activate: function( notif )

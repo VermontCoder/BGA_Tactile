@@ -77,38 +77,31 @@ define([
             if(!$(tileID).classList.contains('legalMove')) { return; }
             console.log('onTileClick', JSON.stringify(tileID));
            
-            this.ttMoveSequence.movePiece.call(this, tileID);
+            if (this.gamedatas.gamestate.name == 'client_selectTileMove')
+            {
+                this.ttMoveSequence.movePiece.call(this, tileID);
+            }
+            else if (this.gamedatas.gamestate.name == 'client_selectTilePush')
+            {
+                this.ttPushSequence.pushPiece.call(this, tileID);
+            }
         },
 
         onPieceClick: function( piece_id ) {
             if(!this.isCurrentPlayerActive()) { return; }
 
             const gg = this.gamedatas.gamestate;
+            const isPush = gg.name == 'client_selectPiecePush';
             const pieceData = this.ttUtility.parsePieceID(piece_id);
-
-            //check if piece is selectable
-            const isCorrectState = gg.name == 'client_selectPiece' || gg.name == 'client_selectTile';
-            if (!isCorrectState) { return; }
-
-            const isOfCardOrigin = this.eventOrigin.startsWith('card_');
             const isPiecePlayersPiece = pieceData.player_id == this.getActivePlayerId();
 
+            //check if piece is selectable
+            const isCorrectState = gg.name.startsWith('client_selectPiece') || gg.name.startsWith('client_selectTile');
+            if (!isCorrectState) { return; }
             
-            if (isOfCardOrigin)
-            {
-                //pull the card's data for the action
-                const cardData = this.ttUtility.getCardDataFromDivID(this.eventOrigin, gg.args.hands);
-                if (cardData.action == 'push')
-                {
-                    //you can only push other player's pieces
-                    if (isPiecePlayersPiece) { return; }
-                }
-            }
-            else
-            {
-                if (!isPiecePlayersPiece) { return; }
-            }
-
+             //you can only push other player's pieces or move your own pieces.
+            if (isPush == isPiecePlayersPiece) { return; }
+                
             /* EXCEPTIONAL SITUATION: if the piece is in a home/goal tile this may actually be a click to move the other piece *into* the home/goal tile.
             In this case, the tile parent div of the piece will have the "legalMove" class. If this happens, we ignore the click and let the tile click
             handler do the work to move the other piece on top of this one. */
@@ -117,7 +110,14 @@ define([
 
             console.log('onPieceClick', JSON.stringify(pieceData));
 
-            this.ttMoveSequence.selectPiece.call(this, piece_id);
+            if (isPush)
+            {
+                this.ttPushSequence.selectPiece.call(this, piece_id);
+            }
+            else
+            {
+                this.ttMoveSequence.selectPiece.call(this, piece_id);
+            }
             
         },
 
@@ -276,8 +276,9 @@ define([
             switch(action)
             {
                 case 'move':
+                    return this.ttMoveSequence.beginMove.call(this);
                 case 'push':
-                    return this.ttMoveSequence.beginMove.call(this, action);
+                    return this.ttPushSequence.beginPush.call(this);
                 case 'gain':
                     return this.ttGainSequence.beginGain.call(this);
                 case 'buy':
