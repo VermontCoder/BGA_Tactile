@@ -375,7 +375,6 @@ function (dojo, declare) {
                     //debugger;
                     this.clearAllPreviousHighlighting();
                     this.eventOrigin = '';
-                    this.overdriveOrigin ='';
 
                     //if its the start of turn (no action cubes placed) 
                     if (this.ttUtility.getNumActionBoardActionsSelected.call(this) == 0)
@@ -444,10 +443,10 @@ function (dojo, declare) {
                     case 'client_selectGain':
                     case 'client_selectPiece':
                     case 'selectAction':
-                        this.addActionButton('actionBtnOverdrive', _('Overdrive'), () => this.ttOverdrive.beginOverdrive.call(this), null, null, 'red');
                         this.addActionButton('actionBtnDoneWithTurn', _('Done with turn'), () => this.bgaPerformAction("actDoneWithTurn"), null, null, 'red'); 
-                        break;
+                        this.addActionButton('actionBtnOverdrive', _('Overdrive'), () => this.ttOverdrive.beginOverdrive.call(this), null, null, 'red');
                         
+                        break;
                     case 'client_reset':
                         this.addActionButton('actionButtonResetYes', _('Yes'), () => this.ttResetSequence.confirmReset.call(this,true), null, null, 'red');
                         this.addActionButton('actionButtonResetNo', _('No'), () => this.ttResetSequence.confirmReset.call(this,false), null, null, 'red');
@@ -478,12 +477,12 @@ function (dojo, declare) {
                             break;
 
                         case 'client_selectOverdriveAction':
-                            this.addActionButton('actionBtnOverdriveMove', _('Move'), () => this.restoreServerGameState(), null, null, null);
-                            this.addActionButton('actionBtnOverdrivePush', _('Push'), () => this.restoreServerGameState(), null, null, null);
-                            this.addActionButton('actionBtnOverdriveGain', _('Gain'), () => this.restoreServerGameState(), null, null, null);
-                            this.addActionButton('actionBtnOverdriveBuy', _('Buy'), () => this.restoreServerGameState(), null, null, null);
-                            this.addActionButton('actionBtnOverdriveSwap', _('Swap'), () => this.restoreServerGameState(), null, null, null);
-                            this.addActionButton('actionBtnOverdriveReset', _('Reset'),() => this.restoreServerGameState(), null, null, null);
+                            this.addActionButton('actionBtnOverdriveMove', _('Move'), () => this.ttMoveSequence.beginMove.call(this,'move'), null, null, null);
+                            this.addActionButton('actionBtnOverdrivePush', _('Push'), () => this.ttMoveSequence.beginMove.call(this,'move'), null, null, null);
+                            this.addActionButton('actionBtnOverdriveGain', _('Gain'), () => this.ttGainSequence.beginGain.call(this), null, null, null);
+                            this.addActionButton('actionBtnOverdriveBuy', _('Buy'), () => this.ttBuySequence.beginBuy.call(this), null, null, null);
+                            this.addActionButton('actionBtnOverdriveSwap', _('Swap'), () => this.ttSwapSequence.beginSwap.call(this), null, null, null);
+                            this.addActionButton('actionBtnOverdriveReset', _('Reset'),() => this.ttResetSequence.beginReset.call(this), null, null, null);
                             this.addActionButton('actionBtnCancelOverdrive', _('Cancel'), () => this.restoreServerGameState(), null, null, 'red'); 
                             break;
                 }

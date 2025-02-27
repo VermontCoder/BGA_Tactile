@@ -88,10 +88,12 @@ define([
 
             //check if piece is selectable
             const isCorrectState = gg.name == 'client_selectPiece' || gg.name == 'client_selectTile';
+            if (!isCorrectState) { return; }
+
             const isOfCardOrigin = this.eventOrigin.startsWith('card_');
             const isPiecePlayersPiece = pieceData.player_id == this.getActivePlayerId();
 
-            if (!isCorrectState) { return; }
+            
             if (isOfCardOrigin)
             {
                 //pull the card's data for the action
@@ -206,21 +208,19 @@ define([
 
         overdriveClickProcessing: function(selectionDivID)
         {
-            debugger;
-
             if (selectionDivID.startsWith('action_'))
             {
                 //check to see if this is a previously selected action during this overdrive.
                 //Previous processing won't allow a click on an already selected action.
-                if(selectionDivID == this.overdriveOrigin) 
+                if(selectionDivID == this.eventOrigin) 
                 {
                     //this is a cancel action
                     this.ttAnimations.moveActionCube.call(this,selectionDivID, true);
-                    this.overdriveOrigin ='';
+                    this.eventOrigin ='';
                     return; 
                 }
 
-                if (this.overdriveOrigin.startsWith('action_') && this.ttUtility.getNumActionBoardActionsSelected.call(this) == 1)
+                if (this.eventOrigin.startsWith('action_') && this.ttUtility.getNumActionBoardActionsSelected.call(this) == 1)
                 {
                     //This is a click on the action board when there are two other actions selected.
                     //Do not respond
@@ -232,7 +232,7 @@ define([
                 //special case - if we are moving two cubes we need to specify to use the 2nd cube.
                 //the moveActionCube function looks at the gamestate to determine if it should use the 2nd cube.
                 //gamestate would be unaffected by the first move, so we need to specify the 2nd cube.
-                if (this.overdriveOrigin.startsWith('action_'))
+                if (this.eventOrigin.startsWith('action_'))
                 {
                     cubeDiv = $('actionCube_' + playerID+'_1');
                     this.ttAnimations.animateActionCubeMove.call(this,cubeDiv,selectionDivID);
@@ -243,28 +243,29 @@ define([
                 }
                 
             }
-            else if (selectionDivID.startsWith('card_'))
+            
+            if (selectionDivID.startsWith('card_'))
             {
                 if ($(selectionDivID).classList.contains('highlighted'))
                 {
                     //this is a cancel.
                     $(selectionDivID).classList.remove('highlighted');
-                    this.overdriveOrigin = '';
+                    this.eventOrigin = '';
                     return;
                 }
                
                 $(selectionDivID).classList.add('highlighted');
             }
 
-            if (this.overdriveOrigin.length == 0)
+            if (this.eventOrigin.length == 0)
             {
-                this.overdriveOrigin = selectionDivID;
+                this.eventOrigin = selectionDivID;
             }
             else
             {
-                this.overdriveOrigin += ','+selectionDivID;
+                this.eventOrigin += ','+selectionDivID;
 
-                //if two actions have been selected, move back through the overdrive sequence.
+                //if two actions have been selected, move into selecting the action to do now.
                 this.ttOverdrive.beginSelectingAction.call(this);
             }
 
