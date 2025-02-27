@@ -175,7 +175,7 @@ class Game extends \Table
     }
 
     //returns true if player won by this move
-    private function scorePiece(string $piece_id, ttPieces $pieces, $origin) : true
+    private function scorePiece(string $piece_id, ttPieces $pieces, $origin) : bool
     {
         $ttPlayers = new ttPlayers($this);
         $ttPlayers->deserializePlayersFromDb();

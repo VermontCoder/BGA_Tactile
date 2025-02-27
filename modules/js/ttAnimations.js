@@ -81,8 +81,10 @@ define([
         //starts the number changing to red after the move animation is complete.
         qtyChangeAnimation: async function( qtyDivID, qtyDelta, delay )
         {
-            console.log($(qtyDivID).innerHTML+';;;');
-            const newQty = parseInt($(qtyDivID).innerHTML.trimEnd().slice(-1)) + qtyDelta;
+            //extract the number from the innerHTML
+            const newQty = parseInt($(qtyDivID).innerHTML.match(/(\d+)/)) + qtyDelta;
+
+            console.log('newQty:' + newQty);
             setTimeout(()=> {
                 $(qtyDivID).classList.add('red');
                 $(qtyDivID).innerHTML = ' : ' + newQty;
