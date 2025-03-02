@@ -455,9 +455,7 @@ class Game extends \Table
         $ttPieces = new ttPieces($this);
         $ttPieces->createPieces($ttPlayers->players);
 
-        $this->notifyAllPlayers("chooseStartTile", clienttranslate('${player_name} has choosen ${playerColor} (${playerColorIcon} to play!'), [
-            "players" => $ttPlayers->players,
-            "pieces" => $ttPieces->deserializePiecesFromDb(),
+        $this->notifyAllPlayers("chooseStartTile", clienttranslate('${player_name} has choosen ${playerColor} (${playerColorIcon}) to play!'), [
             "player_name" => $this->getActivePlayerName(),
             "playerColor" => $playerColor,
             "playerColorIcon" => $this->getColorIconHTML($playerColor),

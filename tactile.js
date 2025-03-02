@@ -566,17 +566,7 @@ function (dojo, declare) {
         {
             document.querySelectorAll('.player-name > a').forEach(playerName => playerName.style.color = 'black');
             document.querySelectorAll('.tableauLabel').forEach(label => label.classList.add('notColored'));
-        },
-
-        //This is only called by the notif_pregame state to update the player colors label in the player panel.
-        //The framework does not know that the player colors have changed.
-        //The Tableau player label color is updated in updateState.
-        updatePlayerPanelNamesColors : function(players)
-        {
-            for (const player_id in players)
-            {
-                document.querySelectorAll('#player_name_'+player_id+ ' > a').forEach(playerName => playerName.style.color = players[player_id].color_name);
-            }
+            document.querySelector('.playername').style.color = 'black';
         },
 
         ///////////////////////////////////////////////////
@@ -612,6 +602,7 @@ function (dojo, declare) {
         {
             console.log( 'notifications subscriptions setup' );
             dojo.subscribe( 'showVariable', this, "notif_showVariable" );
+            dojo.subscribe('chooseStartTile', this, "notif_chooseStartTile");
             dojo.subscribe('move', this, "notif_move");
             dojo.subscribe('push', this, "notif_push");
             dojo.subscribe('activate', this, "notif_activate");
@@ -629,6 +620,16 @@ function (dojo, declare) {
             console.log( notif );
         },
         
+        notif_chooseStartTile: function( notif )
+        {
+            console.log( 'notif_chooseStartTile' );
+            console.log( notif );
+
+            //once the player colors are chosen, all the player colors are wrong, and it seems
+            //that only a full reload fixes everything in the framework.
+            location.reload();
+        },
+
         notif_move: function( notif )
         {
             console.log( 'notif_move' );
