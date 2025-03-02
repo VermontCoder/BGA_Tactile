@@ -494,6 +494,11 @@
  .tableauLabel.yellow {background-color: yellow; color: black;}
  .tableauLabel.green {background-color: green;}
  .tableauLabel.blue {background-color: blue;}
+ .tableauLabel.notColored {background-color: white; color: black;}
+
+ .notColored {
+     color: black;
+ }
  
  .cardTarget {
      height:var(--card-height);

@@ -12,6 +12,13 @@ class ttPlayers
         'ffff00' => 'yellow',
         '00ff00' => 'green',
         '0000ff' => 'blue'];
+    
+    const NAME2RGB =
+    [   'red' => 'ff0000',
+        'yellow' => 'ffff00',
+        'green' => '00ff00',
+        'blue' => '0000ff'];
+
 
     public function __construct(Game $game)
     {
@@ -81,6 +88,28 @@ class ttPlayers
         //(new ttDebug($this->game))->showVariable('players', $this->players);
 
         return $this->players;
+    }
+
+    public function setPlayerColor($player_id, $color) : void
+    {
+        $this->game->DbQuery(
+            sprintf(
+                "UPDATE player SET player_color = '%s', color_name = '%s' WHERE player_id = %s",
+                self::NAME2RGB[$color],
+                $color,
+                $player_id
+            )
+        );
+
+        if (empty($this->players))
+        {
+            $this->deserializePlayersFromDb();
+        }
+        else
+        {
+            $this->players[$player_id]['player_color'] = self::NAME2RGB[$color];
+            $this->players[$player_id]['color_name'] = $color;
+        }
     }
 
     public function gainResource($player_id, $resource) : void

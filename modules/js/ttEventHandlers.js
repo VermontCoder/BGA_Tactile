@@ -85,6 +85,12 @@ define([
             {
                 this.ttPushSequence.pushPiece.call(this, tileID);
             }
+            else if (this.gamedatas.gamestate.name == 'chooseStartTile')
+            {
+                this.bgaPerformAction("actChooseStartTile", { 
+                    tileID: tileID
+                });
+            }
         },
 
         onPieceClick: function( piece_id ) {

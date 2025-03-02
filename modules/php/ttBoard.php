@@ -8,8 +8,6 @@ class ttBoard
 {
     const BOARD_WIDTH = 6;
     const BOARD_HEIGHT = 6;
-    
-    
 
     public array $tiles = array();
 

@@ -373,6 +373,14 @@ function (dojo, declare) {
 
             switch( stateName )
             {
+                case 'chooseStartTile':
+                    //highlight the tiles that can be chosen
+                    Object.keys(args.args.playerHomes).forEach((location) => {
+                        $(`tile_${location}`).classList.add('legalMove');
+                    });
+
+                    this.pregameColors();
+                    break;
                 case 'selectAction':
                     //debugger;
                     this.clearAllPreviousHighlighting();
@@ -393,6 +401,7 @@ function (dojo, declare) {
 
                     setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration);
                     break;
+
                 case 'gameEnd':
                     this.clearAllPreviousHighlighting();
                     setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration);
@@ -551,6 +560,23 @@ function (dojo, declare) {
             //clear any other highlighting
             const allDivs = document.querySelectorAll('*');
             allDivs.forEach(el => el.classList.remove('highlighted'));
+        },
+
+        pregameColors: function()
+        {
+            document.querySelectorAll('.player-name > a').forEach(playerName => playerName.style.color = 'black');
+            document.querySelectorAll('.tableauLabel').forEach(label => label.classList.add('notColored'));
+        },
+
+        //This is only called by the notif_pregame state to update the player colors label in the player panel.
+        //The framework does not know that the player colors have changed.
+        //The Tableau player label color is updated in updateState.
+        updatePlayerPanelNamesColors : function(players)
+        {
+            for (const player_id in players)
+            {
+                document.querySelectorAll('#player_name_'+player_id+ ' > a').forEach(playerName => playerName.style.color = players[player_id].color_name);
+            }
         },
 
         ///////////////////////////////////////////////////

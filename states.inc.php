@@ -62,9 +62,36 @@ $machinestates = [
         "transitions" => ["" => 2]
     ),
 
+    2 => array(
+        "name" => "pregameStateSelection",
+        "type" => "game",
+        "action" => "stPregameStateSelection",
+        "transitions" => [ "selectAction" => 5, "chooseStartTile" => 3, "chooseTeams" => 4]
+    ),
     // Note: ID=2 => your first state
 
-    2 => [
+    3 => [
+        "name" => "chooseStartTile",
+        "description" => clienttranslate('${actplayer} must select a start tile'),
+        "descriptionmyturn" => clienttranslate('${you} must select a start tile'),
+        "type" => "activeplayer",
+        "args" => "argChooseStartTile",
+        "possibleactions" => [ "actChooseStartTile"],
+        "transitions" => [ "nextPlayer" => 10 ]
+    ],
+
+    /* TBD must make this multiple active player */
+    4 => [
+        "name" => "chooseTeams",
+        "description" => clienttranslate('${actplayer} must place the start tile'),
+        "descriptionmyturn" => clienttranslate('${you} must place the start tile'),
+        "type" => "activeplayer",
+        "action" => "stChooseTeams",
+        "possibleactions" => [ "actChooseTeammates"],
+        "transitions" => [ "chooseTeams" => 4, "nextPlayer" => 10 ]
+    ],
+
+    5 => [
         "name" => "selectAction",
         "description" => clienttranslate('${actplayer} must select an action'),
         "descriptionmyturn" => clienttranslate('${you} must select an action<BR>'),
@@ -80,7 +107,7 @@ $machinestates = [
             "actReset",
             "actDoneWithTurn"
         ],
-        "transitions" => [ "selectAction" => 2, "nextPlayer" => 10, "gameEnd" => 99]
+        "transitions" => [ "selectAction" => 5, "nextPlayer" => 10, "gameEnd" => 99]
     ],
 
     10 => [
@@ -89,7 +116,7 @@ $machinestates = [
         "type" => "game",
         "action" => "stNextPlayer",
         "updateGameProgression" => true,
-        "transitions" => ["endGame" => 99, "nextPlayer" => 2]
+        "transitions" => ["endGame" => 99, "nextPlayer" => 5]
     ],
 
     // Final state.

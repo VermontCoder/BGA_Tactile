@@ -429,6 +429,43 @@ class Game extends \Table
         $this->gamestate->nextState("nextPlayer");
     }
 
+    public function actChooseStartTile(string $tileID) : void
+    {
+        $tileLoc = ttUtility::tileID2location($tileID);
+        $player_id = $this->getActivePlayerId();
+        $playerColor = self::PLAYERHOMES[$tileLoc];
+        $opponentTileLoc = self::PLAYERGOALS2P4P[$playerColor][0]; //This is an array for 3 player games, but this is a 2 player game
+        $opponentColor = self::PLAYERHOMES[$opponentTileLoc];
+
+        $ttPlayers = new ttPlayers($this);
+        $ttPlayers->deserializePlayersFromDb();
+
+        foreach( $ttPlayers->players as $player)
+        {
+            if ($player['player_id'] == $player_id)
+            {
+                $ttPlayers->setPlayerColor($player_id, $playerColor);
+            }
+            else
+            {
+                $ttPlayers->setPlayerColor($player['player_id'], $opponentColor);
+            }
+        }
+
+        $ttPieces = new ttPieces($this);
+        $ttPieces->createPieces($ttPlayers->players);
+
+        $this->notifyAllPlayers("chooseStartTile", clienttranslate('${player_name} has choosen ${playerColor} (${playerColorIcon} to play!'), [
+            "players" => $ttPlayers->players,
+            "pieces" => $ttPieces->deserializePiecesFromDb(),
+            "player_name" => $this->getActivePlayerName(),
+            "playerColor" => $playerColor,
+            "playerColorIcon" => $this->getColorIconHTML($playerColor),
+        ]);
+
+        $this->gamestate->nextState("nextPlayer");
+    }
+
     //******************************************************* */
     // Action Support Functions
     //******************************************************* */
@@ -537,6 +574,13 @@ class Game extends \Table
         return $this->getAllDatas();
     }
 
+    public function argChooseStartTile(): array
+    {
+        return [
+            'playerHomes' => self::PLAYERHOMES
+        ];
+    }
+
     /**
      * Compute and return the current game progression.
      *
@@ -580,6 +624,32 @@ class Game extends \Table
         // Here, we would detect if the game is over, and in this case use "endGame" transition instead 
         $this->gamestate->nextState("nextPlayer");
     }
+
+    public function stPregameStateSelection(): void
+    {
+        if ($this->getPlayersNumber() !=2)
+        {
+            $ttPlayers = new ttPlayers($this);
+            $ttPlayers->deserializePlayersFromDb();
+            $ttPieces = new ttPieces($this);
+            $ttPieces->createPieces($ttPlayers->players);
+        }
+
+        if ($this->getPlayersNumber() == 2)
+        {
+            $this->gamestate->nextState("chooseStartTile");
+        }
+        else if ($this->getPlayersNumber() == 4)
+        {    
+            $this->gamestate->nextState("chooseTeams");
+        }
+        else
+        {
+            $this->gamestate->nextState("selectAction");
+        }
+    }
+
+
 
     public function argGameEnd(): array
     {
@@ -718,9 +788,8 @@ class Game extends \Table
         $ttPlayers = new ttPlayers($this);
         $ttPlayers->createPlayers($players);
 
-        $ttPieces = new ttPieces($this);
-        $ttPieces->createPieces($ttPlayers->players);
-
+        //pieces are created after players know what their color is
+        
         $ttCards = new ttCards($this);
         $ttCards->createCards();
 
@@ -730,8 +799,14 @@ class Game extends \Table
         $this->cards->shuffle('deck');
 
         //testing reset - only two colors
-        self::DbQuery(sprintf("UPDATE card SET card_location='discard' where card_type LIKE '%s_%%' or card_type LIKE '%s_%%'", 'red','blue'));
+        //self::DbQuery(sprintf("UPDATE card SET card_location='discard' where card_type LIKE '%s_%%' or card_type LIKE '%s_%%'", 'red','blue'));
 
+         //test data
+        // $this->cards->pickCardsForLocation( 10, 'deck', 'hand', 2383264);
+        // $this->cards->pickCardsForLocation( 4, 'deck', 'hand', 2383265);
+
+        // //testing buy - issue plenty of resources
+        // self::DbQuery("UPDATE player SET red_resource_qty=20, blue_resource_qty=20, green_resource_qty=20, yellow_resource_qty=20");
 
         $this->cards->pickCardsForLocation( 6, 'deck', 'store');
         if ($this->checkStoreReset())
@@ -739,12 +814,7 @@ class Game extends \Table
             $this->actReset('specialRule', true);
         }
 
-        //test data
-        $this->cards->pickCardsForLocation( 10, 'deck', 'hand', 2383264);
-        $this->cards->pickCardsForLocation( 4, 'deck', 'hand', 2383265);
-
-        //testing buy - issue plenty of resources
-        self::DbQuery("UPDATE player SET red_resource_qty=20, blue_resource_qty=20, green_resource_qty=20, yellow_resource_qty=20");
+       
 
         // Init game statistics.
         //
