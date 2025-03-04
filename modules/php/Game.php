@@ -33,7 +33,9 @@ class Game extends \Table
     const TOPRIGHT = '5_0';
     const BOTTOMRIGHT = '5_5';
     
-    const COLORS = ['red','yellow','green','blue'];
+    //const COLORS = ['red','yellow','green','blue'];
+    //This order is the same order as team assignments.
+    const COLORS = ['red','green','yellow','blue'];
  
     // Define player homes using position constants
     const PLAYERHOMES = [
@@ -464,6 +466,22 @@ class Game extends \Table
         $this->gamestate->nextState("nextPlayer");
     }
 
+    public function actAllySelection(int $ally_id) : void
+    {
+        $player_id = $this->getCurrentPlayerId();
+        $ttPlayers = new ttPlayers($this);
+        
+        $ttPlayers->setAlly($player_id, $ally_id);
+        $ttPlayers->deserializePlayersFromDb();
+
+        $this->notifyAllPlayers("allySelection", clienttranslate('${player_name} has choosen ${ally_name} as an ally!'), [
+            "player_name" => $ttPlayers->players[$player_id]['player_name'],
+            "ally_name" => ($ally_id==0) ? clienttranslate('Random') : $ttPlayers->players[$ally_id]['player_name'],
+        ]);
+
+        $this->gamestate->setPlayerNonMultiactive($player_id, 'checkAllyAssignments');
+    }
+
     //******************************************************* */
     // Action Support Functions
     //******************************************************* */
@@ -579,6 +597,15 @@ class Game extends \Table
         ];
     }
 
+    public function argChooseAllies(): array
+    {
+        $players = new ttPlayers($this);
+        $players->deserializePlayersFromDb();
+        return [
+            'players' => $players->players
+        ];
+    }
+
     /**
      * Compute and return the current game progression.
      *
@@ -639,7 +666,7 @@ class Game extends \Table
         }
         else if ($this->getPlayersNumber() == 4)
         {    
-            $this->gamestate->nextState("chooseTeams");
+            $this->gamestate->nextState("chooseAllies");
         }
         else
         {
@@ -647,7 +674,62 @@ class Game extends \Table
         }
     }
 
+    public function stCheckAllyAssignments() : void
+    {
+        $ttPlayers = new ttPlayers($this);
+        $players = $ttPlayers->deserializePlayersFromDb();
 
+        // Use array_reduce to check if all players have ally_id set to 0
+        // This means we need to randomize allies.
+        $allAlliesAreZero = array_reduce($players, function($carry, $player) {
+            return $carry && ($player['ally_id'] == 0);
+        }, true);
+
+        if ($allAlliesAreZero)
+        {
+            $ttPlayers->randomizeAllies($ttPlayers);
+        }
+        else
+        {
+            foreach($players as $player)
+            {
+                //check that each player has each other as an ally.
+                if ($player[$player['ally_id']]['ally_id'] != $player['player_id'])
+                {
+                    $this->gamestate->nextState("chooseAllies");
+                    throw new \BgaUserException('There is disagreement on ally assignments!');
+                }
+            }
+        }
+
+        $ttPlayers->assignTeams();
+        //ally assignment is good
+        $allies=[];
+        foreach($players as $player)
+        {
+            if ($player['color_name'] == 'red' || $player['color_name'] == 'green')
+            {
+                $allies['red_green'][] = $player['player_name'];
+            }
+            else
+            {
+                $allies['yellow_blue'][] = $player['player_name'];
+            }
+        }
+
+        $this->notifyAllPlayers("allyAssignment", clienttranslate('Ally assignments are complete!').
+        '<BR>'.clienttranslate('Team Red/Green (${colorIconRed}/${colorIconGreen}): ${alliesRedGreen}').
+        '<BR>'.clienttranslate('Team Yellow/Blue (${colorIconYellow}/${colorIconBlue}): ${alliesYellowBlue}'), [
+            "alliesRedGreen" => $allies['red_green'][0].clienttranslate(' and ').$allies['red_green'][1],
+            "colorIconRed" => $this->getColorIconHTML('red'),
+            "colorIconGreen" => $this->getColorIconHTML('green'),
+            "alliesYellowBlue" => $allies['yellow_blue'][0].clienttranslate(' and ').$allies['yellow_blue'][1],
+            "colorIconYellow" => $this->getColorIconHTML('yellow'),
+            "colorIconBlue" => $this->getColorIconHTML('blue'),
+        ]);
+
+        $this->gamestate->nextState("selectAction");
+    }
 
     public function argGameEnd(): array
     {

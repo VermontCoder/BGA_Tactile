@@ -460,6 +460,32 @@ function (dojo, declare) {
                         this.addActionButton('actionBtnOverdrive', _('Overdrive'), () => this.ttOverdrive.beginOverdrive.call(this), null, null, 'red');
                         
                         break;
+                    case 'chooseAllies':
+                        //debugger;
+                        Object.keys(args.players).forEach((player_id) => {
+                            //do not show a button for the current player
+                            if (this.getCurrentPlayerId() == player_id) return;
+
+                            const player = args.players[player_id];
+                            const btnMsg = player.player_name;
+                            const btnId = 'actionButtonAllyChoice_'+player.player_id;
+                            this.statusBar.addActionButton(btnMsg, 
+                                () => this.ttEventHandlers.onAllySelection.call(this,player.player_id),
+                                {
+                                    color: 'secondary',
+                                    id: btnId,
+                                });
+                        });
+
+                        this.statusBar.addActionButton(_('Randomize'), 
+                            () => this.ttEventHandlers.onAllySelection.call(this,0),
+                            {
+                                color: 'secondary',
+                                id: 'actionButtonRandomizeAlly',
+                            });
+
+                        this.pregameColors();
+                        break;
                     case 'client_reset':
                         this.addActionButton('actionButtonResetYes', _('Yes'), () => this.ttResetSequence.confirmReset.call(this,true), null, null, 'red');
                         this.addActionButton('actionButtonResetNo', _('No'), () => this.ttResetSequence.confirmReset.call(this,false), null, null, 'red');
@@ -567,6 +593,7 @@ function (dojo, declare) {
             document.querySelectorAll('.player-name > a').forEach(playerName => playerName.style.color = 'black');
             document.querySelectorAll('.tableauLabel').forEach(label => label.classList.add('notColored'));
             document.querySelector('.playername').style.color = 'black';
+            document.querySelector('.playername').style.backgroundColor = 'inherit';
         },
 
         ///////////////////////////////////////////////////
@@ -603,6 +630,7 @@ function (dojo, declare) {
             console.log( 'notifications subscriptions setup' );
             dojo.subscribe( 'showVariable', this, "notif_showVariable" );
             dojo.subscribe('chooseStartTile', this, "notif_chooseStartTile");
+            dojo.subscribe('allySelection', this, "notif_allySelection");
             dojo.subscribe('move', this, "notif_move");
             dojo.subscribe('push', this, "notif_push");
             dojo.subscribe('activate', this, "notif_activate");
@@ -628,6 +656,12 @@ function (dojo, declare) {
             //once the player colors are chosen, all the player colors are wrong, and it seems
             //that only a full reload fixes everything in the framework.
             location.reload();
+        },
+
+        notif_allySelection: function( notif )
+        {
+            console.log( 'notif_allySelection' );
+            console.log( notif );
         },
 
         notif_move: function( notif )

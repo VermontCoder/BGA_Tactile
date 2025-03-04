@@ -38,6 +38,7 @@ ALTER TABLE `player` ADD `red_resource_qty` INT UNSIGNED NOT NULL DEFAULT 0;
 ALTER TABLE `player` ADD `blue_resource_qty` INT UNSIGNED NOT NULL DEFAULT 0;
 ALTER TABLE `player` ADD `green_resource_qty` INT UNSIGNED NOT NULL DEFAULT 0;
 ALTER TABLE `player` ADD `yellow_resource_qty` INT UNSIGNED NOT NULL DEFAULT 0;
+ALTER TABLE `player` ADD `ally_id` INT UNSIGNED DEFAULT NULL;
 
 
 -- card_type: color_type_resourceColor1_resourceColor2

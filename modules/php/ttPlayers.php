@@ -83,7 +83,7 @@ class ttPlayers
     public function deserializePlayersFromDb() : array
     {
         $sql = "SELECT player_id, player_color, color_name, player_score, player_canal, player_name, player_avatar, red_resource_qty,
-        blue_resource_qty, green_resource_qty, yellow_resource_qty FROM player";
+        blue_resource_qty, green_resource_qty, yellow_resource_qty, ally_id FROM player";
         $this->players = $this->game->getCollectionFromDb($sql);
         //(new ttDebug($this->game))->showVariable('players', $this->players);
 
@@ -173,6 +173,71 @@ class ttPlayers
         else
         {
             $this->players[$player_id]['player_score']++;
+        }
+    }
+
+    public function setAlly($player_id, $ally_id) : void
+    {
+        $this->game->DbQuery(
+            sprintf(
+                "UPDATE player SET ally_id = %s WHERE player_id = %s",
+                $ally_id,
+                $player_id
+            )
+        );
+
+        if (empty($this->players))
+        {
+            $this->deserializePlayersFromDb();
+        }
+        else
+        {
+            $this->players[$player_id]['ally_id'] = $ally_id;
+        }
+    }
+
+    public function randomizeAllies() : void
+    {
+        $playersWithIdx = [];
+        foreach($this->players as $player_id => $player)
+        {
+            $playersWithIdx[] = $player;
+        }
+
+        shuffle($playersWithIdx);
+        
+        $this->setAlly($playersWithIdx[0]['player_id'], $playersWithIdx[1]['player_id']);
+        $this->setAlly($playersWithIdx[1]['player_id'], $playersWithIdx[0]['player_id']);
+        $this->setAlly($playersWithIdx[2]['player_id'], $playersWithIdx[3]['player_id']);
+        $this->setAlly($playersWithIdx[3]['player_id'], $playersWithIdx[2]['player_id']);
+    }
+
+    public function assignTeams() : void
+    {
+        $playersWithIdx = [];
+        foreach($this->players as $player_id => $player)
+        {
+            $playersWithIdx[] = $player;
+        }
+
+        $assignedIDs = [];
+        for ($i = 0; $i < count($playersWithIdx); $i++)
+        {
+            if (in_array($playersWithIdx[$i] ->player_id, $assignedIDs))
+            {
+                continue;
+            }
+            $assignedIDs[] = $playersWithIdx[$i]['player_id'];
+
+            //write to database the color and color name. also assign turn order. 
+            $this->game->DbQuery(
+                sprintf(
+                    "UPDATE player SET player_color = '%s', color_name = '%s' WHERE player_id = %s",
+                    self::NAME2RGB[$this->game::COLORS[$i]],
+                    $this->game::COLORS[$i],
+                    $playersWithIdx[$i]['player_id']
+                )
+            );
         }
     }
 }

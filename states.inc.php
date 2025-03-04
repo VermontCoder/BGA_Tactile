@@ -66,7 +66,7 @@ $machinestates = [
         "name" => "pregameStateSelection",
         "type" => "game",
         "action" => "stPregameStateSelection",
-        "transitions" => [ "selectAction" => 5, "chooseStartTile" => 3, "chooseTeams" => 4]
+        "transitions" => [ "selectAction" => 6, "chooseStartTile" => 3, "chooseAllies" => 4]
     ),
     // Note: ID=2 => your first state
 
@@ -80,18 +80,26 @@ $machinestates = [
         "transitions" => [ "nextPlayer" => 10 ]
     ],
 
-    /* TBD must make this multiple active player */
     4 => [
-        "name" => "chooseTeams",
-        "description" => clienttranslate('${actplayer} must place the start tile'),
-        "descriptionmyturn" => clienttranslate('${you} must place the start tile'),
-        "type" => "activeplayer",
-        "action" => "stChooseTeams",
-        "possibleactions" => [ "actChooseTeammates"],
-        "transitions" => [ "chooseTeams" => 4, "nextPlayer" => 10 ]
+        "name" => "chooseAllies",
+        "description" => clienttranslate('Other players are choosing their allies'),
+        "descriptionmyturn" => clienttranslate('${you} must choose your ally').'<BR>',
+        "type" => "multipleactiveplayer",
+        "action" => "stMakeEveryoneActive",
+        "args" => "argChooseAllies",
+        "possibleactions" => [ "actAllySelection"],
+        "transitions" => [ "checkAllyAssignments" => 5 ]
     ],
 
     5 => [
+        "name" => "checkAllyAssignments",
+        "description" => '',
+        "type" => "game",
+        "action" => "stCheckAllyAssignments",
+        "transitions" => ["chooseAllies" => 4, "nextPlayer" => 10]
+    ],
+
+    6 => [
         "name" => "selectAction",
         "description" => clienttranslate('${actplayer} must select an action'),
         "descriptionmyturn" => clienttranslate('${you} must select an action<BR>'),
@@ -107,7 +115,7 @@ $machinestates = [
             "actReset",
             "actDoneWithTurn"
         ],
-        "transitions" => [ "selectAction" => 5, "nextPlayer" => 10, "gameEnd" => 99]
+        "transitions" => [ "selectAction" => 6, "nextPlayer" => 10, "gameEnd" => 99]
     ],
 
     10 => [
@@ -116,7 +124,7 @@ $machinestates = [
         "type" => "game",
         "action" => "stNextPlayer",
         "updateGameProgression" => true,
-        "transitions" => ["endGame" => 99, "nextPlayer" => 5]
+        "transitions" => ["endGame" => 99, "nextPlayer" => 6]
     ],
 
     // Final state.

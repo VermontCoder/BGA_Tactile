@@ -212,6 +212,15 @@ define([
             // });        
         },
 
+        onAllySelection: function( allyID )
+        {
+            console.log('onAllySelection', allyID);
+
+            this.bgaPerformAction("actAllySelection", { 
+                ally_id: allyID,
+            });
+        },
+
         overdriveClickProcessing: function(selectionDivID)
         {
             if (selectionDivID.startsWith('action_'))
