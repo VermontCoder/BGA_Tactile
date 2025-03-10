@@ -223,7 +223,7 @@ class ttPlayers
         $assignedIDs = [];
         for ($i = 0; $i < count($playersWithIdx); $i++)
         {
-            if (in_array($playersWithIdx[$i] ->player_id, $assignedIDs))
+            if (in_array($playersWithIdx[$i]['player_id'], $assignedIDs))
             {
                 continue;
             }

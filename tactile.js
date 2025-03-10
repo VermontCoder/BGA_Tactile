@@ -639,6 +639,7 @@ function (dojo, declare) {
             dojo.subscribe('swap', this, "notif_swap");
             dojo.subscribe('reset', this, "notif_reset");
             dojo.subscribe('goalAchieved', this, "notif_goalAchieved");
+            dojo.subscribe('messageInfo', this, "notif_messageInfo");
             dojo.subscribe('endGame', this, "notif_endGame");
         },  
 
@@ -773,6 +774,12 @@ function (dojo, declare) {
 
             this.scoreCtrl[notif.args.player_id].setValue(notif.args.score);
             $(notif.args.piece_id).classList.add('scoring');
+        },
+
+        notif_messageInfo: function(notif) 
+        {
+            const message = this.format_string_recursive(notif.log, notif.args.message);
+            this.showMessage( message, notif.args.severity); 
         },
 
         notif_endGame: function( notif )
