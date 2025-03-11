@@ -212,32 +212,51 @@ class ttPlayers
         $this->setAlly($playersWithIdx[3]['player_id'], $playersWithIdx[2]['player_id']);
     }
 
+    private function updatePlayerColorAndNo($player_id, $color, $player_no) : void
+    {
+        $this->players[$player_id]['player_color'] = self::NAME2RGB[$color];
+        $this->players[$player_id]['color_name'] = $color;
+
+        $this->game->DbQuery(
+            sprintf(
+                "UPDATE player SET player_color = '%s', color_name = '%s', player_no='%01d' WHERE player_id = %s",
+                self::NAME2RGB[$color],
+                $color,
+                $player_no,
+                $player_id
+            )
+        );
+    }
+
     public function assignTeams() : void
     {
-        $playersWithIdx = [];
+        $PLAYER_COLOR_2_ORDER = ['red' => 1, 'yellow' => 2, 'green' => 3, 'blue' => 4];
+        
+        $assignedIDs = [];
         foreach($this->players as $player_id => $player)
         {
-            $playersWithIdx[] = $player;
-        }
-
-        $assignedIDs = [];
-        for ($i = 0; $i < count($playersWithIdx); $i++)
-        {
-            if (in_array($playersWithIdx[$i]['player_id'], $assignedIDs))
+            if (in_array($player_id, $assignedIDs))
             {
                 continue;
             }
-            $assignedIDs[] = $playersWithIdx[$i]['player_id'];
 
-            //write to database the color and color name. also assign turn order. 
-            $this->game->DbQuery(
-                sprintf(
-                    "UPDATE player SET player_color = '%s', color_name = '%s' WHERE player_id = %s",
-                    self::NAME2RGB[$this->game::COLORS[$i]],
-                    $this->game::COLORS[$i],
-                    $playersWithIdx[$i]['player_id']
-                )
-            );
+            $newColor = $this->game::COLORS[count($assignedIDs)];
+            $this->updatePlayerColorAndNo($player_id, $newColor, $PLAYER_COLOR_2_ORDER[$newColor]+100);
+
+            $assignedIDs[] = $player_id;
+
+            $newColor = $this->game::COLORS[count($assignedIDs)];
+            $ally_id = $player['ally_id'];
+            $this->updatePlayerColorAndNo($ally_id, $newColor, $PLAYER_COLOR_2_ORDER[$newColor]+100);
+
+            $assignedIDs[] = $ally_id;
         }
+
+        //remove the extra 100 from the player_no
+        $this->game->DbQuery('UPDATE player SET player_no=player_no-100;');
+
+        //pieces also needs to be updated to reflect new colors.
+        (new ttPieces($this->game))->createPieces($this->players);
+
     }
 }

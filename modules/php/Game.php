@@ -33,7 +33,6 @@ class Game extends \Table
     const TOPRIGHT = '5_0';
     const BOTTOMRIGHT = '5_5';
     
-    //const COLORS = ['red','yellow','green','blue'];
     //This order is the same order as team assignments.
     const COLORS = ['red','green','yellow','blue'];
  
@@ -736,8 +735,9 @@ class Game extends \Table
             return;
         }
 
+         //ally assignment is good
         $ttPlayers->assignTeams();
-        //ally assignment is good
+       
         $allies=[];
         foreach($players as $player)
         {

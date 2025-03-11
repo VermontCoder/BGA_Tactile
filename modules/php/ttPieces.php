@@ -21,6 +21,9 @@ class ttPieces
 
     public function createPieces($players)
     {
+        //if we reassign colors, we need to recreate pieces, so delete all pieces
+        $this->game::DbQuery("DELETE FROM pieces");
+
         foreach ($players as $player_id => $player)
         {
             for($i=0; $i<2; $i++)
