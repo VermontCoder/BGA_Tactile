@@ -324,6 +324,31 @@ function (dojo, declare) {
                 this.scoreCtrl[player.player_id].create('player_score_'+player.player_id);
                 this.scoreCtrl[player.player_id].setValue(player.player_score);
                 $('player_score_'+player.player_id).classList.add('playerPanelNumber');
+
+                if (Object.keys(this.gamedatas.players).length == 4)
+                {
+                    //show team colors
+
+                    var teamHTML = '';
+                    if (['red','green'].includes(player.color_name))
+                    {
+                        teamHTML =  '&nbsp;' + this.ttUtility.getColorIconHTML('red') +'&nbsp;'+ this.ttUtility.getColorIconHTML('green'); 
+                    }
+                    else
+                    {
+                        teamHTML =  '&nbsp;' + this.ttUtility.getColorIconHTML('yellow') + '&nbsp;' + this.ttUtility.getColorIconHTML('blue'); 
+                    }
+                    //debugger;
+
+                    const scoreDivSelector = '#player_board_'+player.player_id +' > .player_score';
+                    const scoreDiv = document.querySelector(scoreDivSelector);
+                    
+                    //if we haven't already, add the team icons. Other parts of the player board are typically destroyed.
+                    if (!document.querySelector(scoreDivSelector + ' > .icon'))
+                    {
+                        scoreDiv.insertAdjacentHTML('beforeEnd', teamHTML);
+                    }
+                }
         },
 
         
