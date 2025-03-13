@@ -643,19 +643,34 @@ class Game extends \Table
         // Give some extra time to the active player when he completed an action
         $this->giveExtraTime($player_id);
         
-        $this->activeNextPlayer();
+        $this->activateNewPlayer();
+        // Go to another gamestate
+        // Here, we would detect if the game is over, and in this case use "endGame" transition instead 
+        $this->gamestate->nextState("nextPlayer");
+    }
 
+    private function activateNewPlayer() : void
+    {
+        $this->activeNextPlayer();
         $player_id = (int)$this->getActivePlayerId(); //get the new active player id
 
+       
         $actionBoardSelections = new ttActionBoardSelections($this);
         $actionBoardSelections->clearPlayerSelections($player_id);
 
         $cards = new ttCards($this);
         $cards->deactivateAllCards($player_id);
-    
-        // Go to another gamestate
-        // Here, we would detect if the game is over, and in this case use "endGame" transition instead 
-        $this->gamestate->nextState("nextPlayer");
+
+        if (!(new ttPieces($this))->doesPlayerHavePieces($player_id))
+        {
+            $this->notifyAllPlayers("skipTurn", clienttranslate('${player_name} has scored all pieces and skips turn!'), [
+            "player_id" => $player_id,
+            "player_name" => $this->getActivePlayerName(),
+            ]);
+
+            //move on to next player.
+            $this->activateNewPlayer();
+        }
     }
 
     public function stPregameStateSelection(): void

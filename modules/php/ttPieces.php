@@ -110,4 +110,10 @@ class ttPieces
         $location = $this->pieces[$piece_id]['location'];
         return $tiles[$location]['color'];
     }
+
+    public function doesPlayerHavePieces($player_id) : bool
+    {
+        $sql =  sprintf("SELECT count(piece_id) FROM pieces where player_id = %01d", $player_id);
+        return $this->game->getUniqueValueFromDB( $sql ) > 0;
+    }
 }

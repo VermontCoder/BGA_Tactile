@@ -818,6 +818,12 @@ function (dojo, declare) {
             }
         },
 
+        notif_skipTurn(notif)
+        {
+            console.log( 'notif_skipTurn' );
+            console.log( notif );
+        },
+        
         notif_messageInfo: function(notif) 
         {
             const message = this.format_string_recursive(notif.log, notif.args.message);
