@@ -474,12 +474,7 @@ function (dojo, declare) {
             {            
                 switch( stateName )
                 {
-                    case 'client_selectResource':
-                    case 'client_selectTileMove':
-                    case 'client_selectTilePush':
-                    case 'client_selectGain':
-                    case 'client_selectPieceMove':
-                    case 'client_selectPiecePush':
+                    
                     case 'selectAction':
                         this.addActionButton('actionBtnDoneWithTurn', _('Done with turn'), () => this.bgaPerformAction("actDoneWithTurn"), null, null, 'red'); 
                         this.addActionButton('actionBtnOverdrive', _('Overdrive'), () => this.ttOverdrive.beginOverdrive.call(this), null, null, 'red');
@@ -535,9 +530,17 @@ function (dojo, declare) {
                                 id: 'actionButtonSwapCancel',
                             });
                         break;
-                    
+
+
+                        case 'client_selectResource':
+                        case 'client_selectTileMove':
+                        case 'client_selectTilePush':
+                        case 'client_selectGain':
+                        case 'client_selectPieceMove':
+                        case 'client_selectPiecePush':
+                        case 'client_buyCard':
                         case 'client_overdrive':
-                            this.addActionButton('actionBtnCancelOverdrive', _('Cancel'), () => this.restoreServerGameState(), null, null, 'red'); 
+                            this.addActionButton('actionBtnCancel', _('Cancel'), () => this.restoreServerGameState(), null, null, 'red'); 
                             break;
 
                         case 'client_selectOverdriveAction':

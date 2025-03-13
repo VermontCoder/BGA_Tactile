@@ -33,8 +33,7 @@ define([
 
             if(selectablePieceIDs.length == 0) 
             { 
-                const moveOrPush = (action=='move') ? 'moved' : 'pushed';
-                this.showMessage(_("There are no pieces that can be "+moveOrPush+"!"),'error');
+                this.showMessage(_("There are no pieces that can be moved!"),'error');
                 return false;
             }
 
@@ -60,7 +59,7 @@ define([
                 return true;
             }
 
-            this.setClientState("client_selectPiece", 
+            this.setClientState("client_selectPieceMove", 
             {
                 descriptionmyturn : _("${you} must select piece to move<BR>"),
             });

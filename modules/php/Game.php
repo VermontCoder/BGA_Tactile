@@ -32,7 +32,8 @@ class Game extends \Table
     const TOPLEFT = '0_0';
     const TOPRIGHT = '5_0';
     const BOTTOMRIGHT = '5_5';
-    
+
+    // order is important, used to assign colors to cards.
     const COLORS = ['red','yellow','green','blue'];
  
     // Define player homes using position constants
@@ -866,12 +867,8 @@ class Game extends \Table
 
         $legalActions = new ttLegalMoves($this);
         $result['legalActions'] = $legalActions->legalActions($result['hands']);
-
-        if (in_array('move',$result['legalActions']) || in_array('push',$result['legalActions']))
-        {
-            $result['legalMoves'] = $legalActions->legalMoves();
-        }
-
+        $result['legalMoves'] = $legalActions->legalMoves();
+        
         return $result;
 
     }
