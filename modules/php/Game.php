@@ -33,8 +33,7 @@ class Game extends \Table
     const TOPRIGHT = '5_0';
     const BOTTOMRIGHT = '5_5';
     
-    //This order is the same order as team assignments.
-    const COLORS = ['red','green','yellow','blue'];
+    const COLORS = ['red','yellow','green','blue'];
  
     // Define player homes using position constants
     const PLAYERHOMES = [
@@ -187,12 +186,21 @@ class Game extends \Table
 
         //score point in local copy of $player
         $player['player_score']++;
+        $ally_id = $player['ally_id'];
+
+        if ($ally_id != null)
+        {
+            $ttPlayers->scorePoint($ally_id);
+            $ttPlayers->players[$ally_id]['player_score']++;
+        }
 
         $this->notifyAllPlayers("goalAchieved", clienttranslate('${player_name} has a piece in their goal!'), [
             "player_name" => $player['player_name'],
             "piece_id" => $piece_id,
             "player_id" => $player['player_id'],
             "score" => $player['player_score'],
+            "ally_id" => $ally_id,
+            "ally_score" => $ally_id != null ? $ttPlayers->players[$ally_id]['player_score'] : null,
         ]);
 
         $pieces->deletePiece($piece_id);
@@ -675,7 +683,6 @@ class Game extends \Table
 
     public function areAlliesGood($ttPlayers) : bool
     {
-        
         // Use array_reduce to check if all players have ally_id set to 0
         // This means we need to randomize allies.
         $allAlliesAreZero = array_reduce($ttPlayers->players, function($carry, $player) {
@@ -721,11 +728,8 @@ class Game extends \Table
         $ttPlayers = new ttPlayers($this);
         $players = $ttPlayers->deserializePlayersFromDb();
 
-       
-
         if (!$this->areAlliesGood($ttPlayers))
         {
-
             $message = clienttranslate('There is disagreement on ally assignments!');
             $this->gamestate->nextState("chooseAllies");
             $this->notifyAllPlayers("messageInfo", $message, [
@@ -917,11 +921,13 @@ class Game extends \Table
         //self::DbQuery(sprintf("UPDATE card SET card_location='discard' where card_type LIKE '%s_%%' or card_type LIKE '%s_%%'", 'red','blue'));
 
          //test data
-        // $this->cards->pickCardsForLocation( 10, 'deck', 'hand', 2383264);
-        // $this->cards->pickCardsForLocation( 4, 'deck', 'hand', 2383265);
+         foreach($players as $player_id => $player)
+         {
+             $this->cards->pickCardsForLocation( 4, 'deck', 'hand', $player_id);
+         }
 
         // //testing buy - issue plenty of resources
-        // self::DbQuery("UPDATE player SET red_resource_qty=20, blue_resource_qty=20, green_resource_qty=20, yellow_resource_qty=20");
+        self::DbQuery("UPDATE player SET red_resource_qty=20, blue_resource_qty=20, green_resource_qty=20, yellow_resource_qty=20");
 
         $this->cards->pickCardsForLocation( 6, 'deck', 'store');
         if ($this->checkStoreReset())

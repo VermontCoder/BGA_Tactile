@@ -231,6 +231,7 @@ class ttPlayers
     public function assignTeams() : void
     {
         $PLAYER_COLOR_2_ORDER = ['red' => 1, 'yellow' => 2, 'green' => 3, 'blue' => 4];
+        $TEAM_COLORS = ['red','green','yellow','blue'];
         
         $assignedIDs = [];
         foreach($this->players as $player_id => $player)
@@ -240,12 +241,12 @@ class ttPlayers
                 continue;
             }
 
-            $newColor = $this->game::COLORS[count($assignedIDs)];
+            $newColor = $TEAM_COLORS[count($assignedIDs)];
             $this->updatePlayerColorAndNo($player_id, $newColor, $PLAYER_COLOR_2_ORDER[$newColor]+100);
 
             $assignedIDs[] = $player_id;
 
-            $newColor = $this->game::COLORS[count($assignedIDs)];
+            $newColor = $TEAM_COLORS[count($assignedIDs)];
             $ally_id = $player['ally_id'];
             $this->updatePlayerColorAndNo($ally_id, $newColor, $PLAYER_COLOR_2_ORDER[$newColor]+100);
 

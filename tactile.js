@@ -656,6 +656,7 @@ function (dojo, declare) {
             dojo.subscribe( 'showVariable', this, "notif_showVariable" );
             dojo.subscribe('chooseStartTile', this, "notif_chooseStartTile");
             dojo.subscribe('allySelection', this, "notif_allySelection");
+            dojo.subscribe('allyAssignment', this, "notify_allyAssignment");
             dojo.subscribe('move', this, "notif_move");
             dojo.subscribe('push', this, "notif_push");
             dojo.subscribe('activate', this, "notif_activate");
@@ -688,6 +689,14 @@ function (dojo, declare) {
         {
             console.log( 'notif_allySelection' );
             console.log( notif );
+        },
+
+        notify_allyAssignment: function( notif )
+        {
+            console.log( 'notify_allyAssignment' );
+            console.log( notif );
+
+            location.reload();
         },
 
         notif_move: function( notif )
@@ -799,6 +808,11 @@ function (dojo, declare) {
 
             this.scoreCtrl[notif.args.player_id].setValue(notif.args.score);
             $(notif.args.piece_id).classList.add('scoring');
+
+            if (notif.args.ally_id != null)
+            {
+                this.scoreCtrl[notif.args.ally_id].setValue(notif.args.ally_score);
+            }
         },
 
         notif_messageInfo: function(notif) 
