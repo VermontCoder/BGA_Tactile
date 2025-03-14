@@ -393,12 +393,15 @@ class Game extends \Table
         //do this before we swap so the cards are in the correct state after swap
         $this->endOfActionBoardState($origin);
 
-        (new ttCards($this))->swapCards( $gainCardID, $lossCardID, $player_id, $ally_id);
+        $ttCards = new ttCards($this);
+
+        $ttCards->swapCards( $gainCardID, $lossCardID, $player_id, $ally_id);
         $this->notifyAllPlayers("swapCard", clienttranslate('${player_name} swapped a card'), [
             "player_id" => $player_id,
+            "ally_id" => $ally_id,
             "player_name" => $this->getActivePlayerName(),
-            "gainCardID" => $gainCardID,
-            "lossCardID" => $lossCardID,
+            "gainCardData" => $this->cards->getCard($gainCardID),
+            "lossCardData" => $this->cards->getCard($lossCardID),
             "origin" => $origin,
         ]);
 

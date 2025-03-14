@@ -668,6 +668,7 @@ function (dojo, declare) {
             dojo.subscribe('gain', this, "notif_gain");
             dojo.subscribe('buy', this, "notif_buy");
             dojo.subscribe('swap', this, "notif_swap");
+            dojo.subscribe('swapCard', this, "notif_swapCard");
             dojo.subscribe('reset', this, "notif_reset");
             dojo.subscribe('goalAchieved', this, "notif_goalAchieved");
             dojo.subscribe('messageInfo', this, "notif_messageInfo");
@@ -787,6 +788,14 @@ function (dojo, declare) {
             this.ttAnimations.moveResource.call(this, notif.args.lossColor, notif.args.player_id, false);
             this.ttAnimations.qtyChangeAnimation.call(this, resourceDivQtyGainID, 1, this.ttAnimations.animationDuration);
             this.ttAnimations.qtyChangeAnimation.call(this, resourceDivQtyLossID, -1, this.ttAnimations.animationDuration);
+        },
+
+        notif_swapCard: function( notif )
+        {
+            console.log( 'notif_swapCard' );
+            console.log( notif );
+
+            this.ttAnimations.swapCardsAnim.call(this, notif.args.gainCardData, notif.args.lossCardData, notif.args.player_id, notif.args.ally_id);
         },
 
         notif_reset: function( notif )

@@ -28,7 +28,7 @@ define([
         pickByNestedProperty: function(obj, nestedProp, value) 
         {
             return Object.fromEntries(
-                Object.entries(obj).filter(([key, nestedObj]) => nestedObj[nestedProp] === value)
+                Object.entries(obj).filter(([key, nestedObj]) => nestedObj[nestedProp] == value)
             );
         },
 

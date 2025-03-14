@@ -138,7 +138,7 @@ define([
             const newStore = this.ttAnimations.getNewStore.call(this,card, newCard);
             this.ttAnimations.animateDeckToStore.call(this, newStore);
 
-            //get the new tableau & store positions
+            //get the new tableau positions
             const newTableau = this.ttAnimations.getNewTableau.call(this, card, playerID);
             
             //add new Target div to the player's tableau
@@ -146,20 +146,40 @@ define([
                 </div>`;
             $('tableauCardContainer_'+playerID).insertAdjacentHTML('beforeend', newTargetDiv);
 
-            //animate tableau cards
-            for (var i=0; i<newTableau.length; i++)
+           this.ttAnimations.animateTableauChange.call(this, newTableau, playerID, card);
+        },
+
+        swapCardsAnim: async function( gainCardData, lossCardData, playerID, allyID )
+        {
+            var newPlayerTableau = this.ttAnimations.getNewTableau.call(this, gainCardData, playerID);
+            var newAllyTableau = this.ttAnimations.getNewTableau.call(this, lossCardData, allyID);
+
+            //remove the cards from the respective tableaus. getNewTableau has already added the new cards.
+            newPlayerTableau = newPlayerTableau.filter(card => card.id != lossCardData.id);
+            newAllyTableau = newAllyTableau.filter(card => card.id != gainCardData.id);
+            
+            this.ttAnimations.animateTableauChange.call(this, newPlayerTableau, playerID);
+            this.ttAnimations.animateTableauChange.call(this, newAllyTableau, allyID);
+        },
+
+        animateTableauChange: async function( newTableau, playerID, cardFromStore = null )
+        {
+             //animate tableau cards
+             for (var i=0; i<newTableau.length; i++)
             {
-                //The card coming from the store is included in this array. It has "storecard_" prepended to the id
+                //This might include a card coming from the store. It has "storecard_" prepended to the id
                 // instead of "card_".
                 //check for this and modify it accordingly.
 
-                const cardPrefix = newTableau[i].id != card.id ? 'card_' : 'storecard_';
+                var cardPrefix = 'card_';
+                if (cardFromStore && newTableau[i].id == cardFromStore.id) cardPrefix = 'storecard_';
+                
                 const cardDiv = cardPrefix+newTableau[i].id;
                 const destinationDiv = 'cardTarget_'+playerID+'_'+i;
 
                 console.log('cardDiv: '+cardDiv+'; destinationDiv: '+destinationDiv);
 
-                const anim = this.slideToObjectAndDestroy( cardDiv, destinationDiv, this.ttAnimations.animationDuration, 0 );
+                const anim = this.slideToObjectAndDestroy( cardDiv, destinationDiv, this.ttAnimations.animationDuration-20, 0 );
                 this.bgaPlayDojoAnimation( anim );
             }
         },
