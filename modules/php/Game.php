@@ -379,6 +379,32 @@ class Game extends \Table
         $this->goToNextState();
     }
 
+    public function actSwapCard(int $gainCardID, int $lossCardID, string $origin) : void
+    {
+        $this->checkActionLegality('swap', $origin);
+
+        $player_id = intval($this->getActivePlayerId());
+        
+        $players = new ttPlayers($this);
+        $players->deserializePlayersFromDb();
+
+        $ally_id = intval($players->players[$player_id]['ally_id']);
+
+        //do this before we swap so the cards are in the correct state after swap
+        $this->endOfActionBoardState($origin);
+
+        (new ttCards($this))->swapCards( $gainCardID, $lossCardID, $player_id, $ally_id);
+        $this->notifyAllPlayers("swapCard", clienttranslate('${player_name} swapped a card'), [
+            "player_id" => $player_id,
+            "player_name" => $this->getActivePlayerName(),
+            "gainCardID" => $gainCardID,
+            "lossCardID" => $lossCardID,
+            "origin" => $origin,
+        ]);
+
+        $this->goToNextState();
+    }
+
     //This function can also be called from actBuy if the buy results in a store reset.
     //In this case, it will return the new cards that were picked for the store.
     //Otherwise it behaves as a normal reset and returns null.

@@ -138,7 +138,7 @@ define([
             }
 
             if (this.gamedatas.gamestate.name == 'client_swapSelectGain' ||
-                this.gamedatas.gamestate.name == 'client_swapSelectLose')
+                this.gamedatas.gamestate.name == 'client_swapSelectLoss')
             {
                 this.ttSwapSequence.selectGain.call(this, resource_id);
             }
@@ -170,6 +170,22 @@ define([
             //raw data from db
             const cardData = this.gamedatas.gamestate.args.hands[cardID];
             const cardTypeData = this.ttUtility.getCardDataFromType(cardData);
+
+            //If this is a 4 player game, this might be designating a swap card.
+            //card from ally hand.
+            if (gg.name == 'client_swapSelectGain' && $(cardDivID).classList.contains('highlighted'))
+            {
+                this.ttSwapSequence.selectGainCard.call(this, cardDivID);
+                return;
+            }
+
+            if (gg.name == 'client_swapSelectLossCard' && $(cardDivID).classList.contains('highlighted'))
+            {
+                this.ttSwapSequence.selectSwapLossCard.call(this, cardDivID);
+                return;
+            }
+                 
+                
 
             //do not respond if this card is not in the active player's hand.
             if (cardData.location_arg != this.getActivePlayerId()) { return; }
@@ -312,6 +328,15 @@ define([
                 const resourceBankDiv = resourceColors[i]+'Bank';
                 $(resourceBankDiv).classList.add('highlighted');
             }
+        },
+
+        highlightPlayerCards: function(playerID, hands)
+        {
+            const playerHand = this.ttUtility.getPlayerHand(playerID, hands);
+            Object.values(playerHand).forEach((card) => {
+                const cardDiv = 'card_'+card.id;
+                $(cardDiv).classList.add('highlighted');
+            });
         },
 
         cancelActionBoardAction: function()

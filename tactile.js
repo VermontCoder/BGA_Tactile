@@ -511,7 +511,7 @@ function (dojo, declare) {
                         this.addActionButton('actionButtonResetNo', _('No'), () => this.ttResetSequence.confirmReset.call(this,false), null, null, 'red');
                         break;
                     
-                    case 'client_swapSelectLose':
+                    case 'client_swapSelectLoss':
                         for (const curColor of args.swappableResources[parseInt(this.getActivePlayerId())]) {
                             const colorIconHTML = this.ttUtility.getColorIconHTML(curColor);
                             const btnMsg = _(curColor.toUpperCase())+'('+colorIconHTML+')';
@@ -536,6 +536,8 @@ function (dojo, declare) {
                         case 'client_selectTileMove':
                         case 'client_selectTilePush':
                         case 'client_selectGain':
+                        case 'client_swapSelectGain':
+                        case 'client_swapSelectLossCard':
                         case 'client_selectPieceMove':
                         case 'client_selectPiecePush':
                         case 'client_buyCard':

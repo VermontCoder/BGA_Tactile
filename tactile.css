@@ -558,10 +558,15 @@
     
 }
 
+/* translateY(-20px) ?
 .card.highlighted {
-    transform: translateY(-20px) scale(1.1); /* Slightly enlarge the card */
-}
+    transform: translateY(-20px) scale(1.1); 
+} 
+*/
 
+.card.highlighted {
+    transform: scale(1.1); 
+} 
 .storecard.highlighted {
     transform: scale(1.1); /* Slightly enlarge the card */
 } 

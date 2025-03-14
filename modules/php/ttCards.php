@@ -90,6 +90,15 @@ class ttCards
         //return $row['affected_rows'];
     }
 
+    public function swapCards( int $gainCardID, int $lossCardID, int $player_id, int $ally_id) : void
+    {
+        $sql = sprintf("UPDATE card SET card_location_arg = %01d, card_type_arg = 0 WHERE card_id = %01d", $player_id, $gainCardID);
+        $this->game::DbQuery($sql);
+
+        $sql = sprintf("UPDATE card SET card_location_arg = %01d, card_type_arg = 0 WHERE card_id = %01d", $ally_id, $lossCardID);
+        $this->game::DbQuery($sql);
+    }
+
     public function deactivateAllCards(int $player_id) : void
     {
         $sql = sprintf("UPDATE card SET card_type_arg = %01d WHERE card_location = 'hand' AND card_location_arg = %01d", ttCards::CARDSTATUS['inactive'], $player_id);

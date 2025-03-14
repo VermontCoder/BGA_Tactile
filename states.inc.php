@@ -112,6 +112,7 @@ $machinestates = [
             "actGain",
             "actBuy",
             "actSwap",
+            "actSwapCard",
             "actReset",
             "actDoneWithTurn"
         ],
