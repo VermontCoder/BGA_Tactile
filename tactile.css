@@ -178,34 +178,34 @@
 
 @keyframes blinking {
     0% {
-         filter: drop-shadow(3px 3px 2px red)
-         drop-shadow(-3px 3px 2px red)
-         drop-shadow(3px -3px 2px red)
-         drop-shadow(-3px -3px 2px red)
+         filter: drop-shadow(3px 3px 2px #f10000)
+         drop-shadow(-3px 3px 2px #f10000)
+         drop-shadow(3px -3px 2px #f10000)
+         drop-shadow(-3px -3px 2px #f10000)
          opacity(100%);
     }
 
     25% {
-         filter: drop-shadow(3px 3px 2px yellow)
-         drop-shadow(-3px 3px 2px yellow)
-         drop-shadow(3px -3px 2px yellow)
-         drop-shadow(-3px -3px 2px yellow)
+         filter: drop-shadow(3px 3px 2px #f3ac11)
+         drop-shadow(-3px 3px 2px #f3ac11)
+         drop-shadow(3px -3px 2px #f3ac11)
+         drop-shadow(-3px -3px 2px #f3ac11)
          opacity(75%);
     }
 
     50% {
-         filter: drop-shadow(3px 3px 2px green)
-         drop-shadow(-3px 3px 2px green)
-         drop-shadow(3px -3px 2px green)
-         drop-shadow(-3px -3px 2px green)
+         filter: drop-shadow(3px 3px 2px #6ab524)
+         drop-shadow(-3px 3px 2px #6ab524)
+         drop-shadow(3px -3px 2px #6ab524)
+         drop-shadow(-3px -3px 2px #6ab524)
          opacity(50%);
     }
     
     75% {
-         filter: drop-shadow(3px 3px 2px blue)
-         drop-shadow(-3px 3px 2px blue)
-         drop-shadow(3px -3px 2px blue)
-         drop-shadow(-3px -3px 2px blue)
+         filter: drop-shadow(3px 3px 2px #0f87da)
+         drop-shadow(-3px 3px 2px #0f87da)
+         drop-shadow(3px -3px 2px #0f87da)
+         drop-shadow(-3px -3px 2px #0f87da)
          opacity(25%);
     }
 
@@ -418,7 +418,7 @@
 
  .playerPanelNumber.red
  {
-    color: red;
+    color: #f10000;
  }
 
  /* Tableau styles */
@@ -490,10 +490,10 @@
     margin-right:35px;
  }
  
- .tableauLabel.red {background-color: red;}
- .tableauLabel.yellow {background-color: yellow; color: black;}
- .tableauLabel.green {background-color: green;}
- .tableauLabel.blue {background-color: blue;}
+ .tableauLabel.red {background-color: #f10000;}
+ .tableauLabel.yellow {background-color: #f3ac11; color: black;}
+ .tableauLabel.green {background-color: #6ab524;}
+ .tableauLabel.blue {background-color: #0f87da;}
  .tableauLabel.notColored {background-color: white; color: black;}
 
  .notColored {

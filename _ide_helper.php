@@ -1064,9 +1064,9 @@ namespace {
          * ```
          * [
          *    // The first available color chosen:
-         *    'ff0000' => ['990000', 'aa1122'],
+         *    'f10000' => ['990000', 'aa1122'],
          *    // This color is chosen, if available
-         *    '0000ff' => '000099',
+         *    '0f87da' => '000099',
          * ]
          * ```
          *

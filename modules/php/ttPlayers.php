@@ -8,16 +8,16 @@ class ttPlayers
 {
     public array $players = array();
     const RGB2NAME =
-    [   'ff0000' => 'red',
-        'ffff00' => 'yellow',
-        '00ff00' => 'green',
-        '0000ff' => 'blue'];
+    [   'f10000' => 'red',
+        'f3ac11' => 'yellow',
+        '6ab524' => 'green',
+        '0f87da' => 'blue'];
     
     const NAME2RGB =
-    [   'red' => 'ff0000',
-        'yellow' => 'ffff00',
-        'green' => '00ff00',
-        'blue' => '0000ff'];
+    [   'red' => 'f10000',
+        'yellow' => 'f3ac11',
+        'green' => '6ab524',
+        'blue' => '0f87da'];
 
 
     public function __construct(Game $game)
