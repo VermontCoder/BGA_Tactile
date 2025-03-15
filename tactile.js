@@ -51,7 +51,13 @@ function (dojo, declare) {
 
         },
         
-        /*
+       
+        isMobile: function () {
+            const minWidth = 768; // Minimum width for desktop devices
+            return window.innerWidth < minWidth || screen.width < minWidth;
+            },
+              
+         /*
             setup:
             
             This method must set up the game user interface according to current game situation specified
@@ -67,6 +73,13 @@ function (dojo, declare) {
         setup: function( gamedatas )
         {
             console.log( "Starting game setup" );
+
+            if (this.isMobile()) {
+                console.log("Mobile device detected");
+                $('game_play_area').classList.add('mobileDeviceScale');
+              } else {
+                console.log("Desktop device detected");
+              }
             
 
             // (see "setupNotifications" method below)
@@ -94,7 +107,7 @@ function (dojo, declare) {
             {
                 document.querySelector(':root').style.setProperty('--num-tiles-to-offset', 8);
             }
-
+            
             console.log( "Ending game setup" );
             //console.log(gamedatas.legalActions);
         },
@@ -108,7 +121,7 @@ function (dojo, declare) {
         
         createTopAndTableauContainer: function() {
             document.getElementById('game_play_area').insertAdjacentHTML('beforeend', `
-            <DIV id="ttTopContainer" style="display: flex"></DIV>
+            <DIV id="ttTopContainer" style="display: flex;"></DIV>
             <DIV id="tableauContainer" class="tableauContainer"></DIV>`);
         },
 
@@ -400,9 +413,12 @@ function (dojo, declare) {
             {
                 case 'chooseStartTile':
                     //highlight the tiles that can be chosen
-                    Object.keys(args.args.playerHomes).forEach((location) => {
-                        $(`tile_${location}`).classList.add('legalMove');
-                    });
+                    if (this.isCurrentPlayerActive())
+                    {
+                        Object.keys(args.args.playerHomes).forEach((location) => {
+                            $(`tile_${location}`).classList.add('legalMove');
+                        });
+                    }
 
                     this.pregameColors();
                     break;

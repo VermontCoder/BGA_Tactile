@@ -962,13 +962,13 @@ class Game extends \Table
         //self::DbQuery(sprintf("UPDATE card SET card_location='discard' where card_type LIKE '%s_%%' or card_type LIKE '%s_%%'", 'red','blue'));
 
          //test data
-         foreach($players as $player_id => $player)
-         {
-             $this->cards->pickCardsForLocation( 4, 'deck', 'hand', $player_id);
-         }
+        //  foreach($players as $player_id => $player)
+        //  {
+        //      $this->cards->pickCardsForLocation( 4, 'deck', 'hand', $player_id);
+        //  }
 
         // //testing buy - issue plenty of resources
-        self::DbQuery("UPDATE player SET red_resource_qty=20, blue_resource_qty=20, green_resource_qty=20, yellow_resource_qty=20");
+        //self::DbQuery("UPDATE player SET red_resource_qty=20, blue_resource_qty=20, green_resource_qty=20, yellow_resource_qty=20");
 
         $this->cards->pickCardsForLocation( 6, 'deck', 'store');
         if ($this->checkStoreReset())

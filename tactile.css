@@ -45,16 +45,23 @@
      --z-index-action-cube: 3;
  }
  
+ .mobileDeviceScale {
+    transform: scale(0.94);
+    transform-origin: top left; 
+ }
+
  .addSpace { margin: 5px; }
  .addSpaceSmall { margin: 2px; }
 
  /* #overall-content {
     background: url(img/background.jpg) 0 0;
  }  */
- 
+
  /* Top container styles */
  #ttTopContainer {
-     display: flex;
+     display: absolute;
+     top: 0px;
+     left: 0px;
      height: var(--board-dim);
      margin-bottom: 20px;
  }
