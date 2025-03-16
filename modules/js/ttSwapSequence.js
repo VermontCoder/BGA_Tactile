@@ -35,7 +35,7 @@ define([
                 const allyCardCount = Object.keys(allyHand).length;
                 if(!playerHasResources && (cardCount === 0 || allyCardCount === 0))
                 {
-                    this.showMessage(_("You have no resources you and your ally have insufficient cards!"),'error');                
+                    this.showMessage(_("You have no resources or there are insufficient cards to swap!"),'error');                
                     return false;
                 }
             }

@@ -97,10 +97,13 @@ function (dojo, declare) {
             });
             
             //move the current player's tableau to the top
-            let currentPlayerTableau = document.querySelector('#tableau_'+this.player_id);
-            let tableauContainer = document.querySelector('#tableauContainer');
+            if (! this.isSpectator)
+            {
+                let currentPlayerTableau = document.querySelector('#tableau_'+this.player_id);
+                let tableauContainer = document.querySelector('#tableauContainer');
 
-            tableauContainer.prepend(currentPlayerTableau);
+                tableauContainer.prepend(currentPlayerTableau);
+            }
 
             //set color blind preference
             if (this.getGameUserPreference(100) == 1)
@@ -584,7 +587,7 @@ function (dojo, declare) {
             }
 
             //move the current player's tableau to the top
-            $('tableauContainer').prepend($('tableau_'+this.player_id));
+            if (! this.isSpectator) $('tableauContainer').prepend($('tableau_'+this.player_id));
 
             //PIECES
             document.querySelectorAll('.playingPiece').forEach(piece => piece.remove());
