@@ -95,6 +95,18 @@ define([
             return `<span class="${color} icon"></span>`;
         },
 
+        getTeamIconHTML(playerColor)
+        {
+            if (['red','green'].includes(playerColor))
+            {
+                return '&nbsp;' + this.ttUtility.getColorIconHTML('red') +'&nbsp;'+ this.ttUtility.getColorIconHTML('green'); 
+            }
+            else
+            {
+                return '&nbsp;' + this.ttUtility.getColorIconHTML('yellow') + '&nbsp;' + this.ttUtility.getColorIconHTML('blue'); 
+            }
+        },
+
         sortCards(cards)
         {
             return cards.toSorted((a, b) => 

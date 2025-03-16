@@ -284,15 +284,17 @@ function (dojo, declare) {
                     numSelections++;
                 }
             }
-
-            // //if there is a cube on the action board, there should be no cube in parking.
-            // for(i=0;i<numSelections;i++) 
-            // {
-            //     $('actionCube_'+player_id+'_'+i).classList.add('unselected');
-            // }
         },
 
         createPlayerTableau: function(player, hands, actionBoardSelections) {
+
+            var teamHTML = '';
+            if (Object.keys(this.gamedatas.players).length == 4)
+            {
+                //show team colors
+                teamHTML = this.ttUtility.getTeamIconHTML.call(this,player.color_name);
+            }
+
             document.getElementById('tableauContainer').insertAdjacentHTML('afterbegin', `
             <DIV id="tableau_${player.player_id}" class = "tableau">
                 <DIV id="tableauTopRowContainer_${player.player_id}" class="cardRow tableauTopRowContainer">
@@ -307,6 +309,7 @@ function (dojo, declare) {
                             <DIV id="actionCube_${player.player_id}_1" class="actionCube"></DIV>
                         </DIV>
                     </DIV>
+                    ${teamHTML}
                 </DIV>
                 <DIV id="tableauCardContainer_${player.player_id}" class="cardRow tableauCardContainer"></DIV>
             </DIV>`);
@@ -341,17 +344,7 @@ function (dojo, declare) {
                 if (Object.keys(this.gamedatas.players).length == 4)
                 {
                     //show team colors
-
-                    var teamHTML = '';
-                    if (['red','green'].includes(player.color_name))
-                    {
-                        teamHTML =  '&nbsp;' + this.ttUtility.getColorIconHTML('red') +'&nbsp;'+ this.ttUtility.getColorIconHTML('green'); 
-                    }
-                    else
-                    {
-                        teamHTML =  '&nbsp;' + this.ttUtility.getColorIconHTML('yellow') + '&nbsp;' + this.ttUtility.getColorIconHTML('blue'); 
-                    }
-                    //debugger;
+                    teamHTML = this.ttUtility.getTeamIconHTML.call(this,player.color_name);
 
                     const scoreDivSelector = '#player_board_'+player.player_id +' > .player_score';
                     const scoreDiv = document.querySelector(scoreDivSelector);

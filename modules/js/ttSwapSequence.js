@@ -13,19 +13,37 @@ define([
 
         beginSwap: function() 
         {
-            const swappableResources = this.gamedatas.gamestate.args.swappableResources;
-            var elegibleResourceColors = swappableResources[parseInt(this.getActivePlayerId())];
+            const gg= this.gamedatas.gamestate.args;
+            const player_id = this.getActivePlayerId();
+
+            const playerHasResources = gg.swappableResources[player_id].length > 0;;
+
+            const is4PlayerGame = Object.keys(gg.players).length >= 4;
+            const ally_id= gg.players[player_id].ally_id;
             
-            if(elegibleResourceColors.length == 0) 
+            if(!playerHasResources && !is4PlayerGame) 
             {
-                this.showMessage(_("You have no resources and thus are inneligible for swap!"),'info');                
+                this.showMessage(_("You have no resources and thus are inneligible for swap!"),'error');                
                 return false;
+            }
+
+            if(is4PlayerGame)
+            {
+                playerHand = this.ttUtility.getPlayerHand(player_id, gg.hands);
+                allyHand = this.ttUtility.getPlayerHand(ally_id, gg.hands);
+                const cardCount = Object.keys(playerHand).length;
+                const allyCardCount = Object.keys(allyHand).length;
+                if(!playerHasResources && (cardCount === 0 || allyCardCount === 0))
+                {
+                    this.showMessage(_("You have no resources you and your ally have insufficient cards!"),'error');                
+                    return false;
+                }
             }
 
             const isFromOverdrive = this.eventOrigin.includes(',');
             if (!isFromOverdrive) this.clearAllPreviousHighlighting();
 
-            if ( Object.keys(this.gamedatas.gamestate.args.players).length < 4)
+            if (!is4PlayerGame)
             {
                 this.setClientState("client_swapSelectGain", 
                 {
@@ -39,14 +57,11 @@ define([
                     descriptionmyturn : _("${you} must select the resource or card from your ally to gain<BR>"),
                 });
 
-                const ally_id= this.gamedatas.gamestate.args.players[this.getActivePlayerId()].ally_id;
-                this.ttEventHandlers.highlightPlayerCards.call(this, ally_id, this.gamedatas.gamestate.args.hands);
+                this.ttEventHandlers.highlightPlayerCards.call(this, ally_id, gg.hands);
             }
 
-            
-            
             //oddly enough, this is the only place where the list of colors is needed on the client side.
-            this.ttEventHandlers.highlightResourceBanks(['red','yellow','green','blue']);
+            if (playerHasResources) this.ttEventHandlers.highlightResourceBanks(['red','yellow','green','blue']);
 
             return true;
         },
