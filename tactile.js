@@ -698,8 +698,11 @@ function (dojo, declare) {
             console.log( 'notif_chooseStartTile' );
             console.log( notif );
 
+            //during replays, we don't want to reload the page because it gets stuck in an infinite loop..
+            if (window.location.href.indexOf('replay') > -1) return;
             //once the player colors are chosen, all the player colors are wrong, and it seems
             //that only a full reload fixes everything in the framework.
+            
             location.reload();
         },
 
@@ -714,6 +717,8 @@ function (dojo, declare) {
             console.log( 'notify_allyAssignment' );
             console.log( notif );
 
+            //during replays, we don't want to reload the page because it gets stuck in an infinite loop..
+            if (window.location.href.indexOf('replay') > -1) return;
             location.reload();
         },
 
