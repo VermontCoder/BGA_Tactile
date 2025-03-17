@@ -657,7 +657,38 @@ class Game extends \Table
     {
         // TODO: compute and return the game progression
 
-        return 0;
+        //These are all "Manhattan distances"
+        //Both pieces of a player distances from goals are added together.
+        //in the case of 4p, its the minimum distance of either teammate
+        $max_distances = [2 => 20, 3 => 10, 4 => 20];
+
+        $ttPlayers = new ttPlayers($this);
+        $players = $ttPlayers->deserializePlayersFromDb();
+
+        
+
+        $ttPieces = new ttPieces($this);
+
+        $shortestDistance = 999;
+
+        foreach($players as $player_id => $player)
+        {
+            $distance = $ttPieces->getPlayerGoalDistance($player_id);
+            if (count($players) == 4 && $distance==0)
+            {
+                //case four players and one player has scored all pieces. 
+                continue;
+            }
+
+            if ($distance < $shortestDistance)
+            {
+                $shortestDistance = $distance;
+            }
+        }
+
+        $max_distance = $max_distances[count($players)];
+
+        return  intval(100 * (($max_distance-$shortestDistance) /$max_distance ));
     }
 
     /**

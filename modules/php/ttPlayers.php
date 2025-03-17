@@ -258,6 +258,5 @@ class ttPlayers
 
         //pieces also needs to be updated to reflect new colors.
         (new ttPieces($this->game))->createPieces($this->players);
-
     }
 }

@@ -116,4 +116,44 @@ class ttPieces
         $sql =  sprintf("SELECT count(piece_id) FROM pieces where player_id = %01d", $player_id);
         return $this->game->getUniqueValueFromDB( $sql ) > 0;
     }
+
+    //used by getProgress
+    public function getPlayerGoalDistance($player_id) : int
+    {
+        if (empty($this->pieces))
+        {
+            $this->deserializePiecesFromDb();
+        }
+
+        $playerPieces = array_filter($this->pieces, function($piece) use ($player_id) {
+            return $piece['player_id'] == $player_id;
+        });
+
+        $totalDistance = 0;
+        foreach($playerPieces as $piece)
+        {
+            $totalDistance += $this->getPieceDistanceFromGoal($piece['piece_id']);
+        }
+        return $totalDistance;
+    }
+
+    private function getPieceDistanceFromGoal($piece_id)
+    {
+        if (empty($this->pieces))
+        {
+            $this->deserializePiecesFromDb();
+        }
+
+        $location = $this->pieces[$piece_id]['location'];
+        $pieceColor = $this->pieces[$piece_id]['piece_color'];
+        $playerGoals = $this->game->getPlayerGoals()[$pieceColor];
+        $distance = min(array_map(function($goal) use ($location) {
+            $locationXY = explode('_', $location);
+            $goalXY = explode('_', $goal);
+            $xDist = abs(intval($locationXY[0]) - intval($goalXY[0]));
+            $yDist = abs(intval($locationXY[1]) - intval($goalXY[1]));
+            return $xDist + $yDist;
+        }, $playerGoals));
+        return $distance;
+    }
 }
