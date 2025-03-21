@@ -227,11 +227,18 @@ function (dojo, declare) {
             // Sort tiles by tile_id, y coord followed by x coord
             tiles.sort((a, b) => (a.tile_id.substring(2,3) + '_' + a.tile_id.substring(0,1)) > (b.tile_id.substring(2,3) + '_' + b.tile_id.substring(0,1)) ? 1 : -1);
             
+            const tileDim = 75+2; //75px tile size + 1px margin
+            var count =0;
             Object.values(tiles).forEach(tile => {
                 const tileId = 'tile_' + tile.tile_id;
                 const tileClass = 'tile ' +tile.color + (playerHomes[tile.tile_id] ? playerHomes[tile.tile_id] + 'Home' : '');
-
+                const xCoord = tile.tile_id.substring(0,1);
+                const yCoord = tile.tile_id.substring(2,3);
+                const leftPos = (parseInt(xCoord) * tileDim) +10 + 'px';
+                const topPos = (parseInt(yCoord) * tileDim) + 10 + 'px';
                 document.getElementById('board').insertAdjacentHTML('beforeend', '<DIV id="'+tileId+'" class="'+tileClass+'"></DIV>');
+                $(tileId).style.left = leftPos;
+                $(tileId).style.top = topPos;
             });
 
             //click handlers

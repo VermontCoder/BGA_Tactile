@@ -46,7 +46,7 @@
  }
  
  .mobileDeviceScale {
-    transform: scale(0.94);
+    transform: scale(0.93);
     transform-origin: top left; 
  }
 
@@ -223,11 +223,9 @@
 
 }   
  .tile {
-    position: relative;
+    position: absolute;
      width: var(--tile-dim);
      height: var(--tile-dim);
-     display: inline-block;
-     margin: 1px;
  }
  
  .tile.redHome
@@ -608,12 +606,12 @@
 }
 
 .legalMove {
-	position: relative;
+	position: absolute;
 	z-index: 0;
 	width: var(--tile-dim);
 	height: var(--tile-dim);
 	overflow: hidden;
-	padding: 2rem;
+	/*padding: 2rem;*/
 	
 	&::before {
 		content: '';
