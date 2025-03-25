@@ -29,6 +29,7 @@ define([
     g_gamethemeurl + "modules/js/ttSwapSequence.js",
     g_gamethemeurl + "modules/js/ttResetSequence.js",
     g_gamethemeurl + "modules/js/ttOverdrive.js",
+    g_gamethemeurl + "modules/js/ttDoneWithTurnSequence.js"
 ],
 
 function (dojo, declare) {
@@ -46,6 +47,7 @@ function (dojo, declare) {
             this.ttResetSequence = new bgagame.ttResetSequence();
             this.ttAnimations = new bgagame.ttAnimations();
             this.ttOverdrive = new bgagame.ttOverdrive();
+            this.ttDoneWithTurnSequence = new bgagame.ttDoneWithTurnSequence();
 
             this.cardStatuses = { 0: 'inactive', 1: 'active', 2: 'exhausted' };
 
@@ -495,7 +497,7 @@ function (dojo, declare) {
                 {
                     
                     case 'selectAction':
-                        this.addActionButton('actionBtnDoneWithTurn', _('Done with turn'), () => this.bgaPerformAction("actDoneWithTurn"), null, null, 'red'); 
+                        this.addActionButton('actionBtnDoneWithTurn', _('Done with turn'), () => this.ttDoneWithTurnSequence.beginDoneWithTurn.call(this), null, null, 'red'); 
                         this.addActionButton('actionBtnOverdrive', _('Overdrive'), () => this.ttOverdrive.beginOverdrive.call(this), null, null, 'red');
                         
                         break;
@@ -528,6 +530,11 @@ function (dojo, declare) {
                     case 'client_reset':
                         this.addActionButton('actionButtonResetYes', _('Yes'), () => this.ttResetSequence.confirmReset.call(this,true), null, null, 'red');
                         this.addActionButton('actionButtonResetNo', _('No'), () => this.ttResetSequence.confirmReset.call(this,false), null, null, 'red');
+                        break;
+
+                    case 'client_doneWithTurn':
+                        this.addActionButton('actionButtonDoneWithTurnYes', _('Yes'), () => this.ttDoneWithTurnSequence.confirmDoneWithTurn.call(this,true), null, null, 'red');
+                        this.addActionButton('actionButtonDoneWithTurnNo', _('No'), () => this.ttDoneWithTurnSequence.confirmDoneWithTurn.call(this,false), null, null, 'red');
                         break;
                     
                     case 'client_swapSelectLoss':
