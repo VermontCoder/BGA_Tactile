@@ -104,10 +104,13 @@ class Game extends \Table
     public function actMove(string $piece_id, string $tileID, string $origin) :void
     {
         $legalActions = new ttLegalMoves($this);
-        $legalMoves = $legalActions->legalMoves();
+        
+        $pieces = new ttPieces($this);
+        $pieces->deserializePiecesFromDb();
+
+        $legalMoves = $legalActions->legalMoves(false, $pieces);
         $location = ttUtility::tileID2location($tileID);
         
-
         //1 - check for destination legality
         if (!in_array($location,$legalMoves[$piece_id]))
         {
@@ -143,7 +146,11 @@ class Game extends \Table
     public function actPush(string $piece_id, string $tileID, string $origin) :void
     {
         $legalActions = new ttLegalMoves($this);
-        $legalMoves = $legalActions->legalMoves();
+
+        $pieces = new ttPieces($this);
+        $pieces->deserializePiecesFromDb();
+
+        $legalMoves = $legalActions->legalMoves(true, $pieces);
         $location = ttUtility::tileID2location($tileID);
 
         //1 - check for destination legality
@@ -940,10 +947,14 @@ class Game extends \Table
         
         $result['hands'] = $this->cards->getCardsInLocation('hand');
 
+        
+        $pieces = new ttPieces($this);
+        $pieces->deserializePiecesFromDb();
+
         $legalActions = new ttLegalMoves($this);
         $result['legalActions'] = $legalActions->legalActions($result['hands']);
-        $result['legalMoves'] = $legalActions->legalMoves();
-        
+        $result['legalMovesMove'] = $legalActions->legalMoves(false, $pieces);
+        $result['legalMovesPush'] = $legalActions->legalMoves(true, $pieces);
         return $result;
 
     }

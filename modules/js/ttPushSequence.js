@@ -20,7 +20,7 @@ define([
             //as a convenience, if only one piece can be moved, select it automatically.
             var selectablePieceIDs = [];
 
-            const legalMoves = this.gamedatas.gamestate.args.legalMoves;
+            const legalMoves = this.gamedatas.gamestate.args.legalMovesPush;
 
             //find all pieces that can be moved.
             Object.keys(pieces).forEach(function(key,index) {
@@ -72,7 +72,7 @@ define([
             console.log("selectPiece: " + piece_id);
 
             //does this piece have any moves?
-            const legalMoves = this.gamedatas.gamestate.args.legalMoves[piece_id];
+            const legalMoves = this.gamedatas.gamestate.args.legalMovesPush[piece_id];
             if (legalMoves.length == 0) 
             {
                 this.showMessage(_("This piece has no legal moves!"),'error');

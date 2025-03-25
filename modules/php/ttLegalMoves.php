@@ -74,12 +74,11 @@ class ttLegalMoves
         return $legal;
     }
 
-    public function legalMoves() : array
+    public function legalMoves(bool $isPush, ttPieces $pieces) : array
     {
         $legalMoves = [];
         //$player_id = (int)$this->game->getActivePlayerId();
 
-        $pieces = new ttPieces($this->game);
         $pieceLocations = $pieces->getPieceLocations();
 
         foreach($pieces->pieces as $piece)
@@ -92,6 +91,14 @@ class ttLegalMoves
             //Remove them from the list of illegal moves even if they have pieces on them
             $illegalLocations = array_diff($pieceLocations, $playerGoals,[$this->game::COLORHOMES[$piece['piece_color']]]);
 
+            if ($isPush)
+            {
+                //all the home spaces are illegal moves.
+                foreach($this->game::COLORHOMES as $home)
+                { 
+                    $illegalLocations[] = $home;
+                }
+            }
             $illegalTiles = $this->game->getIllegalTiles()[$piece['piece_color']];
             $illegalLocations = array_merge($illegalLocations, $illegalTiles);
 

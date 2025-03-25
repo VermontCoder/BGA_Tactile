@@ -97,7 +97,7 @@ define([
             if(!this.isCurrentPlayerActive()) { return; }
 
             const gg = this.gamedatas.gamestate;
-            const isPush = gg.name == 'client_selectPiecePush';
+            const isPush = gg.name.includes('Push');
             const pieceData = this.ttUtility.parsePieceID(piece_id);
             const isPiecePlayersPiece = pieceData.player_id == this.getActivePlayerId();
 
