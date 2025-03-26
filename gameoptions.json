@@ -1,1 +1,24 @@
-{}
+{
+    "100": {
+    "name": "Teams",
+    "values": {
+      "1": {
+        "name": "Random"
+      },
+      "2": {
+        "name": "1st & 2nd players vs. 3rd & 4th"
+      },
+      "3": {
+         "name": "1st & 3rd players vs. 2nd & 4th"
+      },
+      "4": {
+         "name": "1st & 4th players vs. 2nd & 3rd"
+      }
+    },
+    "displaycondition": [
+      {
+        "type": "maxplayers",
+        "value": 4
+      }]
+  }
+}

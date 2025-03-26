@@ -510,22 +510,6 @@ class Game extends \Table
         $this->gamestate->nextState("nextPlayer");
     }
 
-    public function actAllySelection(int $ally_id) : void
-    {
-        $player_id = $this->getCurrentPlayerId();
-        $ttPlayers = new ttPlayers($this);
-        
-        $ttPlayers->setAlly($player_id, $ally_id);
-        $ttPlayers->deserializePlayersFromDb();
-
-        $this->notifyAllPlayers("allySelection", clienttranslate('${player_name} has choosen ${ally_name} as an ally!'), [
-            "player_name" => $ttPlayers->players[$player_id]['player_name'],
-            "ally_name" => ($ally_id==0) ? clienttranslate('Random') : $ttPlayers->players[$ally_id]['player_name'],
-        ]);
-
-        $this->gamestate->setPlayerNonMultiactive($player_id, 'checkAllyAssignments');
-    }
-
     //******************************************************* */
     // Action Support Functions
     //******************************************************* */
@@ -641,7 +625,7 @@ class Game extends \Table
         ];
     }
 
-    public function argChooseAllies(): array
+    public function argSetAllies(): array
     {
         $players = new ttPlayers($this);
         $players->deserializePlayersFromDb();
@@ -671,8 +655,6 @@ class Game extends \Table
 
         $ttPlayers = new ttPlayers($this);
         $players = $ttPlayers->deserializePlayersFromDb();
-
-        
 
         $ttPieces = new ttPieces($this);
 
@@ -756,7 +738,7 @@ class Game extends \Table
         }
         else if ($this->getPlayersNumber() == 4)
         {    
-            $this->gamestate->nextState("chooseAllies");
+            $this->gamestate->nextState("setAllies");
         }
         else
         {
@@ -764,69 +746,27 @@ class Game extends \Table
         }
     }
 
-    public function areAlliesGood($ttPlayers) : bool
+    public function stSetAllies(): void
     {
-        // Use array_reduce to check if all players have ally_id set to 0
-        // This means we need to randomize allies.
-        $allAlliesAreZero = array_reduce($ttPlayers->players, function($carry, $player) {
-            return $carry && ($player['ally_id'] == 0);
-        }, true);
+        $ttPlayers = new ttPlayers($this);
 
-        if ($allAlliesAreZero)
+        $gameOptions = $this->getTableOptions();
+
+        $allyOption = (int) $gameOptions['100'];
+        if ($allyOption == 1)
         {
             $ttPlayers->randomizeAllies($ttPlayers);
         }
         else
         {
-            $atLeastOneAllyIsZero = array_reduce($ttPlayers->players, function($carry, $player) {
-                return $carry || ($player['ally_id'] == 0);
-            }, false);
-
-            //if at least one player has ally_id set to 0, but not all players
-            //This means at least one person selected "randomize" but not everyone.
-            if ($atLeastOneAllyIsZero)
-            {
-                return false;
-            }
-
-            foreach($ttPlayers->players as $player)
-            {
-                //check that each player has each other as an ally.
-                $alliedPlayer = $ttPlayers->players[$player['ally_id']];
-                if ($alliedPlayer['ally_id'] != $player['player_id'])
-                {
-                    return false;
-                    // $this->gamestate->nextState("chooseAllies");
-                    // throw new \BgaUserException('There is disagreement on ally assignments!');
-                }
-            }
+            $ttPlayers->assignAllies($allyOption);
         }
 
-        return true;
-    }
-
-    public function stCheckAllyAssignments() : void
-    {
         
-        $ttPlayers = new ttPlayers($this);
-        $players = $ttPlayers->deserializePlayersFromDb();
-
-        if (!$this->areAlliesGood($ttPlayers))
-        {
-            $message = clienttranslate('There is disagreement on ally assignments!');
-            $this->gamestate->nextState("chooseAllies");
-            $this->notifyAllPlayers("messageInfo", $message, [
-                "message" => $message,
-                "severity" => 'error',
-            ]);
-            return;
-        }
-
-         //ally assignment is good
         $ttPlayers->assignTeams();
        
         $allies=[];
-        foreach($players as $player)
+        foreach($ttPlayers->players as $player)
         {
             if ($player['color_name'] == 'red' || $player['color_name'] == 'green')
             {
@@ -838,8 +778,8 @@ class Game extends \Table
             }
         }
 
-        $this->notifyAllPlayers("allyAssignment", clienttranslate('Ally assignments are complete!').
-        '<P>'.clienttranslate('Team Red/Green (${colorIconRed}/${colorIconGreen}): ${alliesRedGreen}').
+        $this->notifyAllPlayers("allyAssignment", 
+        clienttranslate('Team Red/Green (${colorIconRed}/${colorIconGreen}): ${alliesRedGreen}').
         '<BR>____________________<BR>'.clienttranslate('Team Yellow/Blue (${colorIconYellow}/${colorIconBlue}): ${alliesYellowBlue}'), 
         [
             "alliesRedGreen" => $allies['red_green'][0].clienttranslate(' and ').$allies['red_green'][1],
@@ -988,7 +928,14 @@ class Game extends \Table
         $board->createBoard();
 
         $ttPlayers = new ttPlayers($this);
-        $ttPlayers->createPlayers($players);
+        if (count($players) == 4)
+        {
+            $ttPlayers->createPlayers4P($players);
+        }
+        else
+        {
+            $ttPlayers->createPlayers($players);
+        }
 
         //pieces are created after players know what their color is
         

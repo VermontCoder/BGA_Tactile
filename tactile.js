@@ -268,7 +268,7 @@ function (dojo, declare) {
             document.getElementById('tableauCardContainer_' + player.player_id).insertAdjacentHTML('beforeend', `
             <DIV id="actionBoard_${player.player_id}" class="actionBoard">
                 <DIV id="action_${player.player_id}_move" class="actionBoardSelectionTarget" style="top:34px; left:11px;">
-                    <DIV id="action_${player.player_id}_move_text" style="position:absolute; top:0px; left:26px; height:25px; width:92px; border:solid white 2px; "></DIV>
+                    <DIV id="action_${player.player_id}_move_text" style="position:absolute; top:0px; left:26px; height:25px; width:92px;"></DIV>
                 </DIV>
                 <DIV id="action_${player.player_id}_gain" class="actionBoardSelectionTarget" style="top:62px; left:11px;">
                     <DIV id="action_${player.player_id}_gain_text" style="position:absolute; top:0px; left:35px; height:25px; width:92px;"></DIV>
@@ -292,7 +292,7 @@ function (dojo, declare) {
                     var targetID = e.target.id;
 
                     //handle case where the text div is clicked instead of the parent div
-                    //should look like coming from the parent div, but it doesn't.
+                    //should look like coming from the parent div.
                     if (targetID.indexOf('_text') > -1) {
                         targetID = targetID.substring(0, targetID.indexOf('_text'));
                     }
@@ -521,32 +521,7 @@ function (dojo, declare) {
                         this.addActionButton('actionBtnOverdrive', _('Overdrive'), () => this.ttOverdrive.beginOverdrive.call(this), null, null, 'red');
                         
                         break;
-                    case 'chooseAllies':
-                        //debugger;
-                        Object.keys(args.players).forEach((player_id) => {
-                            //do not show a button for the current player
-                            if (this.getCurrentPlayerId() == player_id) return;
-
-                            const player = args.players[player_id];
-                            const btnMsg = player.player_name;
-                            const btnId = 'actionButtonAllyChoice_'+player.player_id;
-                            this.statusBar.addActionButton(btnMsg, 
-                                () => this.ttEventHandlers.onAllySelection.call(this,player.player_id),
-                                {
-                                    color: 'secondary',
-                                    id: btnId,
-                                });
-                        });
-
-                        this.statusBar.addActionButton(_('Randomize'), 
-                            () => this.ttEventHandlers.onAllySelection.call(this,0),
-                            {
-                                color: 'secondary',
-                                id: 'actionButtonRandomizeAlly',
-                            });
-
-                        this.pregameColors();
-                        break;
+                    
                     case 'client_reset':
                         this.addActionButton('actionButtonResetYes', _('Yes'), () => this.ttResetSequence.confirmReset.call(this,true), null, null, 'red');
                         this.addActionButton('actionButtonResetNo', _('No'), () => this.ttResetSequence.confirmReset.call(this,false), null, null, 'red');
@@ -706,7 +681,6 @@ function (dojo, declare) {
             console.log( 'notifications subscriptions setup' );
             dojo.subscribe( 'showVariable', this, "notif_showVariable" );
             dojo.subscribe('chooseStartTile', this, "notif_chooseStartTile");
-            dojo.subscribe('allySelection', this, "notif_allySelection");
             dojo.subscribe('allyAssignment', this, "notify_allyAssignment");
             dojo.subscribe('move', this, "notif_move");
             dojo.subscribe('push', this, "notif_push");
@@ -740,20 +714,14 @@ function (dojo, declare) {
             location.reload();
         },
 
-        notif_allySelection: function( notif )
-        {
-            console.log( 'notif_allySelection' );
-            console.log( notif );
-        },
-
         notify_allyAssignment: function( notif )
         {
             console.log( 'notify_allyAssignment' );
             console.log( notif );
 
             //during replays, we don't want to reload the page because it gets stuck in an infinite loop..
-            if (window.location.href.indexOf('replay') > -1) return;
-            location.reload();
+            // if (window.location.href.indexOf('replay') > -1) return;
+            // location.reload();
         },
 
         notif_move: function( notif )
