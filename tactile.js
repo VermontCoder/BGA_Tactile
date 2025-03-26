@@ -267,17 +267,37 @@ function (dojo, declare) {
         createPlayerActionBoard: function(player, actionBoardSelections) {
             document.getElementById('tableauCardContainer_' + player.player_id).insertAdjacentHTML('beforeend', `
             <DIV id="actionBoard_${player.player_id}" class="actionBoard">
-                <DIV id="action_${player.player_id}_move" class="actionBoardSelectionTarget" style="top:34px; left:11px;"></DIV>
-                <DIV id="action_${player.player_id}_gain" class="actionBoardSelectionTarget" style="top:62px; left:11px;"></DIV>
-                <DIV id="action_${player.player_id}_buy" class="actionBoardSelectionTarget" style="top:90px; left:11px;"></DIV>
-                <DIV id="action_${player.player_id}_swap" class="actionBoardSelectionTarget" style="top:118px; left:11px;"></DIV>
-                <DIV id="action_${player.player_id}_reset" class="actionBoardSelectionTarget" style="top:146px; left:11px;"></DIV>
+                <DIV id="action_${player.player_id}_move" class="actionBoardSelectionTarget" style="top:34px; left:11px;">
+                    <DIV id="action_${player.player_id}_move_text" style="position:absolute; top:0px; left:26px; height:25px; width:92px; border:solid white 2px; "></DIV>
+                </DIV>
+                <DIV id="action_${player.player_id}_gain" class="actionBoardSelectionTarget" style="top:62px; left:11px;">
+                    <DIV id="action_${player.player_id}_gain_text" style="position:absolute; top:0px; left:35px; height:25px; width:92px;"></DIV>
+                </DIV>
+                <DIV id="action_${player.player_id}_buy" class="actionBoardSelectionTarget" style="top:90px; left:11px;">
+                    <DIV id="action_${player.player_id}_buy_text" style="position:absolute; top:0px; left:35px; height:25px; width:92px;"></DIV>
+                </DIV>
+                <DIV id="action_${player.player_id}_swap" class="actionBoardSelectionTarget" style="top:118px; left:11px;">
+                    <DIV id="action_${player.player_id}_swap_text" style="position:absolute; top:0px; left:35px; height:25px; width:92px;"></DIV>
+                </DIV>
+                <DIV id="action_${player.player_id}_reset" class="actionBoardSelectionTarget" style="top:146px; left:11px;">
+                    <DIV id="action_${player.player_id}_reset_text" style="position:absolute; top:0px; left:35px; height:25px; width:92px;"></DIV>
+                </DIV>
             </DIV>`);
 
             //click handlers
             const actionBoardChoices = document.querySelectorAll('#actionBoard_'+player.player_id+' .actionBoardSelectionTarget');
             actionBoardChoices.forEach(choice => {         
-                 choice.addEventListener('click', (e) => this.ttEventHandlers.onActionBoardClick.call(this,e.target.id));
+                 choice.addEventListener('click', (e) => 
+                 {
+                    var targetID = e.target.id;
+
+                    //handle case where the text div is clicked instead of the parent div
+                    //should look like coming from the parent div, but it doesn't.
+                    if (targetID.indexOf('_text') > -1) {
+                        targetID = targetID.substring(0, targetID.indexOf('_text'));
+                    }
+                    this.ttEventHandlers.onActionBoardClick.call(this,targetID);
+                 });
             });
 
             this.createActionBoardSelections(player.player_id, actionBoardSelections);

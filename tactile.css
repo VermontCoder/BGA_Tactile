@@ -592,6 +592,7 @@
      position: absolute;
      height:var(--action-board-selection-dim);
      width: var(--action-board-selection-dim);
+     border: solid blue 2px;
  }
 
  .actionBoardSelectionTarget.selected 

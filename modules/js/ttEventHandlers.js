@@ -28,7 +28,7 @@ define([
             if(!this.isCurrentPlayerActive()) { return; }
             
             //Do not respond if this action has already been selected.
-            if(gg.args.actionBoardSelections[selectionDivID]['selected']) { return; }
+            if(gg.args.actionBoardSelections[selectionDivID].selected) { return; }
 
             //Do not respond if this is not the active player's action board.
             if(selectionData['player_id'] != this.getActivePlayerId()) { return; }
