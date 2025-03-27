@@ -85,25 +85,29 @@ class ttPlayers
     {
         $colorTeamOrder = ['red' => 'green', 'green'=>'red', 'yellow'=> 'blue','blue'=>'yellow'];
 
-        // Retrieve inital player order ([0=>playerId1, 1=>playerId2, ...])
+        // Retrieve initial player order ([0=>playerId1, 1=>playerId2, ...])
 		$playerInitialOrder = [];
         $allyAssignments = [];
 		foreach ($players as $playerId => $player) {
-			$playerInitialOrder[$player['player_table_order']] = $playerId;
+			$playerInitialOrder[((int) $player['player_table_order'])-1] = $playerId;
             $allyAssignments[$playerId] = $playerId; //initially set ally to self
 		}
-		ksort($playerInitialOrder);
-		$playerInitialOrder = array_flip(array_values($playerInitialOrder));
+		// ksort($playerInitialOrder);
+		// $playerInitialOrder = array_flip(array_values($playerInitialOrder));
 
-
+        //******************* */
         //assign allies
+        //******************* */
+        
         $hostID = $playerInitialOrder[0];
+        
         $hostAlly = null; //initialize host ally
        
-        $gameOptions = $this->getTableOptions();
-        $allyOption = (int) $gameOptions['100'];
-        
-        if ($allyOption == 1)
+        $allyOption = $this->game->tableOptions->get(100)-1;
+
+        unset($allyAssignments[$hostID]); //remove host from ally assignments
+
+        if ($allyOption == 0)
         {
             //set host ally randomly
             $hostAlly = array_rand($allyAssignments); //choose random ally from remaining players
@@ -111,10 +115,10 @@ class ttPlayers
         else
         {
            //ally is set by user choice
-           $hostAlly = $playerInitialOrder[$allyOption-1]; //set host ally to the player specified by player_table_order
+           $hostAlly = $playerInitialOrder[$allyOption]; //set host ally to the player specified by player_table_order
         }
         
-        unset($allyAssignments[$hostID]); //remove host from ally assignments
+        
         $players[$hostID]['ally_id'] = $hostAlly;
 
         $players[$hostAlly]['ally_id'] = $hostID; //set the ally's ally to host
@@ -124,10 +128,13 @@ class ttPlayers
         unset($allyAssignments[$otherTeamP1]); //remove the player from future assignments
 
         //actually should be only one player left.
-        $otherTeamP2 = array_rand($allyAssignments); //choose random player from remaining players
+        $otherTeamP2 = array_key_first($allyAssignments);
         $players[$otherTeamP1]['ally_id'] = $otherTeamP2;
         $players[$otherTeamP2]['ally_id'] = $otherTeamP1; //set other team player's ally to the other player
 
+        //******************* */
+        // Assign colors
+        //******************* */
 
         //Choose random color for game host, and assign colors on that basis
         $hostColor = $colorTeamOrder[array_rand($colorTeamOrder)];
@@ -143,23 +150,53 @@ class ttPlayers
 
         $otherTeamColorP1 = array_rand($colorTeamOrder); //choose random color for the other team
         unset($colorTeamOrder[$otherTeamColorP1]); //remove the color from the colorTeamOrder array
-        $otherTeamColorP2 = array_rand($colorTeamOrder); //choose remaining color for the other team member
+        $otherTeamColorP2 = array_key_first($colorTeamOrder); //choose remaining color for the other team member
 
         $players[$otherTeamP1]['player_color'] = self::NAME2RGB[$otherTeamColorP1];
         $players[$otherTeamP1]['color_name'] = $otherTeamColorP1;
         $players[$otherTeamP2]['player_color'] = self::NAME2RGB[$otherTeamColorP2];
         $players[$otherTeamP2]['color_name'] = $otherTeamColorP2;
-        
-        //establish play order for the players
+
+        //******************* */
+        //Establish play order for the players
+        //******************* */
+
         $hostPlayerNo = random_int(1,4); //set host player_no to random value between 1 and 4
-        $hostAllyPlayerNo = ($hostPlayerNo + 2) % 4;
-        $otherTeamP1PlayerNo = ($hostPlayerNo + 1) % 4;
-        $otherTeamP2PlayerNo = ($hostPlayerNo + 3) % 4;
+        $hostAllyPlayerNo = ($hostPlayerNo + 1) % 4 +1; //modulus to loop around to 1
+        $otherTeamP1PlayerNo = ($hostPlayerNo % 4) + 1;
+        $otherTeamP2PlayerNo = ($hostPlayerNo + 2) % 4 +1;
 
         $players[$hostID]['player_no'] = $hostPlayerNo;
         $players[$hostAlly]['player_no'] = $hostAllyPlayerNo;
         $players[$otherTeamP1]['player_no'] = $otherTeamP1PlayerNo;
         $players[$otherTeamP2]['player_no'] = $otherTeamP2PlayerNo;
+
+        //write all this to db
+        foreach ($players as $player_id => $player) {
+            $query_values[] = vsprintf("('%s',%01d, '%s', '%s', '%s', '%s', '%s',%01d,%01d,%01d,%01d,%01d)", [
+                $player_id,
+                $player["player_no"],
+                $player["player_color"],
+                $player["color_name"],
+                $player["player_canal"],
+                addslashes($player["player_name"]),
+                addslashes($player["player_avatar"]),
+                0,
+                0,
+                0,
+                0,
+                $player["ally_id"]
+            ]);
+        }
+
+        $this->game::DbQuery(
+            sprintf(
+                "INSERT INTO player (player_id, player_no, player_color, color_name, player_canal, player_name, player_avatar, red_resource_qty,
+                blue_resource_qty, green_resource_qty,  yellow_resource_qty, ally_id) VALUES %s",
+                implode(",", $query_values)
+            ));
+        
+        $this->players = $this->deserializePlayersFromDb();
     }
 
     public function deserializePlayersFromDb() : array

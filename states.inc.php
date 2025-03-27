@@ -66,7 +66,7 @@ $machinestates = [
         "name" => "pregameStateSelection",
         "type" => "game",
         "action" => "stPregameStateSelection",
-        "transitions" => [ "selectAction" => 6, "chooseStartTile" => 3, "setAllies" => 4]
+        "transitions" => [ "selectAction" => 6, "chooseStartTile" => 3]
     ),
     // Note: ID=2 => your first state
 
@@ -80,13 +80,13 @@ $machinestates = [
         "transitions" => [ "nextPlayer" => 10 ]
     ],
 
-    4 => [
-        "name" => "setAllies",
-        "type" => "game",
-        "action" => "stSetAllies",
-        "args" => "argSetAllies",
-        "transitions" => [ "nextPlayer" => 10 ]
-    ],
+    // 4 => [
+    //     "name" => "setAllies",
+    //     "type" => "game",
+    //     "action" => "stSetAllies",
+    //     "args" => "argSetAllies",
+    //     "transitions" => [ "nextPlayer" => 10 ]
+    // ],
 
     // 5 => [
     //     "name" => "checkAllyAssignments",

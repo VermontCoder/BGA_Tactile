@@ -625,14 +625,14 @@ class Game extends \Table
         ];
     }
 
-    public function argSetAllies(): array
-    {
-        $players = new ttPlayers($this);
-        $players->deserializePlayersFromDb();
-        return [
-            'players' => $players->players
-        ];
-    }
+    // public function argSetAllies(): array
+    // {
+    //     $players = new ttPlayers($this);
+    //     $players->deserializePlayersFromDb();
+    //     return [
+    //         'players' => $players->players
+    //     ];
+    // }
 
     /**
      * Compute and return the current game progression.
@@ -736,62 +736,58 @@ class Game extends \Table
         {
             $this->gamestate->nextState("chooseStartTile");
         }
-        else if ($this->getPlayersNumber() == 4)
-        {    
-            $this->gamestate->nextState("setAllies");
-        }
         else
         {
             $this->gamestate->nextState("selectAction");
         }
     }
 
-    public function stSetAllies(): void
-    {
-        $ttPlayers = new ttPlayers($this);
+    // public function stSetAllies(): void
+    // {
+    //     $ttPlayers = new ttPlayers($this);
 
-        $gameOptions = $this->getTableOptions();
+    //     $gameOptions = $this->getTableOptions();
 
-        $allyOption = (int) $gameOptions['100'];
-        if ($allyOption == 1)
-        {
-            $ttPlayers->randomizeAllies($ttPlayers);
-        }
-        else
-        {
-            $ttPlayers->assignAllies($allyOption);
-        }
+    //     $allyOption = (int) $gameOptions['100'];
+    //     if ($allyOption == 1)
+    //     {
+    //         $ttPlayers->randomizeAllies($ttPlayers);
+    //     }
+    //     else
+    //     {
+    //         $ttPlayers->assignAllies($allyOption);
+    //     }
 
         
-        $ttPlayers->assignTeams();
+    //     $ttPlayers->assignTeams();
        
-        $allies=[];
-        foreach($ttPlayers->players as $player)
-        {
-            if ($player['color_name'] == 'red' || $player['color_name'] == 'green')
-            {
-                $allies['red_green'][] = $player['player_name'];
-            }
-            else
-            {
-                $allies['yellow_blue'][] = $player['player_name'];
-            }
-        }
+    //     $allies=[];
+    //     foreach($ttPlayers->players as $player)
+    //     {
+    //         if ($player['color_name'] == 'red' || $player['color_name'] == 'green')
+    //         {
+    //             $allies['red_green'][] = $player['player_name'];
+    //         }
+    //         else
+    //         {
+    //             $allies['yellow_blue'][] = $player['player_name'];
+    //         }
+    //     }
 
-        $this->notifyAllPlayers("allyAssignment", 
-        clienttranslate('Team Red/Green (${colorIconRed}/${colorIconGreen}): ${alliesRedGreen}').
-        '<BR>____________________<BR>'.clienttranslate('Team Yellow/Blue (${colorIconYellow}/${colorIconBlue}): ${alliesYellowBlue}'), 
-        [
-            "alliesRedGreen" => $allies['red_green'][0].clienttranslate(' and ').$allies['red_green'][1],
-            "colorIconRed" => $this->getColorIconHTML('red'),
-            "colorIconGreen" => $this->getColorIconHTML('green'),
-            "alliesYellowBlue" => $allies['yellow_blue'][0].clienttranslate(' and ').$allies['yellow_blue'][1],
-            "colorIconYellow" => $this->getColorIconHTML('yellow'),
-            "colorIconBlue" => $this->getColorIconHTML('blue'),
-        ]);
+    //     $this->notifyAllPlayers("allyAssignment", 
+    //     clienttranslate('Team Red/Green (${colorIconRed}/${colorIconGreen}): ${alliesRedGreen}').
+    //     '<BR>____________________<BR>'.clienttranslate('Team Yellow/Blue (${colorIconYellow}/${colorIconBlue}): ${alliesYellowBlue}'), 
+    //     [
+    //         "alliesRedGreen" => $allies['red_green'][0].clienttranslate(' and ').$allies['red_green'][1],
+    //         "colorIconRed" => $this->getColorIconHTML('red'),
+    //         "colorIconGreen" => $this->getColorIconHTML('green'),
+    //         "alliesYellowBlue" => $allies['yellow_blue'][0].clienttranslate(' and ').$allies['yellow_blue'][1],
+    //         "colorIconYellow" => $this->getColorIconHTML('yellow'),
+    //         "colorIconBlue" => $this->getColorIconHTML('blue'),
+    //     ]);
 
-        $this->gamestate->nextState("nextPlayer");
-    }
+    //     $this->gamestate->nextState("nextPlayer");
+    // }
 
     public function argGameEnd(): array
     {
@@ -920,9 +916,9 @@ class Game extends \Table
      */
     protected function setupNewGame($players, $options = [])
     {
-        // Set the colors of the players with HTML color code. 
-        $gameinfos = $this->getGameinfos();
-        $default_colors = $gameinfos['player_colors'];
+        // // Set the colors of the players with HTML color code. 
+        // $gameinfos = $this->getGameinfos();
+        // $default_colors = $gameinfos['player_colors'];
 
         $board = new ttBoard($this);
         $board->createBoard();
@@ -974,8 +970,6 @@ class Game extends \Table
         // Dummy content.
         // $this->initStat("table", "table_teststat1", 0);
         // $this->initStat("player", "player_teststat1", 0);
-
-        // TODO: Setup the initial game situation here.
 
         // Activate first player once everything has been initialized and ready.
         $this->activeNextPlayer();
