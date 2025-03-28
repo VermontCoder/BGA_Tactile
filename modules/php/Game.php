@@ -625,15 +625,6 @@ class Game extends \Table
         ];
     }
 
-    // public function argSetAllies(): array
-    // {
-    //     $players = new ttPlayers($this);
-    //     $players->deserializePlayersFromDb();
-    //     return [
-    //         'players' => $players->players
-    //     ];
-    // }
-
     /**
      * Compute and return the current game progression.
      *
@@ -742,52 +733,12 @@ class Game extends \Table
         }
     }
 
-    // public function stSetAllies(): void
-    // {
-    //     $ttPlayers = new ttPlayers($this);
-
-    //     $gameOptions = $this->getTableOptions();
-
-    //     $allyOption = (int) $gameOptions['100'];
-    //     if ($allyOption == 1)
-    //     {
-    //         $ttPlayers->randomizeAllies($ttPlayers);
-    //     }
-    //     else
-    //     {
-    //         $ttPlayers->assignAllies($allyOption);
-    //     }
-
-        
-    //     $ttPlayers->assignTeams();
-       
-    //     $allies=[];
-    //     foreach($ttPlayers->players as $player)
-    //     {
-    //         if ($player['color_name'] == 'red' || $player['color_name'] == 'green')
-    //         {
-    //             $allies['red_green'][] = $player['player_name'];
-    //         }
-    //         else
-    //         {
-    //             $allies['yellow_blue'][] = $player['player_name'];
-    //         }
-    //     }
-
-    //     $this->notifyAllPlayers("allyAssignment", 
-    //     clienttranslate('Team Red/Green (${colorIconRed}/${colorIconGreen}): ${alliesRedGreen}').
-    //     '<BR>____________________<BR>'.clienttranslate('Team Yellow/Blue (${colorIconYellow}/${colorIconBlue}): ${alliesYellowBlue}'), 
-    //     [
-    //         "alliesRedGreen" => $allies['red_green'][0].clienttranslate(' and ').$allies['red_green'][1],
-    //         "colorIconRed" => $this->getColorIconHTML('red'),
-    //         "colorIconGreen" => $this->getColorIconHTML('green'),
-    //         "alliesYellowBlue" => $allies['yellow_blue'][0].clienttranslate(' and ').$allies['yellow_blue'][1],
-    //         "colorIconYellow" => $this->getColorIconHTML('yellow'),
-    //         "colorIconBlue" => $this->getColorIconHTML('blue'),
-    //     ]);
-
-    //     $this->gamestate->nextState("nextPlayer");
-    // }
+    /**
+     * Game state arguments for game end.
+     *
+     * This method is called when the game is over and the game end screen is displayed to all players.
+     * You can use it to pass any information you want to display on the game end screen.
+     */
 
     public function argGameEnd(): array
     {
@@ -839,7 +790,6 @@ class Game extends \Table
         $result = [];
 
         //$current_player_id = (int) $this->getCurrentPlayerId();
-        // TODO: Gather all information about current game situation (visible by player $current_player_id).
 
         $players = new ttPlayers($this);
         $result["players"] = $players->deserializePlayersFromDb();
@@ -898,6 +848,7 @@ class Game extends \Table
     protected function getGameState(): array
     {
         $state = parent::getGameState();
+        return $state;
     }
 
     /**
@@ -934,6 +885,7 @@ class Game extends \Table
         }
 
         //pieces are created after players know what their color is
+        //This happens in pregameStateSelection
         
         $ttCards = new ttCards($this);
         $ttCards->createCards();

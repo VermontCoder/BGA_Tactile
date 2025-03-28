@@ -87,13 +87,11 @@ class ttPlayers
 
         // Retrieve initial player order ([0=>playerId1, 1=>playerId2, ...])
 		$playerInitialOrder = [];
-        $allyAssignments = [];
+        $allyAssignments = []; //used to distribute allies to players
 		foreach ($players as $playerId => $player) {
 			$playerInitialOrder[((int) $player['player_table_order'])-1] = $playerId;
             $allyAssignments[$playerId] = $playerId; //initially set ally to self
 		}
-		// ksort($playerInitialOrder);
-		// $playerInitialOrder = array_flip(array_values($playerInitialOrder));
 
         //******************* */
         //assign allies
