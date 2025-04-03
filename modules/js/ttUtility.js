@@ -73,6 +73,12 @@ define([
             return { 'player_id': parseInt(pieceData[1]), 'pieceNum': parseInt(pieceData[2]) };
         },
 
+        parseActionBoardID(actionBoardID)
+        {
+            const actionBoardData = actionBoardID.split('_');
+            return { 'player_id': parseInt(actionBoardData[1]), 'action': actionBoardData[2] };
+        },
+
         getCardStatus(card)
         {
             const statuses = ['inactive', 'active', 'exhuasted'];
@@ -132,10 +138,15 @@ define([
         //use "call" to keep the "game" context.
         getNumActionBoardActionsSelected()
         {
+            return this.ttUtility.getActionBoardSelections.call(this).length;
+        },
+
+        getActionBoardSelections()
+        {
             const gg = this.gamedatas.gamestate;
             const activePlayerBoardVals = this.ttUtility.pickByNestedProperty(gg.args.actionBoardSelections, 'player_id', this.getActivePlayerId());
             const selections = this.ttUtility.pickByNestedProperty(activePlayerBoardVals, 'selected', true);
-            return Object.keys(selections).length;
+            return Object.keys(selections);
         },
 
         notifCardExhaustionCheck(origin)

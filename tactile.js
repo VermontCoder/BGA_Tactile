@@ -517,6 +517,19 @@ function (dojo, declare) {
                 {
                     
                     case 'selectAction':
+                        //add alternate selection buttons for mobile devices
+
+                        const selectedActions = this.ttUtility.getActionBoardSelections.call(this);
+                        if (this.isMobile() && selectedActions.length < 2){
+                            for (const curAction of ['move', 'gain', 'buy', 'swap', 'reset']) { 
+                                const curActionId = 'action_'+this.getActivePlayerId()+'_'+curAction;
+                                if (!selectedActions.includes(curActionId)) {
+                                    const curActionTitle = String(curAction).charAt(0).toUpperCase() +String(curAction).slice(1);
+                                    this.addActionButton('actionBtnMobileAlt' + curActionTitle, _(curActionTitle), () => this.ttEventHandlers.onActionBoardClick.call(this,curActionId), null, null, null);
+                                }
+                            } 
+                        }
+
                         this.addActionButton('actionBtnDoneWithTurn', _('Done with turn'), () => this.ttDoneWithTurnSequence.beginDoneWithTurn.call(this), null, null, 'red'); 
                         this.addActionButton('actionBtnOverdrive', _('Overdrive'), () => this.ttOverdrive.beginOverdrive.call(this), null, null, 'red');
                         

@@ -40,7 +40,7 @@ define([
             if (!isFromOverdrive) this.clearAllPreviousHighlighting();
 
             //if this is a card event, we need to add back the highlighting since the above removes all highlighting.
-            if (this.eventOrigin.startsWith('card_'))
+            if (!isFromOverdrive && this.eventOrigin.startsWith('card_'))
             {
                 $(this.eventOrigin).classList.add('highlighted');
             }
