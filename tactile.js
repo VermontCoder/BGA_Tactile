@@ -68,7 +68,7 @@ function (dojo, declare) {
             // This switches to mobile at 1030px width instead of 990px as is default.
             setTimeout(() => {
                 const body = document.getElementById('ebd-body');
-                if (window.innerWidth < 1030) {
+                if (window.innerWidth < 1035) {
                     body.classList.add('mobile_version');
                     body.classList.remove('desktop_version');
                 } else {
