@@ -50,7 +50,11 @@ function (dojo, declare) {
             this.ttDoneWithTurnSequence = new bgagame.ttDoneWithTurnSequence();
 
             this.cardStatuses = { 0: 'inactive', 1: 'active', 2: 'exhausted' };
-
+            // Attach the resize event listener
+            window.addEventListener('resize', this.handleResize);
+            
+            // Call the function initially to set the correct class on page load
+            this.handleResize();
         },
         
        
@@ -58,7 +62,23 @@ function (dojo, declare) {
             const minWidth = 768; // Minimum width for desktop devices
             return window.innerWidth < minWidth || screen.width < minWidth;
             },
-              
+        
+            
+        handleResize: function() {
+            // This switches to mobile at 1030px width instead of 990px as is default.
+            setTimeout(() => {
+                const body = document.getElementById('ebd-body');
+                if (window.innerWidth < 1030) {
+                    body.classList.add('mobile_version');
+                    body.classList.remove('desktop_version');
+                } else {
+                    body.classList.remove('mobile_version');
+                    body.classList.add('desktop_version');
+                }
+            }, 1); // Use a timeout to ensure the class is added after the resize event
+            },
+            
+            
          /*
             setup:
             
