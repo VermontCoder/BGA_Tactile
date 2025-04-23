@@ -662,7 +662,7 @@ function (dojo, declare) {
             {
                 const player = playersInOrder[i];
 
-                $('tableau_' + player_id).remove();
+                $('tableau_' + player.player_id).remove();
                 this.createPlayerTableau(player, args.hands, args.actionBoardSelections);
             }
 
