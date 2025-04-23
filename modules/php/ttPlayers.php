@@ -199,7 +199,7 @@ class ttPlayers
 
     public function deserializePlayersFromDb() : array
     {
-        $sql = "SELECT player_id, player_color, color_name, player_score, player_canal, player_name, player_avatar, red_resource_qty,
+        $sql = "SELECT player_id, player_no, player_color, color_name, player_score, player_canal, player_name, player_avatar, red_resource_qty,
         blue_resource_qty, green_resource_qty, yellow_resource_qty, ally_id FROM player";
         $this->players = $this->game->getCollectionFromDb($sql);
         //(new ttDebug($this->game))->showVariable('players', $this->players);

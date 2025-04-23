@@ -113,19 +113,25 @@ function (dojo, declare) {
             this.createBoard(gamedatas.board, gamedatas.playerHomes);
             this.createPieces(gamedatas.players, gamedatas.pieces);
 
-            Object.values(gamedatas.players).forEach(player => {
+           
+            const playersInOrder = this.getPlayersInPlayOrder(gamedatas.players);
+
+            for(i=0; i < playersInOrder.length; i++)
+            {
+                const player = playersInOrder[i];
+                //create player panel and tableau
                 this.createPlayerPanel(player);
                 this.createPlayerTableau(player, gamedatas.hands, gamedatas.actionBoardSelections);
-            });
+            }
             
             //move the current player's tableau to the top
-            if (! this.isSpectator)
-            {
-                let currentPlayerTableau = document.querySelector('#tableau_'+this.player_id);
-                let tableauContainer = document.querySelector('#tableauContainer');
+            // if (! this.isSpectator)
+            // {
+            //     let currentPlayerTableau = document.querySelector('#tableau_'+this.player_id);
+            //     let tableauContainer = document.querySelector('#tableauContainer');
 
-                tableauContainer.prepend(currentPlayerTableau);
-            }
+            //     tableauContainer.prepend(currentPlayerTableau);
+            // }
 
             //set color blind preference
             if (this.getGameUserPreference(100) == 1)
@@ -135,6 +141,39 @@ function (dojo, declare) {
             
             console.log( "Ending game setup" );
             //console.log(gamedatas.legalActions);
+        },
+
+        getPlayersInPlayOrder: function(players)
+        {
+             //create player tableaus in order
+             var playersInOrder = [];
+             var topPlayerNo = -1; 
+             
+             if (this.isSpectator) {
+                 topPlayerNo = 0;
+             }
+             else
+             {
+                 topPlayerNo = parseInt(players[this.player_id].player_no) -1;
+             }
+ 
+             const numPlayers = Object.keys(players).length;
+             //playerNo is 1-indexed, so we need to add 1 to get the index in the loop below.
+             for (let i = 0; i < numPlayers; i++) {
+                 let playerNo = (topPlayerNo + i) % numPlayers + 1;
+                 playersInOrder.push(this.findPlayerByPlayerNo(playerNo, players));
+             }
+
+             return playersInOrder;
+        },
+        //used in above
+        findPlayerByPlayerNo: function(player_no, players) {
+            for (const player_id in players) {
+                if (players[player_id].player_no == player_no) {
+                    return players[player_id];
+                }
+            }
+            return null; // Player not found
         },
 
         createHeader: function() {
@@ -347,7 +386,7 @@ function (dojo, declare) {
                 teamHTML = this.ttUtility.getTeamIconHTML.call(this,player.color_name);
             }
 
-            document.getElementById('tableauContainer').insertAdjacentHTML('afterbegin', `
+            document.getElementById('tableauContainer').insertAdjacentHTML('beforeend', `
             <DIV id="tableau_${player.player_id}" class = "tableau">
                 <DIV id="tableauTopRowContainer_${player.player_id}" class="cardRow tableauTopRowContainer">
                     <SPAN id="tableauLabel_${player.player_id}" class="tableauLabel ${player.color_name}">${player.player_name}</SPAN>
@@ -425,7 +464,6 @@ function (dojo, declare) {
                     <div id="cardTarget_${player.player_id}_${count}" class="cardTarget addSpace">
                         <div id="card_${card.id}" class="card" style="background-position-x: ${-80 * card.id}px;"></div>
                     </div>`);
-                    //debugger;
 
                     //add active class if card is active
                     if (this.cardStatuses[parseInt(card.type_arg)] == 'active') {
@@ -468,7 +506,6 @@ function (dojo, declare) {
                     this.pregameColors();
                     break;
                 case 'selectAction':
-                    //debugger;
                     this.clearAllPreviousHighlighting();
                     this.eventOrigin = '';
 
@@ -619,17 +656,18 @@ function (dojo, declare) {
         {
             const players = args.players;
 
-            //TABLEAU
-            for (const player_id in players) 
+            playersInOrder = this.getPlayersInPlayOrder(players);
+            
+            for(i=0; i < playersInOrder.length; i++)
             {
-                const player = players[player_id];
+                const player = playersInOrder[i];
 
                 $('tableau_' + player_id).remove();
                 this.createPlayerTableau(player, args.hands, args.actionBoardSelections);
             }
 
             //move the current player's tableau to the top
-            if (! this.isSpectator) $('tableauContainer').prepend($('tableau_'+this.player_id));
+            //if (! this.isSpectator) $('tableauContainer').prepend($('tableau_'+this.player_id));
 
             //PIECES
             document.querySelectorAll('.playingPiece').forEach(piece => piece.remove());
