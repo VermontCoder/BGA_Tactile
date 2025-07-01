@@ -951,7 +951,7 @@ class Game extends \Table
             switch ($state_name) {
                 default:
                 {
-                    $this->gamestate->nextState("zombiePass");
+                    $this->gamestate->nextState("nextPlayer"); // all player actions got nextPlayer action as a "zombiePass"
                     break;
                 }
             }
