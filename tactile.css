@@ -59,11 +59,12 @@
 
  /* Top container styles */
  #ttTopContainer {
-     display: absolute;
-     top: 0px;
-     left: 0px;
+     position: relative;
      height: var(--board-dim);
+     width: calc(var(--board-dim) + var(--store-width) + 30px);
      margin-bottom: 20px;
+     margin-left : auto;
+     margin-right : auto;
  }
  
  /* Store styles */

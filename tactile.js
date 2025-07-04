@@ -577,7 +577,7 @@ function (dojo, declare) {
                         //add alternate selection buttons for mobile devices
 
                         const selectedActions = this.ttUtility.getActionBoardSelections.call(this);
-                        if (this.isMobile() && selectedActions.length < 2){
+                        if ( selectedActions.length < 2){
                             for (const curAction of ['move', 'gain', 'buy', 'swap', 'reset']) { 
                                 const curActionId = 'action_'+this.getActivePlayerId()+'_'+curAction;
                                 if (!selectedActions.includes(curActionId)) {
@@ -587,18 +587,19 @@ function (dojo, declare) {
                             } 
                         }
 
+                        this.addActionButton('actionBtnOverdrive', _('Overdrive'), () => this.ttOverdrive.beginOverdrive.call(this), null, null, 'blue');
                         this.addActionButton('actionBtnDoneWithTurn', _('Done with turn'), () => this.ttDoneWithTurnSequence.beginDoneWithTurn.call(this), null, null, 'red'); 
-                        this.addActionButton('actionBtnOverdrive', _('Overdrive'), () => this.ttOverdrive.beginOverdrive.call(this), null, null, 'red');
+                        
                         
                         break;
                     
                     case 'client_reset':
-                        this.addActionButton('actionButtonResetYes', _('Yes'), () => this.ttResetSequence.confirmReset.call(this,true), null, null, 'red');
+                        this.addActionButton('actionButtonResetYes', _('Yes'), () => this.ttResetSequence.confirmReset.call(this,true), null, null, 'blue');
                         this.addActionButton('actionButtonResetNo', _('No'), () => this.ttResetSequence.confirmReset.call(this,false), null, null, 'red');
                         break;
 
                     case 'client_doneWithTurn':
-                        this.addActionButton('actionButtonDoneWithTurnYes', _('Yes'), () => this.ttDoneWithTurnSequence.confirmDoneWithTurn.call(this,true), null, null, 'red');
+                        this.addActionButton('actionButtonDoneWithTurnYes', _('Yes'), () => this.ttDoneWithTurnSequence.confirmDoneWithTurn.call(this,true), null, null, 'blue');
                         this.addActionButton('actionButtonDoneWithTurnNo', _('No'), () => this.ttDoneWithTurnSequence.confirmDoneWithTurn.call(this,false), null, null, 'red');
                         break;
                     
