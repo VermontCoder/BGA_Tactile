@@ -7,7 +7,7 @@ define([
     { 
         constructor: function()
         {
-            this.animationDuration = 1000;
+            this.animationDuration = 900;
         },
 
         moveActionCube: async function( actionCardDiv, isCancel ) 

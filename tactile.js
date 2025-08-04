@@ -522,12 +522,12 @@ function (dojo, declare) {
                         elements.forEach(element => { element.classList.remove('active', 'exhausted'); });
                     }
 
-                    setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration);
+                    setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration+100);
                     break;
 
                 case 'gameEnd':
                     this.clearAllPreviousHighlighting();
-                    setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration);
+                    setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration+100);
                     break;
                 case 'nextPlayer':
                 case 'dummy':
