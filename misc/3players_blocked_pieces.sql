@@ -31,12 +31,12 @@ TRUNCATE TABLE `pieces`;
 --
 
 INSERT INTO `pieces` (`piece_id`, `player_id`, `piece_color`, `location`) VALUES
-('piece_2383264_0', 2383264, 'red', '2_1'),
-('piece_2383264_1', 2383264, 'red', '0_1'),
+('piece_2383264_0', 2383264, 'yellow', '2_1'),
+('piece_2383264_1', 2383264, 'yellow', '0_1'),
 ('piece_2383265_0', 2383265, 'green', '1_0'),
 ('piece_2383265_1', 2383265, 'green', '3_0'),
-('piece_2383266_0', 2383266, 'yellow', '2_0'),
-('piece_2383266_1', 2383266, 'yellow', '0_0');
+('piece_2383266_0', 2383266, 'red', '2_0'),
+('piece_2383266_1', 2383266, 'red', '0_0');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

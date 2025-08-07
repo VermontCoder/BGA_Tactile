@@ -183,14 +183,15 @@ class ttPlayers
                 0,
                 0,
                 0,
-                $player["ally_id"]
+                $player["ally_id"],
+                null
             ]);
         }
 
         $this->game::DbQuery(
             sprintf(
                 "INSERT INTO player (player_id, player_no, player_color, color_name, player_canal, player_name, player_avatar, red_resource_qty,
-                blue_resource_qty, green_resource_qty,  yellow_resource_qty, ally_id) VALUES %s",
+                blue_resource_qty, green_resource_qty,  yellow_resource_qty, ally_id, scored_goal_loc) VALUES %s",
                 implode(",", $query_values)
             ));
         
@@ -200,7 +201,7 @@ class ttPlayers
     public function deserializePlayersFromDb() : array
     {
         $sql = "SELECT player_id, player_no, player_color, color_name, player_score, player_canal, player_name, player_avatar, red_resource_qty,
-        blue_resource_qty, green_resource_qty, yellow_resource_qty, ally_id FROM player";
+        blue_resource_qty, green_resource_qty, yellow_resource_qty, ally_id, scored_goal_loc FROM player";
         $this->players = $this->game->getCollectionFromDb($sql);
         //(new ttDebug($this->game))->showVariable('players', $this->players);
 
@@ -291,6 +292,17 @@ class ttPlayers
         {
             $this->players[$player_id]['player_score']++;
         }
+    }
+
+    public function recordScoredGoal3p($player_id, $tile_id)
+    {
+        $this->game->DbQuery(
+            sprintf(
+                "UPDATE player SET `scored_goal_loc`='%s' WHERE player_id = %s",
+                $tile_id,
+                $player_id
+            )
+        );
     }
 
     public function setAlly($player_id, $ally_id) : void

@@ -80,6 +80,10 @@ class ttLegalMoves
         //$player_id = (int)$this->game->getActivePlayerId();
 
         $pieceLocations = $pieces->getPieceLocations();
+        $ttPlayers = new ttPlayers($this->game);
+        $ttPlayers->deserializePlayersFromDb();
+        $numPlayers = (int)$this->game->getPlayersNumber();
+
 
         foreach($pieces->pieces as $piece)
         {
@@ -100,6 +104,16 @@ class ttLegalMoves
                 }
             }
             $illegalTiles = $this->game->getIllegalTiles()[$piece['piece_color']];
+            if($numPlayers==3)
+            {
+                //In a three player game, a goal previously scored now becomes illegal
+                $scoredGoalLoc = $ttPlayers->players[$piece['player_id']]['scored_goal_loc'];
+                if ($scoredGoalLoc != null)
+                {
+                    $illegalTiles[] = $scoredGoalLoc;
+                }
+            }
+
             $illegalLocations = array_merge($illegalLocations, $illegalTiles);
 
             $possibleMoves = [];

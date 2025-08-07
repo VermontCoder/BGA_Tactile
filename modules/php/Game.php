@@ -192,6 +192,12 @@ class Game extends \Table
         $player = $ttPlayers->players[$pieces->pieces[$piece_id]['player_id']];
         $ttPlayers->scorePoint($player['player_id']);
 
+        //if this is three player game, record the location of the score - it cannot be used again to score.
+        if ($this->getPlayersNumber() ==3)
+        {
+            $ttPlayers->recordScoredGoal3p( $player['player_id'], $pieces->pieces[$piece_id]['location'] );
+        }
+
         //score point in local copy of $player
         $player['player_score']++;
         $ally_id = $player['ally_id'];
@@ -668,7 +674,8 @@ class Game extends \Table
 
         $max_distance = $max_distances[count($players)];
 
-        return  intval(100 * (($max_distance-$shortestDistance) /$max_distance ));
+        //Minimum 50 percent progression to allow players to concede at anytime - BGA framework prohibits at less than 50%.
+        return  intval(50 * (($max_distance-$shortestDistance) /$max_distance ))+50;
     }
 
     /**
@@ -760,6 +767,13 @@ class Game extends \Table
      */
     public function upgradeTableDb($from_version)
     {
+        if ($from_version <= 2508040952)
+        {
+            //In three player games, if a player scores a goal, that goal is no longer valid as a goal.
+            //So we need to record its location.
+            $sql = "ALTER TABLE DBPREFIX_player ADD `scored_goal_loc` VARCHAR(3) DEFAULT NULL;";
+            $this->applyDbUpgradeToAllDB( $sql );
+        }
 //       if ($from_version <= 1404301345)
 //       {
 //            // ! important ! Use DBPREFIX_<table_name> for all tables
