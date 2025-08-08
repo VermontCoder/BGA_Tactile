@@ -183,15 +183,14 @@ class ttPlayers
                 0,
                 0,
                 0,
-                $player["ally_id"],
-                null
+                $player["ally_id"]
             ]);
         }
 
         $this->game::DbQuery(
             sprintf(
                 "INSERT INTO player (player_id, player_no, player_color, color_name, player_canal, player_name, player_avatar, red_resource_qty,
-                blue_resource_qty, green_resource_qty,  yellow_resource_qty, ally_id, scored_goal_loc) VALUES %s",
+                blue_resource_qty, green_resource_qty,  yellow_resource_qty, ally_id) VALUES %s",
                 implode(",", $query_values)
             ));
         
