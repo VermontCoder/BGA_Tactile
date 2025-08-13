@@ -353,8 +353,21 @@ class Game extends \Table
             "origin" => $origin,
         ]);
 
+        if ($storeRequiresReset)
+        {
+            //This notification has to happen AFTER the buy.
+            $this->notifyAllPlayers("reset", clienttranslate('5 cards in the store were the same color or action. The store is reset!'), [
+                "newCards" => $newCards,
+                "specialRuleReset" => true,
+                "origin" => $origin,
+            ]);
+        }
+
         $this->goToNextState();        
     }
+
+    
+
 
     public function actSwap(string $gainColor, string $lossColor, string $origin) : void
     {
@@ -440,7 +453,7 @@ class Game extends \Table
             $this->actReset($origin, $specialRuleReset);
             
             //Probably ok if users see the store reset multiple times in a row. If not, uncomment the return below.
-            //return;
+            return;
         }
 
         if (!$specialRuleReset)
@@ -456,12 +469,6 @@ class Game extends \Table
         }
         else
         {
-            $this->notifyAllPlayers("reset", clienttranslate('5 cards in the store were the same color or action. The store is reset!'), [
-                "newCards" => $newCards,
-                "specialRuleReset" => $specialRuleReset,
-                "origin" => $origin,
-            ]);
-
             return $newCards;
         }
         
