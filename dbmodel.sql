@@ -50,13 +50,13 @@ ALTER TABLE `player` ADD `scored_goal_loc` VARCHAR(3) DEFAULT NULL;
 -- card_id corresponds to offset into card sprite sheet.
 
 CREATE TABLE IF NOT EXISTS `card` (
-  `card_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `card_id` int(10) unsigned NOT NULL,
   `card_type` varchar(30) DEFAULT NULL, 
   `card_type_arg` int(11) DEFAULT NULL,
   `card_location` varchar(16) DEFAULT NULL,
   `card_location_arg` int(11) DEFAULT NULL,
   PRIMARY KEY (`card_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- tile_id: of the form 'x_y' , like 2_3 or 0_0
 -- color: one of 'red', 'blue', 'green', 'yellow'

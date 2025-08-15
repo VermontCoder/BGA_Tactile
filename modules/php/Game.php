@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace Bga\Games\tactile;
 
+use BgaSystemException;
+
 require_once(APP_GAMEMODULE_PATH . "module/table/table.game.php");
 
 class Game extends \Table
@@ -69,6 +71,8 @@ class Game extends \Table
 
     const PLAYERGOALS3P = self::ILLEGALTILES2P4P;
     const ILLEGALTILES3P = self::PLAYERGOALS2P4P;
+    const UNDOOK = 'undoOk';
+    const UNDOPOINT = 'undoPoint';
 
     /**
      * Your global variables labels:
@@ -140,6 +144,9 @@ class Game extends \Table
         }
         
         $this->endOfActionBoardState($origin);
+        
+        $this->setUndoOK(1);
+
         $this->goToNextState();        
     }
 
@@ -179,6 +186,8 @@ class Game extends \Table
         }
         
         $this->endOfActionBoardState($origin);
+        $this->setUndoOK(1);
+
         $this->goToNextState();        
     }
 
@@ -301,6 +310,7 @@ class Game extends \Table
             "origin" => $origin,
         ]);
 
+        $this->setUndoOK(1);
         $this->goToNextState();
     }
 
@@ -363,6 +373,10 @@ class Game extends \Table
             ]);
         }
 
+        //cannot undo past here.
+        $this->setUndoOK(0,'buy');
+        $this->undoSavepoint();
+
         $this->goToNextState();        
     }
 
@@ -402,6 +416,8 @@ class Game extends \Table
         ]);
 
         $this->endOfActionBoardState($origin);
+        $this->setUndoOK(1);
+
         $this->goToNextState();
     }
 
@@ -431,6 +447,8 @@ class Game extends \Table
             "origin" => $origin,
         ]);
 
+        $this->setUndoOK(1);
+        
         $this->goToNextState();
     }
 
@@ -472,6 +490,10 @@ class Game extends \Table
             return $newCards;
         }
         
+        //new undo savepoint
+        $this->setUndoOK(0,'reset');
+        $this->undoSavepoint();
+
         $this->goToNextState();
     }
 
@@ -485,7 +507,22 @@ class Game extends \Table
             "player_name" => $this->getActivePlayerName(),
         ]);
 
+       
         $this->gamestate->nextState("nextPlayer");
+    }
+
+    public function actUndo() : void
+    {
+        try
+        {
+            $this->undoRestorePoint();
+        }
+        catch(\Exception $e)
+        {
+            //If before undo implemented, there will be an error thrown here.
+            //explain to user that Undo is not supported in current games, only future games
+            throw new \BgaUserException(clienttranslate("Undo not supported in games started before undo code implemented. New games have undo support."));
+        }
     }
 
     public function actChooseStartTile(string $tileID) : void
@@ -627,7 +664,6 @@ class Game extends \Table
     public function argSelectAction(): array
     {
         // Get some values from the current game situation from the database.
-
         return $this->getAllDatas();
     }
 
@@ -698,6 +734,11 @@ class Game extends \Table
         $this->giveExtraTime($player_id);
         
         $this->activateNewPlayer();
+        
+        //save point for undo
+        $this->setUndoOK(0,'start');
+        $this->undoSavepoint();
+
         // Go to another gamestate
         // Here, we would detect if the game is over, and in this case use "endGame" transition instead 
         $this->gamestate->nextState("nextPlayer");
@@ -744,6 +785,16 @@ class Game extends \Table
         else
         {
             $this->gamestate->nextState("selectAction");
+        }
+    }
+
+    public function setUndoOK(int $undoOk, string $undoPoint = '')
+    {
+        $this->globals->set(self::UNDOOK, $undoOk);
+
+        if ($undoPoint != '')
+        {
+            $this->globals->set(self::UNDOPOINT, $undoPoint);
         }
     }
 
@@ -862,6 +913,8 @@ class Game extends \Table
         $result['legalActions'] = $legalActions->legalActions($result['hands']);
         $result['legalMovesMove'] = $legalActions->legalMoves(false, $pieces);
         $result['legalMovesPush'] = $legalActions->legalMoves(true, $pieces);
+        $result['undoOk'] = $this->globals->get(self::UNDOOK);
+        $result['undoPoint'] = $this->globals->get(self::UNDOPOINT);
         return $result;
 
     }

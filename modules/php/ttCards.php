@@ -27,6 +27,7 @@ class ttCards
     public function createCards() : void
     {
         $cards = array();
+        $card_id = 0;
 
         foreach(ttCards::CARDTYPES as $cardType)
         {
@@ -37,20 +38,29 @@ class ttCards
                     for($j=$i; $j <= 3; $j++)
                     {
                         $type = $color.'_'.$cardType.'_'.$this->game::COLORS[$i].'_'.$this->game::COLORS[$j];
-                        $cards[] = array( 'type' => $type, 'type_arg'=> 0, 'card_location' => 'deck', 'nbr' => 1);
+                        $query_values[] = vsprintf("('%01d','%s', '%01d','%s','%01d')", [
+                        $card_id,
+                        $type,
+                        0,
+                        'deck',
+                        $card_id
+                        ]);
+                        $card_id++;
                     }
                 }
             }
         }
 
-        $this->game->cards->createCards( $cards, 'deck' );
+        $query = sprintf("INSERT INTO card (`card_id`,`card_type`,`card_type_arg`,`card_location`,`card_location_arg`) VALUES %s", implode(',', $query_values));
+        $this->game::DbQuery($query);
+        $this->game->cards->shuffle( 'deck' );
 
         //card_id needs to correspond to the image offset to display the card.
         //The order of the cards is stored in card_location_arg.
         //We need to overwrite card_id to match the image offset.
 
-        $this->game::DbQuery("UPDATE card SET card_id=card_location_arg+500");
-        $this->game::DbQuery("UPDATE card SET card_id=card_id-501");
+        // $this->game::DbQuery("UPDATE card SET card_id=card_location_arg+500");
+        // $this->game::DbQuery("UPDATE card SET card_id=card_id-501");
 
     }
 

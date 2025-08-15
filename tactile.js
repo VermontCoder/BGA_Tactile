@@ -29,7 +29,8 @@ define([
     g_gamethemeurl + "modules/js/ttSwapSequence.js",
     g_gamethemeurl + "modules/js/ttResetSequence.js",
     g_gamethemeurl + "modules/js/ttOverdrive.js",
-    g_gamethemeurl + "modules/js/ttDoneWithTurnSequence.js"
+    g_gamethemeurl + "modules/js/ttDoneWithTurnSequence.js",
+    g_gamethemeurl + "modules/js/ttUndoSequence.js"
 ],
 
 function (dojo, declare) {
@@ -48,6 +49,7 @@ function (dojo, declare) {
             this.ttAnimations = new bgagame.ttAnimations();
             this.ttOverdrive = new bgagame.ttOverdrive();
             this.ttDoneWithTurnSequence = new bgagame.ttDoneWithTurnSequence();
+            this.ttUndoSequence = new bgagame.ttUndoSequence();
 
             this.cardStatuses = { 0: 'inactive', 1: 'active', 2: 'exhausted' };
             // Attach the resize event listener
@@ -574,28 +576,27 @@ function (dojo, declare) {
                 {
                     
                     case 'selectAction':
-                        //add alternate selection buttons for mobile devices
-
-                        const selectedActions = this.ttUtility.getActionBoardSelections.call(this);
-                        if ( selectedActions.length < 2){
-                            for (const curAction of ['move', 'gain', 'buy', 'swap', 'reset']) { 
-                                const curActionId = 'action_'+this.getActivePlayerId()+'_'+curAction;
-                                if (!selectedActions.includes(curActionId)) {
-                                    const curActionTitle = String(curAction).charAt(0).toUpperCase() +String(curAction).slice(1);
-                                    this.addActionButton('actionBtnMobileAlt' + curActionTitle, _(curActionTitle), () => this.ttEventHandlers.onActionBoardClick.call(this,curActionId), null, null, null);
-                                }
-                            } 
-                        }
-
+                        //add alternate selection buttons
+                        this.addActionBoardActionButtons();
                         this.addActionButton('actionBtnOverdrive', _('Overdrive'), () => this.ttOverdrive.beginOverdrive.call(this), null, null, 'blue');
+                         //undo
+                        if (args.undoOk == 1)
+                        {
+                            this.addActionButton('actionBtnUndo', _('Undo to '+args.undoPoint), () => this.ttUndoSequence.beginUndo.call(this,args.undoPoint), null, null, 'red');
+                        }
+                        
                         this.addActionButton('actionBtnDoneWithTurn', _('Done with turn'), () => this.ttDoneWithTurnSequence.beginDoneWithTurn.call(this), null, null, 'red'); 
-                        
-                        
+            
                         break;
                     
                     case 'client_reset':
                         this.addActionButton('actionButtonResetYes', _('Yes'), () => this.ttResetSequence.confirmReset.call(this,true), null, null, 'blue');
                         this.addActionButton('actionButtonResetNo', _('No'), () => this.ttResetSequence.confirmReset.call(this,false), null, null, 'red');
+                        break;
+
+                    case 'client_undo':
+                        this.addActionButton('actionButtonUndoYes', _('Yes'), () => this.ttUndoSequence.confirmUndo.call(this,true), null, null, 'blue');
+                        this.addActionButton('actionButtonUndoNo', _('No'), () => this.ttUndoSequence.confirmUndo.call(this,false), null, null, 'red');
                         break;
 
                     case 'client_doneWithTurn':
@@ -622,7 +623,6 @@ function (dojo, declare) {
                                 id: 'actionButtonSwapCancel',
                             });
                         break;
-
 
                         case 'client_selectResource':
                         case 'client_selectTileMove':
@@ -652,6 +652,20 @@ function (dojo, declare) {
 
         ///////////////////////////////////////////////////
         //// Utility methods
+
+        addActionBoardActionButtons()
+        {
+            const selectedActions = this.ttUtility.getActionBoardSelections.call(this);
+            if ( selectedActions.length < 2){
+                for (const curAction of ['move', 'gain', 'buy', 'swap', 'reset']) { 
+                    const curActionId = 'action_'+this.getActivePlayerId()+'_'+curAction;
+                    if (!selectedActions.includes(curActionId)) {
+                        const curActionTitle = String(curAction).charAt(0).toUpperCase() +String(curAction).slice(1);
+                        this.addActionButton('actionBtnMobileAlt' + curActionTitle, _(curActionTitle), () => this.ttEventHandlers.onActionBoardClick.call(this,curActionId), null, null, null);
+                    }
+                } 
+            }
+        },
         
         updateState: function( args )
         {
