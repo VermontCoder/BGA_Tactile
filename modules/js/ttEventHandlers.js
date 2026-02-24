@@ -36,14 +36,9 @@ define([
             //Do not respond if two actions have already been selected.
             if (this.ttUtility.getNumActionBoardActionsSelected.call(this) >= 2) { return; }
 
-            //Do not respond if picking an action during overdrive.
-            if (gg.name == 'client_selectOverdriveAction') { return; }
+            //Do not respond during convert.
+            if (gg.name == 'client_selectConvertAction' || gg.name == 'client_convert') { return; }
 
-            if (gg.name == 'client_overdrive')
-            { 
-                this.ttEventHandlers.overdriveClickProcessing.call(this, selectionDivID);
-                return;
-            }
 
             console.log('onActionBoardClick', JSON.stringify(selectionDivID));
 
@@ -162,8 +157,8 @@ define([
 
             if(!this.isCurrentPlayerActive()) { return; }
 
-            //Do not respond if picking an action during overdrive.
-            if (gg.name == 'client_selectOverdriveAction') { return; }
+            //Do not respond if picking an action during convert.
+            if (gg.name == 'client_selectConvertAction') { return; }
 
             const cardID = this.ttUtility.getCardIDFromDivID(cardDivID);
 
@@ -193,9 +188,9 @@ define([
             if ($(cardDivID).classList.contains('active'))
             {
                 console.log( 'onCardClick', cardDivID);
-                if (gg.name == 'client_overdrive')
+                if (gg.name == 'client_convert')
                 { 
-                    this.ttEventHandlers.overdriveClickProcessing.call(this, cardDivID);
+                    this.ttEventHandlers.convertClickProcessing.call(this, cardDivID);
                     return;
                 }
 
@@ -237,44 +232,8 @@ define([
             });
         },
 
-        overdriveClickProcessing: function(selectionDivID)
+        convertClickProcessing: function(selectionDivID)
         {
-            if (selectionDivID.startsWith('action_'))
-            {
-                //check to see if this is a previously selected action during this overdrive.
-                //Previous processing won't allow a click on an already selected action.
-                if(selectionDivID == this.eventOrigin) 
-                {
-                    //this is a cancel action
-                    this.ttAnimations.moveActionCube.call(this,selectionDivID, true);
-                    this.eventOrigin ='';
-                    return; 
-                }
-
-                if (this.eventOrigin.startsWith('action_') && this.ttUtility.getNumActionBoardActionsSelected.call(this) == 1)
-                {
-                    //This is a click on the action board when there are two other actions selected.
-                    //Do not respond
-                    return;
-                }
-                //Move the cube if it is on the action board.
-
-
-                //special case - if we are moving two cubes we need to specify to use the 2nd cube.
-                //the moveActionCube function looks at the gamestate to determine if it should use the 2nd cube.
-                //gamestate would be unaffected by the first move, so we need to specify the 2nd cube.
-                if (this.eventOrigin.startsWith('action_'))
-                {
-                    cubeDiv = $('actionCube_' + playerID+'_1');
-                    this.ttAnimations.animateActionCubeMove.call(this,cubeDiv,selectionDivID);
-                }
-                else
-                {
-                    this.ttAnimations.moveActionCube.call(this,selectionDivID, false);
-                }
-                
-            }
-            
             if (selectionDivID.startsWith('card_'))
             {
                 if ($(selectionDivID).classList.contains('highlighted'))
@@ -297,7 +256,7 @@ define([
                 this.eventOrigin += ','+selectionDivID;
 
                 //if two actions have been selected, move into selecting the action to do now.
-                this.ttOverdrive.beginSelectingAction.call(this);
+                this.ttConvert.beginSelectingAction.call(this);
             }
 
         },
