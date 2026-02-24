@@ -566,7 +566,7 @@ class Game extends Table
     //exhaust a card or check off a player action on the action board
     public function endOfActionBoardState(string $origin) : void
     {
-        //if this was from overdrive, we need to check for multiple origins
+        //if this was from convert, we need to check for multiple origins
         if (str_contains($origin,','))
         {
             $origins = explode(',',$origin);
