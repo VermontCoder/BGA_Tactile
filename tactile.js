@@ -720,6 +720,7 @@ function (dojo, declare) {
             //clear any other highlighting
             const allDivs = document.querySelectorAll('*');
             allDivs.forEach(el => el.classList.remove('highlighted'));
+            document.querySelectorAll('.actionBoard').forEach(el => el.classList.remove('convertDisabled'));
         },
 
         pregameColors: function()

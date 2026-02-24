@@ -600,6 +600,11 @@
     background: url(img/cube.png) 0 0 no-repeat; margin: -5px;
  }
 
+.actionBoard.convertDisabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
  @keyframes rotate {
 	100% {
 		transform: rotate(1turn);

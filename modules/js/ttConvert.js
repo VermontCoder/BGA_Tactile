@@ -15,6 +15,7 @@ define([
         {
             this.clearAllPreviousHighlighting();
             this.eventOrigin = '';
+            $('actionBoard_' + this.getActivePlayerId()).classList.add('convertDisabled');
             this.setClientState("client_convert", 
             {
                 descriptionmyturn : _("Please select two actions."),
