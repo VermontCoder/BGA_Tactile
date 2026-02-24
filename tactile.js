@@ -527,12 +527,9 @@ function (dojo, declare) {
                     setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration+100);
                     break;
 
-                case 'gameEnd':
+                case 'EndScore':
                     this.clearAllPreviousHighlighting();
                     setTimeout(()=>this.updateState(args.args), this.ttAnimations.animationDuration+100);
-                    break;
-                case 'nextPlayer':
-                case 'dummy':
                     break;
             }
         },

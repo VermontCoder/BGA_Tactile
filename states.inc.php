@@ -51,17 +51,6 @@
 
 
 $machinestates = [
-
-    // The initial state. Please do not modify.
-
-    1 => array(
-        "name" => "gameSetup",
-        "description" => "",
-        "type" => "manager",
-        "action" => "stGameSetup",
-        "transitions" => ["" => 2]
-    ),
-
     2 => array(
         "name" => "pregameStateSelection",
         "type" => "game",
@@ -114,7 +103,7 @@ $machinestates = [
             "actDoneWithTurn",
             "actUndo"
         ],
-        "transitions" => [ "selectAction" => 6, "nextPlayer" => 10, "gameEnd" => 99]
+        "transitions" => [ "selectAction" => 6, "nextPlayer" => 10, "gameEnd" => 98]
     ],
 
     10 => [
@@ -125,17 +114,6 @@ $machinestates = [
         "updateGameProgression" => true,
         "transitions" => ["endGame" => 99, "nextPlayer" => 6]
     ],
-
-    // Final state.
-    // Please do not modify (and do not overload action/args methods).
-    99 => [
-        "name" => "gameEnd",
-        "description" => clienttranslate("End of game"),
-        "type" => "manager",
-        "action" => "stGameEnd",
-        "args" => "argGameEnd"
-    ],
-
 ];
 
 

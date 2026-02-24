@@ -18,14 +18,12 @@ declare(strict_types=1);
 
 namespace Bga\Games\tactile;
 
-use BgaSystemException;
+use Bga\GameFramework\Components\Deck;
+use Bga\GameFramework\Table;
+use Bga\GameFramework\VisibleSystemException;
 
-require_once(APP_GAMEMODULE_PATH . "module/table/table.game.php");
-
-class Game extends \Table
+class Game extends Table
 {
-    private static array $CARD_TYPES;
-
     //******************************************************* */
     // GAME CONSTANTS
     //******************************************************* */
@@ -74,6 +72,8 @@ class Game extends \Table
     const UNDOOK = 'undoOk';
     const UNDOPOINT = 'undoPoint';
 
+    public Deck $cards;
+
     /**
      * Your global variables labels:
      *
@@ -96,8 +96,7 @@ class Game extends \Table
         ]);
 
         //deck object is initialized here, but all operations on it are handled in ttCards.php
-        $this->cards = $this->getNew( "module.common.deck" );
-        $this->cards->init( "card" );
+        $this->cards = $this->deckFactory->createDeck( "card" );
         $this->cards->autoreshuffle = true;
     }
 
@@ -127,7 +126,7 @@ class Game extends \Table
         $pieces = new ttPieces($this);
         $reachedGoal = $pieces->movePiece($piece_id,$location);
 
-        $this->notifyAllPlayers("move", clienttranslate('${player_name} moved a piece'), [
+        $this->notify->all("move", clienttranslate('${player_name} moved a piece'), [
             "player_name" => $this->getActivePlayerName(),
             "piece_id" => $piece_id,
             "tileID" => $tileID,
@@ -172,7 +171,7 @@ class Game extends \Table
         $pieces = new ttPieces($this);
         $reachedGoal = $pieces->movePiece($piece_id,$location);
 
-        $this->notifyAllPlayers("push", clienttranslate('${player_name} pushed a piece'), [
+        $this->notify->all("push", clienttranslate('${player_name} pushed a piece'), [
             "player_name" => $this->getActivePlayerName(),
             "piece_id" => $piece_id,
             "tileID" => $tileID,
@@ -217,7 +216,7 @@ class Game extends \Table
             $ttPlayers->players[$ally_id]['player_score']++;
         }
 
-        $this->notifyAllPlayers("goalAchieved", clienttranslate('${player_name} has a piece in their goal!'), [
+        $this->notify->all("goalAchieved", clienttranslate('${player_name} has a piece in their goal!'), [
             "player_name" => $player['player_name'],
             "piece_id" => $piece_id,
             "player_id" => $player['player_id'],
@@ -257,7 +256,7 @@ class Game extends \Table
 
         if (count($activatedCards) > 0)
         {
-            $this->notifyAllPlayers("activate", clienttranslate('${player_name} activated ${numCardsActivated} <B>${color}</B>(${colorIcon}) card(s)'), [
+            $this->notify->all("activate", clienttranslate('${player_name} activated ${numCardsActivated} <B>${color}</B>(${colorIcon}) card(s)'), [
                 "player_name" => $this->getActivePlayerName(),
                 "activatedCards" => $activatedCards,
                 "numCardsActivated" => count($activatedCards),
@@ -302,7 +301,7 @@ class Game extends \Table
         $players->gainResource($player_id, $color);
         $this->endOfActionBoardState($origin);
 
-        $this->notifyAllPlayers("gain", clienttranslate('${player_name} gained a <B>${color}</B>(${colorIcon}) resource'), [
+        $this->notify->all("gain", clienttranslate('${player_name} gained a <B>${color}</B>(${colorIcon}) resource'), [
             "player_id" => $player_id,
             "player_name" => $this->getActivePlayerName(),
             "color" => $color,
@@ -332,7 +331,7 @@ class Game extends \Table
 
         $this->checkActionLegality('buy', $origin);
         
-        $this->cards->moveCard($card_id, 'hand', $player_id);
+        $this->cards->moveCard($card_id, 'hand', (int)$player_id);
         $newCard = $this->cards->pickCardForLocation('deck', 'store', $card_id);
         $newCardData = ttUtility::getCardDataFromType($newCard);
         $players->spendResources($player_id, $cardData['resources'][0], $cardData['resources'][1]);
@@ -347,7 +346,7 @@ class Game extends \Table
             $newCards = $this->actReset($origin, true);
         }
 
-        $this->notifyAllPlayers("buy", clienttranslate('${player_name} bought a <B>${color}</B>(${colorIcon}) <B>${action}</B> card. A <B>${newColor}</B>(${newColorIcon}) <B>${newAction}</B> was picked for the store.'), [
+        $this->notify->all("buy", clienttranslate('${player_name} bought a <B>${color}</B>(${colorIcon}) <B>${action}</B> card. A <B>${newColor}</B>(${newColorIcon}) <B>${newAction}</B> was picked for the store.'), [
             "player_id" => $player_id,
             "player_name" => $this->getActivePlayerName(),
             "card" => $card,
@@ -366,7 +365,7 @@ class Game extends \Table
         if ($storeRequiresReset)
         {
             //This notification has to happen AFTER the buy.
-            $this->notifyAllPlayers("reset", clienttranslate('5 cards in the store were the same color or action. The store is reset!'), [
+            $this->notify->all("reset", clienttranslate('5 cards in the store were the same color or action. The store is reset!'), [
                 "newCards" => $newCards,
                 "specialRuleReset" => true,
                 "origin" => $origin,
@@ -405,7 +404,7 @@ class Game extends \Table
 
         $players->swapResources($player_id, $lossColor, $gainColor);
 
-        $this->notifyAllPlayers("swap", clienttranslate('${player_name} swapped a <B>${lossColor}</B>(${lossColorIcon}) resource for a <B>${gainColor}</B>(${gainColorIcon}) resource'), [
+        $this->notify->all("swap", clienttranslate('${player_name} swapped a <B>${lossColor}</B>(${lossColorIcon}) resource for a <B>${gainColor}</B>(${gainColorIcon}) resource'), [
             "player_id" => $player_id,
             "player_name" => $this->getActivePlayerName(),
             "lossColor" => $lossColor,
@@ -438,7 +437,7 @@ class Game extends \Table
         $ttCards = new ttCards($this);
 
         $ttCards->swapCards( $gainCardID, $lossCardID, $player_id, $ally_id);
-        $this->notifyAllPlayers("swapCard", clienttranslate('${player_name} swapped a card'), [
+        $this->notify->all("swapCard", clienttranslate('${player_name} swapped a card'), [
             "player_id" => $player_id,
             "ally_id" => $ally_id,
             "player_name" => $this->getActivePlayerName(),
@@ -476,7 +475,7 @@ class Game extends \Table
 
         if (!$specialRuleReset)
         {
-            $this->notifyAllPlayers("reset", clienttranslate('${player_name} reset the store'), [
+            $this->notify->all("reset", clienttranslate('${player_name} reset the store'), [
                 "newCards" => $newCards,
                 "player_name" => $this->getActivePlayerName(),
                 "specialRuleReset" => $specialRuleReset,
@@ -502,7 +501,7 @@ class Game extends \Table
         // Retrieve the active player ID.
         $player_id = (int)$this->getActivePlayerId();
 
-        $this->notifyAllPlayers("doneWithTurn", clienttranslate('${player_name} has finished their turn'), [
+        $this->notify->all("doneWithTurn", clienttranslate('${player_name} has finished their turn'), [
             "player_id" => $player_id,
             "player_name" => $this->getActivePlayerName(),
         ]);
@@ -551,7 +550,7 @@ class Game extends \Table
         $ttPieces = new ttPieces($this);
         $ttPieces->createPieces($ttPlayers->players);
 
-        $this->notifyAllPlayers("chooseStartTile", clienttranslate('${player_name} has choosen ${playerColor} (${playerColorIcon}) to play!'), [
+        $this->notify->all("chooseStartTile", clienttranslate('${player_name} has choosen ${playerColor} (${playerColorIcon}) to play!'), [
             "player_name" => $this->getActivePlayerName(),
             "playerColor" => $playerColor,
             "playerColorIcon" => $this->getColorIconHTML($playerColor),
@@ -623,7 +622,7 @@ class Game extends \Table
 
         if ($nextState == "nextPlayer")
         {
-            $this->notifyAllPlayers("doneWithTurn", clienttranslate('${player_name} has finished their turn'), 
+            $this->notify->all("doneWithTurn", clienttranslate('${player_name} has finished their turn'), 
             [
                 "player_name" => $this->getActivePlayerName(),
             ]);
@@ -758,7 +757,7 @@ class Game extends \Table
 
         if (!(new ttPieces($this))->doesPlayerHavePieces($player_id))
         {
-            $this->notifyAllPlayers("skipTurn", clienttranslate('${player_name} has scored all pieces and skips turn!'), [
+            $this->notify->all("skipTurn", clienttranslate('${player_name} has scored all pieces and skips turn!'), [
             "player_id" => $player_id,
             "player_name" => $this->getActivePlayerName(),
             ]);
@@ -796,20 +795,6 @@ class Game extends \Table
         {
             $this->globals->set(self::UNDOPOINT, $undoPoint);
         }
-    }
-
-    /**
-     * Game state arguments for game end.
-     *
-     * This method is called when the game is over and the game end screen is displayed to all players.
-     * You can use it to pass any information you want to display on the game end screen.
-     */
-
-    public function argGameEnd(): array
-    {
-        $parentResult = parent::argGameEnd();
-
-        return array_merge($parentResult, $this->getAllDatas());
     }
 
     /**
@@ -857,7 +842,7 @@ class Game extends \Table
      * - when the game starts
      * - when a player refreshes the game page (F5)
      */
-    protected function getAllDatas() :array
+    public function getAllDatas() :array
     {
         $result = [];
 
@@ -917,22 +902,6 @@ class Game extends \Table
         $result['undoPoint'] = $this->globals->get(self::UNDOPOINT);
         return $result;
 
-    }
-
-    protected function getGameState(): array
-    {
-        $state = parent::getGameState();
-        return $state;
-    }
-
-    /**
-     * Returns the game name.
-     *
-     * IMPORTANT: Please do not modify.
-     */
-    protected function getGameName()
-    {
-        return "tactile";
     }
 
     /**
@@ -1039,6 +1008,10 @@ class Game extends \Table
             return;
         }
 
-        throw new \feException("Zombie mode not supported at this game state: \"{$state_name}\".");
+        throw new VisibleSystemException("Zombie mode not supported at this game state: \"{$state_name}\".");
+    }
+
+    public function debug_goToState(int $state = 98) {
+        $this->gamestate->jumpToState($state);
     }
 }
