@@ -20,5 +20,5 @@ Examples of codebases written for this framework. These can provide examples:
 
 In this sprint, we are going to make a few basic changes:
 - rename Overdrive to Convert. Associated variable names should also change. 
-- you can't use basic actions as part of a CONVERT (so just limit it to cards) - very few people realize you can use basic actions so this will help level the playing field
-- remove 3P game modes (its an inconsistent experience with the others, i don't want this to be someone's only TacTile experience) 
+- you can't use basic actions (actions made using the action card) as part of a CONVERT (so just limit it to cards) 
+
