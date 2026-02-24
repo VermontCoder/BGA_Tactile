@@ -3,7 +3,7 @@ define([
 ], function( dojo, declare )
 
 {
-    return declare("bgagame.ttOverdrive", null, 
+    return declare("bgagame.ttConvert", null, 
     { 
 
         constructor: function()
@@ -11,16 +11,11 @@ define([
         
         },
 
-        beginOverdrive: function() 
+        beginConvert: function() 
         {
             this.clearAllPreviousHighlighting();
-            if (this.eventOrigin.startsWith('action_'))
-            {
-                //switching to overdrive from an action board action.
-                this.ttAnimations.moveActionCube.call(this,this.eventOrigin, true);
-            }
             this.eventOrigin = '';
-            this.setClientState("client_overdrive", 
+            this.setClientState("client_convert", 
             {
                 descriptionmyturn : _("Please select two actions."),
             });
@@ -32,7 +27,7 @@ define([
 
         beginSelectingAction: function()
         {
-            this.setClientState("client_selectOverdriveAction", 
+            this.setClientState("client_selectConvertAction", 
             {
                 descriptionmyturn : _("Please select an action."),
             });
