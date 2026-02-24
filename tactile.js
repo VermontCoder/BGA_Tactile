@@ -28,7 +28,7 @@ define([
     g_gamethemeurl + "modules/js/ttBuySequence.js",
     g_gamethemeurl + "modules/js/ttSwapSequence.js",
     g_gamethemeurl + "modules/js/ttResetSequence.js",
-    g_gamethemeurl + "modules/js/ttOverdrive.js",
+    g_gamethemeurl + "modules/js/ttConvert.js",
     g_gamethemeurl + "modules/js/ttDoneWithTurnSequence.js",
     g_gamethemeurl + "modules/js/ttUndoSequence.js"
 ],
@@ -47,7 +47,7 @@ function (dojo, declare) {
             this.ttSwapSequence = new bgagame.ttSwapSequence();
             this.ttResetSequence = new bgagame.ttResetSequence();
             this.ttAnimations = new bgagame.ttAnimations();
-            this.ttOverdrive = new bgagame.ttOverdrive();
+            this.ttConvert = new bgagame.ttConvert();
             this.ttDoneWithTurnSequence = new bgagame.ttDoneWithTurnSequence();
             this.ttUndoSequence = new bgagame.ttUndoSequence();
 
@@ -575,7 +575,7 @@ function (dojo, declare) {
                     case 'selectAction':
                         //add alternate selection buttons
                         this.addActionBoardActionButtons();
-                        this.addActionButton('actionBtnOverdrive', _('Overdrive'), () => this.ttOverdrive.beginOverdrive.call(this), null, null, 'blue');
+                        this.addActionButton('actionBtnConvert', _('Convert'), () => this.ttConvert.beginConvert.call(this), null, null, 'blue');
                          //undo
                         if (args.undoOk == 1)
                         {
@@ -630,18 +630,18 @@ function (dojo, declare) {
                         case 'client_selectPieceMove':
                         case 'client_selectPiecePush':
                         case 'client_buyCard':
-                        case 'client_overdrive':
+                        case 'client_convert':
                             this.addActionButton('actionBtnCancel', _('Cancel'), () => this.restoreServerGameState(), null, null, 'red'); 
                             break;
 
-                        case 'client_selectOverdriveAction':
-                            this.addActionButton('actionBtnOverdriveMove', _('Move'), () => this.ttMoveSequence.beginMove.call(this), null, null, null);
-                            this.addActionButton('actionBtnOverdrivePush', _('Push'), () => this.ttPushSequence.beginPush.call(this), null, null, null);
-                            this.addActionButton('actionBtnOverdriveGain', _('Gain'), () => this.ttGainSequence.beginGain.call(this), null, null, null);
-                            this.addActionButton('actionBtnOverdriveBuy', _('Buy'), () => this.ttBuySequence.beginBuy.call(this), null, null, null);
-                            this.addActionButton('actionBtnOverdriveSwap', _('Swap'), () => this.ttSwapSequence.beginSwap.call(this), null, null, null);
-                            this.addActionButton('actionBtnOverdriveReset', _('Reset'),() => this.ttResetSequence.beginReset.call(this), null, null, null);
-                            this.addActionButton('actionBtnCancelOverdrive', _('Cancel'), () => this.restoreServerGameState(), null, null, 'red'); 
+                        case 'client_selectConvertAction':
+                            this.addActionButton('actionBtnConvertMove', _('Move'), () => this.ttMoveSequence.beginMove.call(this), null, null, null);
+                            this.addActionButton('actionBtnConvertPush', _('Push'), () => this.ttPushSequence.beginPush.call(this), null, null, null);
+                            this.addActionButton('actionBtnConvertGain', _('Gain'), () => this.ttGainSequence.beginGain.call(this), null, null, null);
+                            this.addActionButton('actionBtnConvertBuy', _('Buy'), () => this.ttBuySequence.beginBuy.call(this), null, null, null);
+                            this.addActionButton('actionBtnConvertSwap', _('Swap'), () => this.ttSwapSequence.beginSwap.call(this), null, null, null);
+                            this.addActionButton('actionBtnConvertReset', _('Reset'),() => this.ttResetSequence.beginReset.call(this), null, null, null);
+                            this.addActionButton('actionBtnCancelConvert', _('Cancel'), () => this.restoreServerGameState(), null, null, 'red'); 
                             break;
                 }
             }
@@ -814,7 +814,7 @@ function (dojo, declare) {
            
             this.ttAnimations.movePiece.call(this, notif.args.piece_id, notif.args.tileID);
 
-            //if overdrive, there will be multiple origins
+            //if convert, there will be multiple origins
             const origins = notif.args.origin.split(',');
             origins.forEach(origin => this.ttUtility.notifCardExhaustionCheck( origin) );
         },
@@ -826,7 +826,7 @@ function (dojo, declare) {
            
             this.ttAnimations.movePiece.call(this, notif.args.piece_id, notif.args.tileID);
 
-            //if overdrive, there will be multiple origins
+            //if convert, there will be multiple origins
             const origins = notif.args.origin.split(',');
             origins.forEach(origin => this.ttUtility.notifCardExhaustionCheck( origin) );
         },
@@ -846,7 +846,7 @@ function (dojo, declare) {
             console.log( 'notif_gain' );
             console.log( notif );
 
-            //if overdrive, there will be multiple origins
+            //if convert, there will be multiple origins
             const origins = notif.args.origin.split(',');
             origins.forEach(origin => this.ttUtility.notifCardExhaustionCheck( origin) );
 
@@ -860,7 +860,7 @@ function (dojo, declare) {
             console.log( 'notif_buy' );
             console.log( notif );
 
-            //if overdrive, there will be multiple origins
+            //if convert, there will be multiple origins
             const origins = notif.args.origin.split(',');
             origins.forEach(origin => this.ttUtility.notifCardExhaustionCheck( origin) );
 
@@ -880,7 +880,7 @@ function (dojo, declare) {
             console.log( 'notif_swap' );
             console.log( notif );
 
-            //if overdrive, there will be multiple origins
+            //if convert, there will be multiple origins
             const origins = notif.args.origin.split(',');
             origins.forEach(origin => this.ttUtility.notifCardExhaustionCheck( origin) );
 
@@ -905,7 +905,7 @@ function (dojo, declare) {
             console.log( 'notif_reset' );
             console.log( notif );
 
-            //if overdrive, there will be multiple origins
+            //if convert, there will be multiple origins
             const origins = notif.args.origin.split(',');
             origins.forEach(origin => this.ttUtility.notifCardExhaustionCheck( origin) );
             
