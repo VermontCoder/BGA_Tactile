@@ -37,8 +37,8 @@ define([
                 return false;
             }
 
-            const isFromOverdrive = this.eventOrigin.includes(',');
-            if (!isFromOverdrive)
+            const isFromConvert = this.eventOrigin.includes(',');
+            if (!isFromConvert)
             {   
                 this.clearAllPreviousHighlighting();
                 //if this came from a card, highlight the card.

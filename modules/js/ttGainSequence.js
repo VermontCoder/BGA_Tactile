@@ -36,11 +36,11 @@ define([
                 return false;
             } 
             
-            const isFromOverdrive = this.eventOrigin.includes(',');
-            if (!isFromOverdrive) this.clearAllPreviousHighlighting();
+            const isFromConvert = this.eventOrigin.includes(',');
+            if (!isFromConvert) this.clearAllPreviousHighlighting();
 
             //if this is a card event, we need to add back the highlighting since the above removes all highlighting.
-            if (!isFromOverdrive && this.eventOrigin.startsWith('card_'))
+            if (!isFromConvert && this.eventOrigin.startsWith('card_'))
             {
                 $(this.eventOrigin).classList.add('highlighted');
             }

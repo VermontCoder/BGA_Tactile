@@ -40,8 +40,8 @@ define([
                 }
             }
 
-            const isFromOverdrive = this.eventOrigin.includes(',');
-            if (!isFromOverdrive) this.clearAllPreviousHighlighting();
+            const isFromConvert = this.eventOrigin.includes(',');
+            if (!isFromConvert) this.clearAllPreviousHighlighting();
 
             if (!is4PlayerGame)
             {

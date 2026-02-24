@@ -13,8 +13,8 @@ define([
 
         beginReset: function() 
         {
-            const isFromOverdrive = this.eventOrigin.includes(',');
-            if (!isFromOverdrive) this.clearAllPreviousHighlighting();
+            const isFromConvert = this.eventOrigin.includes(',');
+            if (!isFromConvert) this.clearAllPreviousHighlighting();
             
             this.setClientState("client_reset", 
             {

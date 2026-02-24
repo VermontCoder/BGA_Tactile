@@ -21,8 +21,8 @@ define([
                 return false;
             }
 
-            const isFromOverdrive = this.eventOrigin.includes(',');
-            if (!isFromOverdrive) this.clearAllPreviousHighlighting();
+            const isFromConvert = this.eventOrigin.includes(',');
+            if (!isFromConvert) this.clearAllPreviousHighlighting();
             
             Object.keys(buyableCards).forEach(function(card_id,index) {
                 const cardDiv = document.getElementById('storecard_'+card_id);
