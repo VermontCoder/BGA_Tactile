@@ -634,9 +634,9 @@ class Game extends Table
     private function checkActionLegality(string $action, string $origin) : void
     {
         $legalActions = new ttLegalMoves($this);
-        $isOverDriveOrigin = str_contains($origin, ',');
+        $isConvertOrigin = str_contains($origin, ',');
 
-        if (!$isOverDriveOrigin && !in_array($action, $legalActions->legalActions()))
+        if (!$isConvertOrigin && !in_array($action, $legalActions->legalActions()))
         {
             throw new \BgaUserException('This is not a legal action!');
         }
