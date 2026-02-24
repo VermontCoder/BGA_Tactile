@@ -206,29 +206,26 @@ class Game extends Table
             $ttPlayers->recordScoredGoal3p( $player['player_id'], $pieces->pieces[$piece_id]['location'] );
         }
 
-        //score point in local copy of $player
-        $player['player_score']++;
         $ally_id = $player['ally_id'];
 
         if ($ally_id != null)
         {
             $ttPlayers->scorePoint($ally_id);
-            $ttPlayers->players[$ally_id]['player_score']++;
         }
 
         $this->notify->all("goalAchieved", clienttranslate('${player_name} has a piece in their goal!'), [
             "player_name" => $player['player_name'],
             "piece_id" => $piece_id,
             "player_id" => $player['player_id'],
-            "score" => $player['player_score'],
+            "score" => $this->bga->playerScore->get((int)$player['player_id']),
             "ally_id" => $ally_id,
-            "ally_score" => $ally_id != null ? $ttPlayers->players[$ally_id]['player_score'] : null,
+            "ally_score" => $ally_id != null ? $this->bga->playerScore->get((int)$ally_id) : null,
         ]);
 
         $pieces->deletePiece($piece_id);
 
         $scoreGoal = count($ttPlayers->players) <= 3 ? 2 : 3;
-        if ($player['player_score'] >= $scoreGoal)
+        if ($this->bga->playerScore->get((int)$player['player_id']) >= $scoreGoal)
         {
             //player has won!
             $this->endOfActionBoardState($origin);

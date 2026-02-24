@@ -429,9 +429,7 @@ function (dojo, declare) {
                 </DIV>`);
             
 
-                this.scoreCtrl[player.player_id] = new ebg.counter();
-                this.scoreCtrl[player.player_id].create('player_score_'+player.player_id);
-                this.scoreCtrl[player.player_id].setValue(player.player_score);
+                this.bga.playerPanels.getScoreCounter(player.player_id).setValue(player.player_score);
                 $('player_score_'+player.player_id).classList.add('playerPanelNumber');
 
                 if (Object.keys(this.gamedatas.players).length == 4)
@@ -439,11 +437,10 @@ function (dojo, declare) {
                     //show team colors
                     teamHTML = this.ttUtility.getTeamIconHTML.call(this,player.color_name);
 
-                    const scoreDivSelector = '#player_board_'+player.player_id +' > .player_score';
-                    const scoreDiv = document.querySelector(scoreDivSelector);
-                    
+                    const scoreDiv = this.bga.playerPanels.getElement(player.player_id);
+
                     //if we haven't already, add the team icons. Other parts of the player board are typically destroyed.
-                    if (!document.querySelector(scoreDivSelector + ' > .icon'))
+                    if (!scoreDiv.querySelector('.icon'))
                     {
                         scoreDiv.insertAdjacentHTML('beforeEnd', teamHTML);
                     }
@@ -923,12 +920,12 @@ function (dojo, declare) {
             console.log( 'notif_goalAchieved' );
             console.log( notif );
 
-            this.scoreCtrl[notif.args.player_id].setValue(notif.args.score);
+            this.bga.playerPanels.getScoreCounter(notif.args.player_id).setValue(notif.args.score);
             $(notif.args.piece_id).classList.add('scoring');
 
             if (notif.args.ally_id != null)
             {
-                this.scoreCtrl[notif.args.ally_id].setValue(notif.args.ally_score);
+                this.bga.playerPanels.getScoreCounter(notif.args.ally_id).setValue(notif.args.ally_score);
             }
         },
 

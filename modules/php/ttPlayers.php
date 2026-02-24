@@ -276,21 +276,7 @@ class ttPlayers
 
     public function scorePoint($player_id) : void
     {
-        $this->game->DbQuery(
-            sprintf(
-                "UPDATE player SET player_score = player_score + 1 WHERE player_id = %s",
-                $player_id
-            )
-        );
-
-        if (empty($this->players))
-        {
-            $this->deserializePlayersFromDb();
-        }
-        else
-        {
-            $this->players[$player_id]['player_score']++;
-        }
+        $this->game->bga->playerScore->inc((int)$player_id, 1);
     }
 
     public function recordScoredGoal3p($player_id, $tile_id)
