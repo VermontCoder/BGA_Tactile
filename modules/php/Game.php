@@ -329,7 +329,15 @@ class Game extends Table
         $this->checkActionLegality('buy', $origin);
         
         $this->cards->moveCard($card_id, 'hand', (int)$player_id);
-        $newCard = $this->cards->pickCardForLocation('deck', 'store', $card_id);
+        if ($this->isClassicMode())
+        {
+            $ttCards = new ttCards($this);
+            $newCard = $ttCards->pickClassicReplacement($cardData['action'], $card_id);
+        }
+        else
+        {
+            $newCard = $this->cards->pickCardForLocation('deck', 'store', $card_id);
+        }
         $newCardData = ttUtility::getCardDataFromType($newCard);
         $players->spendResources($player_id, $cardData['resources'][0], $cardData['resources'][1]);
 
@@ -458,8 +466,28 @@ class Game extends Table
             $this->checkActionLegality('reset', $origin);
         }
 
-        $this->cards->moveAllCardsInLocation('store', 'discard');
-        $newCards = $this->cards->pickCardsForLocation( 6, 'deck', 'store');
+        if ($this->isClassicMode())
+        {
+            $storeCards = $this->cards->getCardsInLocation('store');
+            foreach ($storeCards as $card)
+            {
+                $type = ttUtility::getCardDataFromType($card)['action'];
+                $this->cards->moveCard((int)$card['id'], 'discard_' . $type);
+            }
+            $newCards = [];
+            $ttCards = new ttCards($this);
+            foreach (['move', 'gain', 'push'] as $type)
+            {
+                $ttCards->reshuffleClassicTypeIfNeeded($type);
+                $picked = $this->cards->pickCardsForLocation(2, 'deck_' . $type, 'store');
+                $newCards = array_merge($newCards, $picked);
+            }
+        }
+        else
+        {
+            $this->cards->moveAllCardsInLocation('store', 'discard');
+            $newCards = $this->cards->pickCardsForLocation(6, 'deck', 'store');
+        }
 
         if ($this->checkStoreReset())
         {
@@ -607,6 +635,11 @@ class Game extends Table
             $actionCount[$cardData['action']]++;
         }
 
+        if ($this->isClassicMode())
+        {
+            // In Classic mode, only check color (action count can never reach 5 with 2-per-type market)
+            return max($colorCount) >= 5;
+        }
         return (max($colorCount) >= 5 || max($actionCount) >= 5);
     }
 
@@ -637,6 +670,11 @@ class Game extends Table
         {
             throw new \BgaUserException('This is not a legal action!');
         }
+    }
+
+    public function isClassicMode(): bool
+    {
+        return $this->tableOptions->get(101) === 1;
     }
 
     public function getColorIconHTML(string $color) : string
@@ -899,6 +937,7 @@ class Game extends Table
         $result['legalMovesPush'] = $legalActions->legalMoves(true, $pieces);
         $result['undoOk'] = $this->globals->get(self::UNDOOK);
         $result['undoPoint'] = $this->globals->get(self::UNDOPOINT);
+        $result['isClassicMode'] = $this->isClassicMode();
         return $result;
 
     }
@@ -935,21 +974,33 @@ class Game extends Table
         $ttActionBoardSelections = new ttActionBoardSelections($this);
         $ttActionBoardSelections->createActionBoardSelections($ttPlayers->players);
         
-        $this->cards->shuffle('deck');
+        if ($this->isClassicMode())
+        {
+            $ttCards->createClassicDecks();
+            foreach (['move', 'gain', 'push'] as $type)
+            {
+                $this->cards->pickCardsForLocation(2, 'deck_' . $type, 'store');
+            }
+        }
+        else
+        {
+            $this->cards->shuffle('deck');
 
-        //testing reset - only two colors
-        //self::DbQuery(sprintf("UPDATE card SET card_location='discard' where card_type LIKE '%s_%%' or card_type LIKE '%s_%%'", 'red','blue'));
+            //testing reset - only two colors
+            //self::DbQuery(sprintf("UPDATE card SET card_location='discard' where card_type LIKE '%s_%%' or card_type LIKE '%s_%%'", 'red','blue'));
 
-         //test data
-        //  foreach($players as $player_id => $player)
-        //  {
-        //      $this->cards->pickCardsForLocation( 4, 'deck', 'hand', $player_id);
-        //  }
+             //test data
+            //  foreach($players as $player_id => $player)
+            //  {
+            //      $this->cards->pickCardsForLocation( 4, 'deck', 'hand', $player_id);
+            //  }
 
-        // //testing buy - issue plenty of resources
-        //self::DbQuery("UPDATE player SET red_resource_qty=20, blue_resource_qty=20, green_resource_qty=20, yellow_resource_qty=20");
+            // //testing buy - issue plenty of resources
+            //self::DbQuery("UPDATE player SET red_resource_qty=20, blue_resource_qty=20, green_resource_qty=20, yellow_resource_qty=20");
 
-        $this->cards->pickCardsForLocation( 6, 'deck', 'store');
+            $this->cards->pickCardsForLocation(6, 'deck', 'store');
+        }
+
         if ($this->checkStoreReset())
         {
             $this->actReset('specialRule', true);

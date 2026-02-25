@@ -115,16 +115,29 @@ define([
 
         sortCards(cards)
         {
-            return cards.toSorted((a, b) => 
+            return cards.toSorted((a, b) =>
             {
                 const cardDataA = this.getCardDataFromType(a);
                 const cardDataB = this.getCardDataFromType(b);
-                
-                if (cardDataA.color === cardDataB.color) 
+
+                if (cardDataA.color === cardDataB.color)
                 {
                     return cardDataA.action.localeCompare(cardDataB.action);
                 }
                 return cardDataA.color.localeCompare(cardDataB.color);
+            });
+        },
+
+        sortCardsClassic(cards)
+        {
+            const actionOrder = ['move', 'gain', 'push'];
+            return cards.toSorted((a, b) =>
+            {
+                const actionA = a.type.split('_')[1];
+                const actionB = b.type.split('_')[1];
+                const orderDiff = actionOrder.indexOf(actionA) - actionOrder.indexOf(actionB);
+                if (orderDiff !== 0) return orderDiff;
+                return a.type.split('_')[0].localeCompare(b.type.split('_')[0]);
             });
         },
 

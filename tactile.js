@@ -96,6 +96,7 @@ function (dojo, declare) {
 
         setup: function( gamedatas )
         {
+            this.isClassicMode = gamedatas.isClassicMode;
             console.log( "Starting game setup" );
 
             if (this.isMobile()) {
@@ -197,7 +198,9 @@ function (dojo, declare) {
             var count =0;
             var rowCount = 0;
 
-            storeData = this.ttUtility.sortCards(Object.values(storeData));
+            storeData = this.isClassicMode
+                ? this.ttUtility.sortCardsClassic(Object.values(storeData))
+                : this.ttUtility.sortCards(Object.values(storeData));
 
             Object.values(storeData).forEach(card => 
             {
@@ -263,17 +266,36 @@ function (dojo, declare) {
                 });
         },
 
-        createStore: function(store) 
+        createStore: function(store)
         {
-            //store
-            document.getElementById('ttTopContainer').insertAdjacentHTML('beforeend', `
-                <DIV id="store" class="store">
-                    <DIV id="deck" class="deck addSpace"></DIV>
-                </DIV>
-            </DIV>`);
-
-           this.createStoreCards(store);
-           this.createResourceBank();
+            if (this.isClassicMode)
+            {
+                document.getElementById('ttTopContainer').insertAdjacentHTML('beforeend', `
+                    <DIV id="store" class="store">
+                        <DIV class="cardRow">
+                            <DIV id="deck_move" class="deck addSpace">
+                                <DIV class="classicDeckIcon move"></DIV>
+                            </DIV>
+                            <DIV id="deck_gain" class="deck addSpace">
+                                <DIV class="classicDeckIcon gain"></DIV>
+                            </DIV>
+                            <DIV id="deck_push" class="deck addSpace">
+                                <DIV class="classicDeckIcon push"></DIV>
+                            </DIV>
+                        </DIV>
+                    </DIV>
+                </DIV>`);
+            }
+            else
+            {
+                document.getElementById('ttTopContainer').insertAdjacentHTML('beforeend', `
+                    <DIV id="store" class="store">
+                        <DIV id="deck" class="deck addSpace"></DIV>
+                    </DIV>
+                </DIV>`);
+            }
+            this.createStoreCards(store);
+            this.createResourceBank();
         },
         //************************************* */
         
@@ -572,7 +594,10 @@ function (dojo, declare) {
                     case 'selectAction':
                         //add alternate selection buttons
                         this.addActionBoardActionButtons();
-                        this.addActionButton('actionBtnConvert', _('Convert'), () => this.ttConvert.beginConvert.call(this), null, null, 'blue');
+                        if (!this.isClassicMode)
+                        {
+                            this.addActionButton('actionBtnConvert', _('Convert'), () => this.ttConvert.beginConvert.call(this), null, null, 'blue');
+                        }
                          //undo
                         if (args.undoOk == 1)
                         {

@@ -137,4 +137,48 @@ class ttCards
 
         return $buyable;
     }
+
+    /**
+     * If 'deck_{type}' is empty, reshuffles 'discard_{type}' into it.
+     */
+    public function reshuffleClassicTypeIfNeeded(string $type): void
+    {
+        if (empty($this->game->cards->getCardsInLocation('deck_' . $type)))
+        {
+            $discards = $this->game->cards->getCardsInLocation('discard_' . $type);
+            if (!empty($discards))
+            {
+                $this->game->cards->moveCards(array_keys($discards), 'deck_' . $type);
+                $this->game->cards->shuffle('deck_' . $type);
+            }
+        }
+    }
+
+    /**
+     * Picks one replacement card of $type from its typed deck into the store at $slotArg.
+     * Reshuffles the typed discard into the typed deck first if needed.
+     */
+    public function pickClassicReplacement(string $type, int $slotArg): ?array
+    {
+        $this->reshuffleClassicTypeIfNeeded($type);
+        return $this->game->cards->pickCardForLocation('deck_' . $type, 'store', $slotArg);
+    }
+
+    /**
+     * Splits the card pool (already in 'deck') into three typed deck locations.
+     * Called once during setupNewGame in Classic mode.
+     */
+    public function createClassicDecks(): void
+    {
+        $allCards = $this->game->cards->getCardsInLocation('deck');
+        foreach ($allCards as $card)
+        {
+            $cardData = ttUtility::getCardDataFromType($card);
+            $this->game->cards->moveCard((int)$card['id'], 'deck_' . $cardData['action']);
+        }
+        foreach (['move', 'gain', 'push'] as $type)
+        {
+            $this->game->cards->shuffle('deck_' . $type);
+        }
+    }
 }

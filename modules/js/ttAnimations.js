@@ -105,7 +105,10 @@ define([
                     const cardWidth = 80;
                     const xOffset = -1* (parseInt(cardID) * cardWidth);
                     newCardDiv = `<div id="storecard_${cardID}" class="storecard" style="background-position-x: ${xOffset}px;"></div>`;
-                    $('deck').insertAdjacentHTML('beforeend', newCardDiv);
+                    const sourceDeck = this.isClassicMode
+                        ? 'deck_' + cardsToPutInStore[i].type.split('_')[1]
+                        : 'deck';
+                    $(sourceDeck).insertAdjacentHTML('beforeend', newCardDiv);
                 }
             
                 const anim = this.slideToObjectAndDestroy( 'storecard_'+cardID, 'store_'+i, this.ttAnimations.animationDuration, 0 );
@@ -119,7 +122,9 @@ define([
             const storeCards = this.gamedatas.gamestate.args.store
             
             //sort the new cards so they look like they are moving to the right spot
-            newCards = this.ttUtility.sortCards(Object.values(newCards));
+            newCards = this.isClassicMode
+                ? this.ttUtility.sortCardsClassic(Object.values(newCards))
+                : this.ttUtility.sortCards(Object.values(newCards));
             this.ttAnimations.animateDeckToStore.call(this,newCards);
 
             Object.keys(storeCards).forEach(cardID => {
@@ -198,14 +203,18 @@ define([
             }
             
             //sort this array
-            storeCards = this.ttUtility.sortCards(storeCards);
+            storeCards = this.isClassicMode
+                ? this.ttUtility.sortCardsClassic(storeCards)
+                : this.ttUtility.sortCards(storeCards);
 
             //add the new card to a copy of the array
             var newStoreCards = structuredClone(storeCards);
             newStoreCards.push(newCardData);
 
             //sort & return the new array
-            return this.ttUtility.sortCards(newStoreCards);
+            return this.isClassicMode
+                ? this.ttUtility.sortCardsClassic(newStoreCards)
+                : this.ttUtility.sortCards(newStoreCards);
         },
 
         getNewTableau: function(cardData,playerID)

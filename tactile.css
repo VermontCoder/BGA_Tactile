@@ -18,12 +18,12 @@
  *::after {
      box-sizing: border-box;
  }
- 
+
  :root {
- 
+
      --tile-dim: 75px;
      --num-tiles-to-offset: 4; /* change to 8 for colorblind tiles */
-     --solid-tile-offset: calc(var(--tile-dim)*var(--num-tiles-to-offset) * -1); 
+     --solid-tile-offset: calc(var(--tile-dim)*var(--num-tiles-to-offset) * -1);
      --board-dim: calc(var(--tile-dim)*6 + (2px*6) + 20px);
      --card-width: 80px;
      --card-height: 120px;
@@ -37,17 +37,17 @@
 
      --highlight-color: rgba(23, 197, 66, 0.856);
      --panel-color: #eeeeee;
- 
+
      /* z-index values */
      --z-index-deck: 3 ;
      --z-index-piece: 1;
      --z-index-card: 2;
      --z-index-action-cube: 3;
  }
- 
+
  .mobileDeviceScale {
     transform: scale(0.93);
-    transform-origin: top left; 
+    transform-origin: top left;
  }
 
  .addSpace { margin: 5px; }
@@ -66,7 +66,7 @@
      margin-left : auto;
      margin-right : auto;
  }
- 
+
  /* Store styles */
  .store {
      position: absolute;
@@ -76,12 +76,12 @@
      left: 10px;
      width: var(--store-width);
      height: var(--board-dim);
-     background-color: var(--panel-color);  
+     background-color: var(--panel-color);
      border-radius: 4px;
      margin-top: 10px;
      padding-right:4px;
  }
- 
+
  /* Deck styles */
  .deck {
      z-index: var(--z-index-deck);
@@ -93,7 +93,7 @@
      border-radius: 4px;
      margin-top: 10px !important;
  }
- 
+
  .deck::before,
  .deck::after {
      content: '';
@@ -104,19 +104,38 @@
      box-shadow: 3px 3px 3px #444;
      border-radius: 4px;
  }
- 
+
  .deck::before {
      top: -3px;
      left: -3px;
      z-index: calc(var(--z-index-deck) - 1);
  }
- 
+
  .deck::after {
      top: -6px;
      left: -6px;
      z-index: calc(var(--z-index-deck) - 2);
  }
-    
+
+/* Action type icon overlaid on each Classic mode deck pile.
+   action_icons.png: move at 0, gain at 104px, push at 208px (104x128px each).
+   Displayed at 48x59px (scale 0.46); scaled sprite: 144x59px. */
+.classicDeckIcon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px;
+    height: 59px;
+    background: url(img/action_icons.png) no-repeat;
+    background-size: 144px 59px;
+    z-index: calc(var(--z-index-deck) + 1);
+}
+
+.classicDeckIcon.move { background-position: 0 0; }
+.classicDeckIcon.gain { background-position: -48px 0; }
+.classicDeckIcon.push { background-position: -96px 0; }
+
  .cardRow {
      width: 100%;
      display: flex;
@@ -124,7 +143,7 @@
      align-items: center;
      flex-direction: row;
  }
- 
+
  /* Board styles */
  .board {
      position: absolute;
@@ -137,7 +156,7 @@
      font-size: 0; /* remove space between inline-block elements */
      border-radius:4px;
  }
- 
+
  .playingPiece {
     position: absolute;
     top:0px;
@@ -147,27 +166,27 @@
     filter: drop-shadow(1px 4px 2px rgba(0,0,0,.6));
     z-index: var(--z-index-piece);
  }
- 
+
  .playingPiece.red
  {
      background: url(img/player_pieces.png) 0 0 no-repeat;
  }
- 
+
  .playingPiece.yellow
  {
      background: url(img/player_pieces.png) calc(var(--tile-dim) * -1) 0 no-repeat;
  }
- 
+
  .playingPiece.green
  {
      background: url(img/player_pieces.png) calc(var(--tile-dim) * -2) 0 no-repeat;
  }
- 
+
  .playingPiece.blue
  {
      background: url(img/player_pieces.png) calc(var(--tile-dim) * -3) 0 no-repeat;
  }
- 
+
  .playingPiece.highlighted
  {
     filter: drop-shadow(3px 3px 2px rgba(255,255,255,1))
@@ -181,7 +200,7 @@
     animation-name: blinking;
     animation-duration: 1100ms;
     animation-iteration-count: 1;
-    
+
 }
 
 @keyframes blinking {
@@ -208,7 +227,7 @@
          drop-shadow(-3px -3px 2px #6ab524)
          opacity(50%);
     }
-    
+
     75% {
          filter: drop-shadow(3px 3px 2px #0f87da)
          drop-shadow(-3px 3px 2px #0f87da)
@@ -218,17 +237,17 @@
     }
 
     100% {
-         filter: 
+         filter:
          opacity(0%);
     }
 
-}   
+}
  .tile {
     position: absolute;
      width: var(--tile-dim);
      height: var(--tile-dim);
  }
- 
+
  .tile.redHome
  {
      background: url(img/tiles_small.png) 0 0 no-repeat;
@@ -246,13 +265,13 @@
      background: url(img/tiles_small.png) calc(var(--tile-dim) * -2) 0 no-repeat;
      border: 1px solid black;
  }
- 
+
  .tile.blueHome
  {
      background: url(img/tiles_small.png) calc(var(--tile-dim) * -3) 0 no-repeat;
      border: 1px solid black;
  }
- 
+
  /* When tiles are highlighted the background image shifts. This is to compensate for that. */
 
  .tile.redHome.legalMove {
@@ -279,17 +298,17 @@
  {
      background: url(img/tiles_small.png) var(--solid-tile-offset) 0 no-repeat;
  }
- 
+
  .tile.yellow
  {
      background: url(img/tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim))  no-repeat;
  }
- 
+
  .tile.green
  {
      background: url(img/tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim) * 2)  no-repeat;
  }
- 
+
  .tile.blue
  {
      background: url(img/tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim) * 3)  no-repeat;
@@ -297,13 +316,13 @@
 
  /* When tiles are highlighted the background image shifts. This is to compensate for that. Only matters for color blind tiles */
 
- 
+
  .tile.red.legalMove
  {
      background: url(img/tiles_small.png) calc(var(--solid-tile-offset) - 6px) -6px no-repeat;
      border: none;
  }
- 
+
  .tile.yellow.legalMove
  {
      background: url(img/tiles_small.png) calc(var(--solid-tile-offset) - var(--tile-dim) - 6px) -6px no-repeat;
@@ -322,7 +341,7 @@
     border: none;
 }
  /* resource styles */
- 
+
  .bank {
      display: flex;
      justify-content: center;
@@ -336,7 +355,7 @@
      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
      transition: transform 1s, box-shadow 0.3s, border 0.3s; /* Add transition for smooth effect */
  }
- 
+
  .resource.highlighted, .bank.highlighted {
     border: 2px solid var(--highlight-color); /* Highlight border color */
     box-shadow: 0 0 15px var(--highlight-color); /* Highlight glow effect */
@@ -347,23 +366,23 @@
      height: var(--resource-dim);
      filter: drop-shadow(3px 3px 3px #444);
  }
- 
- 
+
+
  .resource.red
  {
      background: url(img/resource_tokens_small.png) 0 0 no-repeat;
  }
- 
+
  .resource.yellow
  {
      background: url(img/resource_tokens_small.png) calc(var(--resource-dim) * -1) 0 no-repeat;
  }
- 
+
  .resource.green
  {
      background: url(img/resource_tokens_small.png) calc(var(--resource-dim) * -2) 0 no-repeat;
  }
- 
+
  .resource.blue
  {
      background: url(img/resource_tokens_small.png) calc(var(--resource-dim) * -3) 0 no-repeat;
@@ -388,28 +407,28 @@
      margin-right: -.4em; /* Adjust the right margin to move the icon closer to the text */
      margin-bottom: -.2em; /* Adjust the bottom margin to align the icon with the text */
      margin-top: -.4em; /* Adjust the top margin to align the icon with the text */
-     
+
  }
  .icon.red
  {
      background: url(img/resource_tokens_small.png) 0 0 no-repeat;
  }
- 
+
  .icon.yellow
  {
      background: url(img/resource_tokens_small.png) calc(var(--resource-dim) * -1) 0 no-repeat;
  }
- 
+
  .icon.green
  {
      background: url(img/resource_tokens_small.png) calc(var(--resource-dim) * -2) 0 no-repeat;
  }
- 
+
  .icon.blue
  {
      background: url(img/resource_tokens_small.png) calc(var(--resource-dim) * -3) 0 no-repeat;
  }
- 
+
  .playerPanelNumber {
     font-family: "DM Sans", serif;
     font-optical-sizing: auto;
@@ -428,12 +447,12 @@
  }
 
  /* Tableau styles */
- 
+
  .tableauContainer {
      display: block;
      margin-right:10px;
  }
- 
+
  .tableau {
      margin: 10px;
      display: inline-block;
@@ -441,7 +460,7 @@
      padding: 10px;
      border-radius: 4px;
      width: 99%; /* leave a small gap on the right */
-     min-width: calc(var(--store-width) + var(--board-dim) + 12px); 
+     min-width: calc(var(--store-width) + var(--board-dim) + 12px);
  }
 
  .actionCubeBorder {
@@ -471,13 +490,13 @@
  .actionCube.unselected {
      background: none;
  } */
- 
+
  .cardRow.tableauTopRowContainer, .cardRow.tableauCardContainer {
      align-items: left;
      justify-content: left;
      flex-wrap: wrap;
  }
- 
+
  .tableauLabel {
      font-family: "DM Sans", serif;
      font-optical-sizing: auto;
@@ -495,7 +514,7 @@
      border: 1px solid black;
     margin-right:35px;
  }
- 
+
  .tableauLabel.red {background-color: #f10000;}
  .tableauLabel.yellow {background-color: #f3ac11; color: black;}
  .tableauLabel.green {background-color: #6ab524;}
@@ -505,12 +524,12 @@
  .notColored {
      color: black;
  }
- 
+
  .cardTarget {
      height:var(--card-height);
      width: var(--card-width);
  }
- 
+
  .storecard, .card {
      height:var(--card-height);
      width: var(--card-width);
@@ -525,7 +544,7 @@
 }
 
 /* .storecard {
-    
+
 } */
  .card.active {
     transform: translateY(-20px);
@@ -561,23 +580,23 @@
     border: 2px solid var(--highlight-color); /* Highlight border color */
     border-radius: 6px;
     box-shadow: 0 0 15px var(--highlight-color); /* Highlight glow effect */
-    
+
 }
 
 /* translateY(-20px) ?
 .card.highlighted {
-    transform: translateY(-20px) scale(1.1); 
-} 
+    transform: translateY(-20px) scale(1.1);
+}
 */
 
 .card.highlighted {
-    transform: scale(1.1); 
-} 
+    transform: scale(1.1);
+}
 .storecard.highlighted {
     transform: scale(1.1); /* Slightly enlarge the card */
-} 
+}
 
- 
+
  .actionBoard {
      position: relative;
      height:var(--action-board-height);
@@ -588,14 +607,14 @@
      margin-right:10px;
      box-shadow: 3px 3px 3px #444;
  }
- 
+
  .actionBoardSelectionTarget {
      position: absolute;
      height:var(--action-board-selection-dim);
      width: var(--action-board-selection-dim);
  }
 
- .actionBoardSelectionTarget.selected 
+ .actionBoardSelectionTarget.selected
  {
     background: url(img/cube.png) 0 0 no-repeat; margin: -5px;
  }
@@ -618,7 +637,7 @@
 	height: var(--tile-dim);
 	overflow: hidden;
 	/*padding: 2rem;*/
-	
+
 	&::before {
 		content: '';
 		position: absolute;

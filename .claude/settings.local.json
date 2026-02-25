@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd:*)",
+      "Bash(git:*)",
+      "Bash(cat:*)",
+      "Bash(python3:*)",
+      "WebFetch(domain:en.doc.boardgamearena.com)",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "Bash(python:*)",
+      "Bash(node:*)"
+    ]
+  }
+}

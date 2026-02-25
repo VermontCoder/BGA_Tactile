@@ -20,5 +20,13 @@
         "type": "maxplayers",
         "value": 4
       }]
+  },
+  "101": {
+    "name": "Game Mode",
+    "default": "2",
+    "values": {
+      "1": { "name": "Classic" },
+      "2": { "name": "Overdrive" }
+    }
   }
 }
