@@ -118,23 +118,22 @@
  }
 
 /* Action type icon overlaid on each Classic mode deck pile.
-   action_icons.png: move at 0, gain at 104px, push at 208px (104x128px each).
-   Displayed at 48x59px (scale 0.46); scaled sprite: 144x59px. */
+   action_icons.png: 6 icons total (104x128px each); move=0, gain=1, push=5 (last).
+   Displayed at 18x23px; scaled sprite: 108x23px (6 icons x 18px). */
 .classicDeckIcon {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 48px;
-    height: 59px;
+    top: 4px;
+    left: 4px;
+    width: 18px;
+    height: 23px;
     background: url(img/action_icons.png) no-repeat;
-    background-size: 144px 59px;
+    background-size: 108px 23px;
     z-index: calc(var(--z-index-deck) + 1);
 }
 
 .classicDeckIcon.move { background-position: 0 0; }
-.classicDeckIcon.gain { background-position: -48px 0; }
-.classicDeckIcon.push { background-position: -96px 0; }
+.classicDeckIcon.gain { background-position: -18px 0; }
+.classicDeckIcon.push { background-position: -90px 0; }
 
  .cardRow {
      width: 100%;
