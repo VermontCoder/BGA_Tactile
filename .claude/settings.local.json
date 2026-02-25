@@ -8,7 +8,8 @@
       "WebFetch(domain:en.doc.boardgamearena.com)",
       "mcp__plugin_playwright_playwright__browser_navigate",
       "Bash(python:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }

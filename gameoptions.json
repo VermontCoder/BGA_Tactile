@@ -23,7 +23,7 @@
   },
   "101": {
     "name": "Game Mode",
-    "default": "2",
+    "default": 2,
     "values": {
       "1": { "name": "Classic" },
       "2": { "name": "Overdrive" }
