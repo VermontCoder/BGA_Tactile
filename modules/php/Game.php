@@ -780,6 +780,8 @@ class Game extends Table
         }
         else
         {
+            $this->setUndoOK(0, 'start');
+            $this->undoSavepoint();
             $this->gamestate->nextState("selectAction");
         }
     }
