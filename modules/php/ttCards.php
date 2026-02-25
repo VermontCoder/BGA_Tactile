@@ -148,8 +148,12 @@ class ttCards
             $discards = $this->game->cards->getCardsInLocation('discard_' . $type);
             if (!empty($discards))
             {
-                $this->game->cards->moveCards(array_keys($discards), 'deck_' . $type);
+                $cardIds = array_map(fn($card) => (int)$card['id'], $discards);
+                $this->game->cards->moveCards($cardIds, 'deck_' . $type);
                 $this->game->cards->shuffle('deck_' . $type);
+                $this->game->notify->all('deckReshuffled', clienttranslate('The <B>${type}</B> deck was reshuffled.'), [
+                    'type' => $type,
+                ]);
             }
         }
     }

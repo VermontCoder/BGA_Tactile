@@ -798,6 +798,7 @@ function (dojo, declare) {
             dojo.subscribe('reset', this, "notif_reset");
             dojo.subscribe('goalAchieved', this, "notif_goalAchieved");
             dojo.subscribe('messageInfo', this, "notif_messageInfo");
+            dojo.subscribe('deckReshuffled', this, "notif_deckReshuffled");
             dojo.subscribe('endGame', this, "notif_endGame");
         },  
 
@@ -960,7 +961,9 @@ function (dojo, declare) {
             console.log( notif );
         },
         
-        notif_messageInfo: function(notif) 
+        notif_deckReshuffled: function(notif) {},
+
+        notif_messageInfo: function(notif)
         {
             const message = this.format_string_recursive(notif.log, notif.args.message);
             this.showMessage( message, notif.args.severity); 

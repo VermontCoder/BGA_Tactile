@@ -478,9 +478,12 @@ class Game extends Table
             $ttCards = new ttCards($this);
             foreach (['move', 'gain', 'push'] as $type)
             {
-                $ttCards->reshuffleClassicTypeIfNeeded($type);
-                $picked = $this->cards->pickCardsForLocation(2, 'deck_' . $type, 'store');
-                $newCards = array_merge($newCards, $picked);
+                for ($i = 0; $i < 2; $i++)
+                {
+                    $ttCards->reshuffleClassicTypeIfNeeded($type);
+                    $picked = $this->cards->pickCardsForLocation(1, 'deck_' . $type, 'store');
+                    $newCards = array_merge($newCards, $picked);
+                }
             }
         }
         else
